@@ -3,10 +3,19 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text } from 'rea
 import { BACKGROUND_COLOUR, TEXT_COLOUR } from './constants/Colours';
 import useAxiosFetch from './utilities/useAxiosFetch';
 import { DEALS } from './constants/Urls';
+import Featured from './screens/Home';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const App = () => {
     const [appIsReady, setAppIsReady] = useState(true);
     const [fetchBool, setFetchBool] = useState(false);
+    const Tab = createBottomTabNavigator();
+    // SET CONSTANT FILTER PARAMS FOR HOTTEST DEALS - LIMIT 10
+
+    // SET CONTSTANT FILTER PARAMS FOR STEAM - LIMIT 10
+    // SET CONTSTANT FILTER PARAMS FOR EPIC - LIMIT 10
+    // SET CONTSTANT FILTER PARAMS FOR GREENMAN - LIMIT 10
 
     const { data, error, loading } = useAxiosFetch(DEALS, [], 0, fetchBool, true);
 
@@ -29,22 +38,28 @@ const App = () => {
     }
 
     return (
-        <SafeAreaView style={{ height: '100%', backgroundColor: BACKGROUND_COLOUR }}>
-            <StatusBar barStyle={'light-content'} />
-            <ScrollView contentInsetAdjustmentBehavior="automatic">
-                <View>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                    <Text style={styles.text}>Test</Text>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+        <NavigationContainer>
+            <Tab.Navigator>
+                <Tab.Screen name="Featured" component={Featured} />
+                <Tab.Screen name="Settings" component={Featured} />
+            </Tab.Navigator>
+        </NavigationContainer>
+        // <SafeAreaView style={{ height: '100%', backgroundColor: BACKGROUND_COLOUR }}>
+        //     <StatusBar barStyle={'light-content'} />
+        //     <ScrollView contentInsetAdjustmentBehavior="automatic">
+        //         <View>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //             <Text style={styles.text}>Test</Text>
+        //         </View>
+        //     </ScrollView>
+        // </SafeAreaView>
     );
 };
 
