@@ -1,34 +1,47 @@
-import React from 'react';
-
-import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    useColorScheme,
-    View,
-} from 'react-native';
-
-import { Colors, Header, LearnMoreLinks } from 'react-native/Libraries/NewAppScreen';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text } from 'react-native';
+import { BACKGROUND_COLOUR, TEXT_COLOUR } from './constants/Colours';
+import useAxiosFetch from './utilities/useAxiosFetch';
+import { DEALS } from './constants/Urls';
 
 const App = () => {
-    const isDarkMode = useColorScheme() === 'dark';
+    const [appIsReady, setAppIsReady] = useState(true);
+    const [fetchBool, setFetchBool] = useState(false);
 
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+    const { data, error, loading } = useAxiosFetch(DEALS, [], 0, fetchBool, true);
+
+    useEffect(() => {
+        if (data && data.length > 0) {
+            console.log(data);
+        }
+    }, [data]);
+
+    if (!appIsReady) {
+        return (
+            <SafeAreaView>
+                <StatusBar barStyle={'light-content'} />
+                <View style={styles.splashContainer}>
+                    <Text style={styles.title}>Stinjy.</Text>
+                    <ActivityIndicator size="large" color="white" />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
-        <SafeAreaView style={backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-            <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-                <Header />
-                <View
-                    style={{
-                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                    }}
-                >
-                    <LearnMoreLinks />
+        <SafeAreaView style={{ height: '100%', backgroundColor: BACKGROUND_COLOUR }}>
+            <StatusBar barStyle={'light-content'} />
+            <ScrollView contentInsetAdjustmentBehavior="automatic">
+                <View>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
+                    <Text style={styles.text}>Test</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -36,21 +49,22 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-    sectionContainer: {
-        marginTop: 32,
-        paddingHorizontal: 24,
+    splashContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
     },
-    sectionTitle: {
-        fontSize: 24,
-        fontWeight: '600',
-    },
-    sectionDescription: {
-        marginTop: 8,
-        fontSize: 18,
-        fontWeight: '400',
-    },
-    highlight: {
+    title: {
+        fontSize: 50,
         fontWeight: '700',
+        paddingVertical: 10,
+        color: 'white',
+    },
+    pageContainer: {
+        backgroundColor: BACKGROUND_COLOUR,
+    },
+    text: {
+        color: TEXT_COLOUR,
     },
 });
 
