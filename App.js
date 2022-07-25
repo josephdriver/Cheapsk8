@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, View, Text } from 'rea
 import { BACKGROUND_COLOUR, TEXT_COLOUR } from './constants/Colours';
 import useAxiosFetch from './utilities/useAxiosFetch';
 import { DEALS } from './constants/Urls';
-import Featured from './screens/Home';
+import Featured from './screens/Featured';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
