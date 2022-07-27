@@ -7,33 +7,112 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import { BACKGROUND_COLOUR, TEXT_COLOUR } from "./constants/Colours";
 import useAxiosFetch from "./utilities/useAxiosFetch";
-import { DEALS } from "./constants/Urls";
-import Featured from "./screens/Featured";
+import { DEALS, HOME_FILTER } from "./constants/Urls";
+import DEFAULT_STORES from "./constants/Defaults";
+import Main from "./screens/Main";
 
 // SET CONSTANT FILTER PARAMS FOR HOTTEST DEALS - LIMIT 10
 
-// SET CONTSTANT FILTER PARAMS FOR STEAM - LIMIT 10
-// SET CONTSTANT FILTER PARAMS FOR EPIC - LIMIT 10
-// SET CONTSTANT FILTER PARAMS FOR GREENMAN - LIMIT 10
-
 function App() {
   const [appIsReady, setAppIsReady] = useState(true);
-  const [fetchBool, setFetchBool] = useState(false);
+  const [fetchOne, setFetchOne] = useState(false);
+  const [fetchTwo, setFetchTwo] = useState(false);
+  const [fetchThree, setFetchThree] = useState(false);
+  const [fetchFour, setFetchFour] = useState(false);
 
-  const { data, error, loading } = useAxiosFetch(DEALS, [], 0, fetchBool, true);
-  const Tab = createBottomTabNavigator();
+  const [favoriteStores] = useState([]);
+  const [featuredStores, setFeaturedStores] = useState(favoriteStores);
 
   useEffect(() => {
-    if (data && data.length > 0) {
-      console.log(data);
+    if (featuredStores && featuredStores.length < 4) {
+      const stores = featuredStores;
+      DEFAULT_STORES.forEach((element) => {
+        if (stores.length < 4 && !stores.includes(element)) {
+          stores.push(element);
+        }
+      });
+      setFeaturedStores(stores);
     }
-  }, [data]);
+  }, [featuredStores]);
 
-  if (!appIsReady) {
+  useEffect(() => {
+    if (featuredStores && featuredStores.length === 4) {
+      setFetchOne(true);
+      setFetchTwo(true);
+      setFetchThree(true);
+      setFetchFour(true);
+    }
+  }, [featuredStores]);
+
+  const { data: dataOne, loading: loadingOne } = useAxiosFetch(
+    `${DEALS}storeID=${featuredStores[0]}${HOME_FILTER}`,
+    [],
+    0,
+    fetchOne,
+    false
+  );
+
+  const { data: dataTwo, loading: loadingTwo } = useAxiosFetch(
+    `${DEALS}storeID=${featuredStores[1]}${HOME_FILTER}`,
+    [],
+    0,
+    fetchTwo,
+    false
+  );
+
+  const { data: dataThree, loading: loadingThree } = useAxiosFetch(
+    `${DEALS}storeID=${featuredStores[2]}${HOME_FILTER}`,
+    [],
+    0,
+    fetchThree,
+    false
+  );
+
+  const { data: dataFour, loading: loadingFour } = useAxiosFetch(
+    `${DEALS}storeID=${featuredStores[3]}${HOME_FILTER}`,
+    [],
+    0,
+    fetchFour,
+    false
+  );
+
+  useEffect(() => {
+    if (dataOne && dataOne.length > 0) {
+      setFetchOne(false);
+    }
+    if (dataTwo && dataTwo.length > 0) {
+      setFetchTwo(false);
+    }
+    if (dataThree && dataThree.length > 0) {
+      setFetchThree(false);
+    }
+    if (dataFour && dataFour.length > 0) {
+      setFetchThree(false);
+    }
+
+    if (
+      dataOne &&
+      dataOne.length &&
+      dataTwo &&
+      dataTwo.length &&
+      dataThree &&
+      dataThree.length &&
+      dataFour &&
+      dataFour.length
+    ) {
+      setAppIsReady(true);
+    }
+  }, [dataOne, dataTwo, dataThree, dataFour, appIsReady]);
+
+  console.log(loadingOne);
+  console.log(loadingTwo);
+  console.log(loadingThree);
+  console.log(loadingFour);
+
+  if (!appIsReady || loadingOne || loadingTwo || loadingThree || loadingFour) {
     return (
       <SafeAreaView>
         <StatusBar barStyle="light-content" />
@@ -46,28 +125,12 @@ function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Featured" component={Featured} />
-        <Tab.Screen name="Settings" component={Featured} />
-      </Tab.Navigator>
-    </NavigationContainer>
-    // <SafeAreaView style={{ height: '100%', backgroundColor: BACKGROUND_COLOUR }}>
-    //     <StatusBar barStyle={'light-content'} />
-    //     <ScrollView contentInsetAdjustmentBehavior="automatic">
-    //         <View>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //             <Text style={styles.text}>Test</Text>
-    //         </View>
-    //     </ScrollView>
-    // </SafeAreaView>
+    <Main
+      storeOne={{ storeId: featuredStores[0], data: dataOne }}
+      storeTwo={{ storeId: featuredStores[1], data: dataTwo }}
+      storeThree={{ storeId: featuredStores[2], data: dataThree }}
+      storeFour={{ storeId: featuredStores[3], data: dataFour }}
+    />
   );
 }
 
@@ -82,12 +145,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     paddingVertical: 10,
     color: "white",
-  },
-  pageContainer: {
-    backgroundColor: BACKGROUND_COLOUR,
-  },
-  text: {
-    color: TEXT_COLOUR,
   },
 });
 

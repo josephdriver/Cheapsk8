@@ -31,6 +31,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* StingyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StingyTests.m; sourceTree = "<group>"; };
 		064B9EFF288FC6E500AD91D0 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		0690157728901466005FFE7F /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Stingy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stingy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Stingy/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Stingy/AppDelegate.mm; sourceTree = "<group>"; };
@@ -88,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				064B9EFF288FC6E500AD91D0 /* FontAwesome.ttf */,
+				0690157728901466005FFE7F /* MaterialIcons.ttf */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
