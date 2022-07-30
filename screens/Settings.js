@@ -14,19 +14,13 @@ function Settings({ stores }) {
   const { theme } = useTheme();
   const [savedStores, setSavedStores] = useState();
 
-  // async function setCache(value) {
-  //   const result = await AsyncStorage.setItem(
-  //     "@savedStores",
-  //     JSON.stringify(value)
-  //   ).then((res) => res);
-  //   return result;
-  // }
-
   useEffect(() => {
     if (!savedStores) {
       getCache(
         "@savedStores",
         setSavedStores,
+        null,
+        null,
         stores.filter((item) => item.isActive === 1)
       );
     }
@@ -53,10 +47,13 @@ function Settings({ stores }) {
   };
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <ScrollView>
         <View>
-          <Text h3 style={styles.sectionHeading}>
+          <Text
+            h3
+            style={[styles.sectionHeading, { color: theme.colors.primary }]}
+          >
             Available Stores
           </Text>
           <Divider />
@@ -69,7 +66,7 @@ function Settings({ stores }) {
                       <Image
                         style={{ width: 24, height: 24 }}
                         source={{
-                          uri: `${BASE}${store.images.icon}`,
+                          uri: `${BASE}${store.images.logo}`,
                         }}
                       />
                     </View>

@@ -1,10 +1,5 @@
 import axios from "axios";
 
-// export const getRequest = async (apiUrl) => {
-//   let data;
-//   await axios.get(apiUrl).then((res) => (data = res.data));
-// };
-
 export const getRequest = async (apiUrl) => {
   const configurationObject = {
     method: "get",
@@ -15,10 +10,29 @@ export const getRequest = async (apiUrl) => {
   return response.data;
 };
 
-export const multiGetRequest = async (apiUrlArray, config = {}) => {
+Promise.allSettled =
+  Promise.allSettled ||
+  ((promises) =>
+    Promise.all(
+      promises.map((p) =>
+        p
+          .then((value) => ({
+            status: "fulfilled",
+            value,
+          }))
+          .catch((reason) => ({
+            status: "rejected",
+            reason,
+          }))
+      )
+    ));
+
+export async function multiGetRequest(apiUrlArray, callback, config = {}) {
   const result = await Promise.allSettled(
     apiUrlArray.map((apiUrl) => axios.get(apiUrl, config))
-  );
+  ).then((res) => {
+    callback(res);
+  });
 
   return result;
-};
+}

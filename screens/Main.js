@@ -1,114 +1,75 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useThemeMode } from "@rneui/themed";
-import Home from "./Home";
-import Settings from "./Settings";
 import { STORES } from "../constants/Urls";
+import Home from "./Home";
 import useAxiosFetch from "../utilities/useAxiosFetch";
+import Settings from "./Settings";
+import TabBar from "../components/TabBar";
+import Search from "./Search";
+import WatchList from "./WatchList";
+import { getCache, setCache } from "../utilities/cacheHelpers";
 
 function Main() {
   const { setMode } = useThemeMode();
   const [fetch, setFetch] = useState(false);
   const [stores, setStores] = useState(null);
-  const [favoriteStores, setFavoriteStores] = useState(null);
-  const [ignoredStores, setIgnoredStores] = useState(null);
   const Tab = createBottomTabNavigator();
   const { data } = useAxiosFetch(STORES, 0, fetch, false, false, null);
 
-  // Log stores for debugging
-  const logCache = async (key) => {
-    const result = await AsyncStorage.getItem(key).then((res) => res);
-    console.log(result);
-    return result;
-  };
-
-  // Clear stores for debugging
-  const clearCache = async (key) => {
-    let bool = false;
-    await AsyncStorage.removeItem(key).then(() => {
-      bool = true;
-    });
-    console.log(`${key} stores reset`);
-    console.log(bool);
-    return bool;
-  };
-
+  // Set dark on app init
   useEffect(() => {
     setMode("dark");
   }, [setMode]);
 
-  const HomeComponent = useCallback(
-    () => (
-      <Home
-        logCache={logCache}
-        clearCache={clearCache}
-        setStores={setStores}
-        setFavoriteStores={setFavoriteStores}
-      />
-    ),
-    []
-  );
+  const HomeComponent = useCallback(() => <Home setStores={setStores} />, []);
   const SettingsComponent = useCallback(
-    () => (
-      <Settings
-        stores={stores}
-        favoriteStores={favoriteStores}
-        setFavoriteStores={setFavoriteStores}
-        ignoredStores={ignoredStores}
-        setIgnoredStores={setIgnoredStores}
-      />
-    ),
-    [stores, favoriteStores, ignoredStores]
+    () => <Settings stores={stores} />,
+    [stores]
   );
 
-  // Check for cached stores data
-  // If none exists check if an API has already been called for data
-  // Finally call API to fetch stores data if necessary
+  const SearchComponent = useCallback(() => <Search />, []);
+  const WatchListComponent = useCallback(() => <WatchList />, []);
+
+  // Retrieve cached stores or trigger request if no @stores cache exists
   useEffect(() => {
-    async function getCachedStores() {
-      const result = await AsyncStorage.getItem("@stores").then((res) => res);
-      if (result) {
-        return setStores(JSON.parse(result));
-      }
-
-      if (data) {
-        await AsyncStorage.setItem("@stores", JSON.stringify(data)).then(
-          (res) => res
-        );
-        setStores(data);
-      }
-      return setFetch(true);
-    }
-
     if (!stores) {
-      getCachedStores();
+      getCache("@stores", setStores, setFetch, true);
     }
-  }, [stores, data]);
+  }, [stores]);
 
+  // Handle request and add stores to cache
   useEffect(() => {
-    async function setCachedStores() {
-      const result = await AsyncStorage.setItem(
-        "@stores",
-        JSON.stringify(data)
-      ).then((res) => res);
-      return result;
-    }
-
     if (data) {
       setFetch(false);
-      setCachedStores();
+      setCache("@stores", data, setStores);
     }
   }, [data]);
 
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeComponent} />
-        <Tab.Screen name="Search" component={Settings} />
-        <Tab.Screen name="Watchlist" component={Settings} />
-        <Tab.Screen name="Settings" component={SettingsComponent} />
+      <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+        <Tab.Screen
+          name="home"
+          options={{ headerShown: false }}
+          component={HomeComponent}
+        />
+        <Tab.Screen
+          name="search"
+          options={{ headerShown: false }}
+          component={SearchComponent}
+        />
+        <Tab.Screen
+          name="binoculars"
+          options={{ headerShown: false }}
+          component={WatchListComponent}
+        />
+        <Tab.Screen
+          name="cog"
+          options={{ headerShown: false }}
+          component={SettingsComponent}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

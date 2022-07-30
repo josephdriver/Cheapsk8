@@ -26,28 +26,28 @@ export async function setCache(key, value, callback = null, type = "object") {
   return result;
 }
 
-export async function getCache(key, callback = null, fallback = null) {
+export async function getCache(
+  key,
+  callback1 = null,
+  callback2 = null,
+  params = null,
+  fallback = null
+) {
   const result = await AsyncStorage.getItem(key).then((res) => {
     if (res) {
-      if (callback !== null) {
-        return callback(JSON.parse(res));
-      }
+      return callback1(JSON.parse(res));
     }
+
     if (fallback) {
-      return setCache(key, fallback, callback);
+      return setCache(key, fallback, callback1);
     }
+
+    if (callback2) {
+      return callback2(params);
+    }
+
     return null;
   });
 
   return result;
 }
-
-export const removeCache = async (key) => {
-  try {
-    console.log(`Removing cache with key ${key}`);
-    return await AsyncStorage.removeItem(key).then(() => true);
-  } catch (e) {
-    console.log(`Failed to remove cache with key ${key}`);
-    return false;
-  }
-};
