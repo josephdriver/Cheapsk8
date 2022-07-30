@@ -1,61 +1,46 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// export const getCache = async (key, dataType = "object") => {
-//   let cachedData;
-//   try {
-//     console.log(`Getting cache with key ${key}`);
-//     cachedData = await AsyncStorage.getItem(key).then((res) => {
-//       if (dataType === "object") {
-//         return res ? JSON.parse(res) : null;
-//       }
-//       return res;
-//     });
-//   } catch (e) {
-//     console.log(`Failed to get cache with key ${key}`);
-//     return false;
-//   }
-//   return cachedData;
-// };
-
-export async function getCache(key, dataType = "object") {
-  try {
-    const response = await AsyncStorage.getItem("@favoriteStores");
-    if (!response) {
-      return dataType === "object" ? {} : "";
-    }
-    return dataType === "object"
-      ? await { data: JSON.parse(response) }
-      : response;
-
-    // console.log(`Getting cache with key ${key}`);
-    // cachedData = await AsyncStorage.getItem(key).then((res) => {
-    //   if (dataType === "object") {
-    //     return res ? JSON.parse(res) : null;
-    //   }
-    //   return res;
-    // });
-  } catch (e) {
-    console.log(`Failed to get cache with key ${key}`);
-    return false;
-  }
-
-  // const response = await AsyncStorage.getItem("@favoriteStores");
-  // const listOfTasks = (await JSON.parse(response)) || [];
-  // console.log(listOfTasks);
+// Log cache for debugging
+export async function logCache(key) {
+  const result = await AsyncStorage.getItem(key).then((res) => res);
+  console.log(result);
+  return result;
 }
 
-export const setCache = async (key, data, dataType = "object") => {
-  let value = dataType === "object" ? JSON.stringify(data) : data;
-  value = data === null ? null : value;
+// Clear cache for debugging
+export async function clearCache(key, callback, params) {
+  const result = await AsyncStorage.removeItem(key).then(() => {
+    callback(params);
+  });
+  console.log(`${key} stores reset`);
+  return result;
+}
 
-  try {
-    console.log(`Setting cache with key ${key}`);
-    return await AsyncStorage.setItem(key, value).then(() => value || null);
-  } catch (e) {
-    console.log(`Failed to set cache with key ${key}`);
-    return false;
-  }
-};
+export async function setCache(key, value, callback = null, type = "object") {
+  const parsedValue = type === "object" ? JSON.stringify(value) : value;
+  const result = await AsyncStorage.setItem(key, parsedValue).then(() => {
+    if (callback !== null) {
+      callback(value);
+    }
+  });
+  return result;
+}
+
+export async function getCache(key, callback = null, fallback = null) {
+  const result = await AsyncStorage.getItem(key).then((res) => {
+    if (res) {
+      if (callback !== null) {
+        return callback(JSON.parse(res));
+      }
+    }
+    if (fallback) {
+      return setCache(key, fallback, callback);
+    }
+    return null;
+  });
+
+  return result;
+}
 
 export const removeCache = async (key) => {
   try {

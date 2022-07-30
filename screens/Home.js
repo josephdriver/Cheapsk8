@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { SearchBar, Button, useThemeMode, useTheme } from "@rneui/themed";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKGROUND_COLOUR } from "../constants/Colours";
+import { logCache, clearCache } from "../utilities/cacheHelpers";
 
-function Home({ setStores, setFavoriteStores }) {
+function Home({ setStores }) {
   const [search, setSearch] = useState("");
   const { mode, setMode } = useThemeMode();
   const { theme } = useTheme();
@@ -13,38 +13,6 @@ function Home({ setStores, setFavoriteStores }) {
   const updateSearch = (e) => {
     setSearch(e);
   };
-
-  // Clear stores for debugging
-  async function clearStores() {
-    await AsyncStorage.removeItem("@stores").then(() => {
-      setStores(null);
-      console.log("stores reset");
-    });
-  }
-
-  // Log stores for debugging
-  async function logStores() {
-    const result = await AsyncStorage.getItem("@stores").then((res) => res);
-    console.log(result);
-    return result;
-  }
-
-  // Clear stores for debugging
-  async function clearFavoriteStores() {
-    await AsyncStorage.removeItem("@favoriteStores").then(() => {
-      setFavoriteStores(null);
-      console.log("favorite stores reset");
-    });
-  }
-
-  // Log stores for debugging
-  async function logFavoriteStores() {
-    const result = await AsyncStorage.getItem("@favoriteStores").then(
-      (res) => res
-    );
-    console.log(result);
-    return result;
-  }
 
   // useEffect(() => {
   //   console.log(favoriteStores);
@@ -89,21 +57,11 @@ function Home({ setStores, setFavoriteStores }) {
             )
           )}
         </> */}
-        <Button
-          title="Check Favorite Stores"
-          onPress={() => logFavoriteStores()}
-        />
-        <Button
-          title="Clear Favorite Stores"
-          onPress={() => {
-            clearFavoriteStores();
-          }}
-        />
-        <Button title="Check Cache" onPress={() => logStores()} />
+        <Button title="Check Cache" onPress={() => logCache("@stores")} />
         <Button
           title="Clear Cache"
           onPress={() => {
-            clearStores();
+            clearCache("@stores", setStores, null);
           }}
         />
         <Button

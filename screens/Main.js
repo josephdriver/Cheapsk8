@@ -17,12 +17,37 @@ function Main() {
   const Tab = createBottomTabNavigator();
   const { data } = useAxiosFetch(STORES, 0, fetch, false, false, null);
 
+  // Log stores for debugging
+  const logCache = async (key) => {
+    const result = await AsyncStorage.getItem(key).then((res) => res);
+    console.log(result);
+    return result;
+  };
+
+  // Clear stores for debugging
+  const clearCache = async (key) => {
+    let bool = false;
+    await AsyncStorage.removeItem(key).then(() => {
+      bool = true;
+    });
+    console.log(`${key} stores reset`);
+    console.log(bool);
+    return bool;
+  };
+
   useEffect(() => {
     setMode("dark");
   }, [setMode]);
 
   const HomeComponent = useCallback(
-    () => <Home setStores={setStores} setFavoriteStores={setFavoriteStores} />,
+    () => (
+      <Home
+        logCache={logCache}
+        clearCache={clearCache}
+        setStores={setStores}
+        setFavoriteStores={setFavoriteStores}
+      />
+    ),
     []
   );
   const SettingsComponent = useCallback(

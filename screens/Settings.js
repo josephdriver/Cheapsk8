@@ -1,56 +1,34 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, Image } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
 import { BASE } from "../constants/Urls";
+import {
+  logCache,
+  clearCache,
+  getCache,
+  setCache,
+} from "../utilities/cacheHelpers";
 
 function Settings({ stores }) {
   const { theme } = useTheme();
   const [savedStores, setSavedStores] = useState();
 
-  async function setCache(value) {
-    const result = await AsyncStorage.setItem(
-      "@savedStores",
-      JSON.stringify(value)
-    ).then((res) => res);
-    return result;
-  }
-
-  // Log stores for debugging
-  async function logStores() {
-    const result = await AsyncStorage.getItem("@savedStores").then(
-      (res) => res
-    );
-    console.log(result);
-    return result;
-  }
-
-  // Clear stores for debugging
-  async function clearSavedStores() {
-    await AsyncStorage.removeItem("@savedStores").then(() => {
-      setSavedStores(stores.filter((item) => item.isActive === 1));
-      console.log("saved stores reset");
-    });
-  }
+  // async function setCache(value) {
+  //   const result = await AsyncStorage.setItem(
+  //     "@savedStores",
+  //     JSON.stringify(value)
+  //   ).then((res) => res);
+  //   return result;
+  // }
 
   useEffect(() => {
-    async function getSavedStored() {
-      const result = await AsyncStorage.getItem("@savedStores").then(
-        (res) => res
-      );
-
-      if (result) {
-        return setSavedStores(JSON.parse(result));
-      }
-
-      const defaultCache = stores.filter((item) => item.isActive === 1);
-      await AsyncStorage.setItem("@savedStores", JSON.stringify(defaultCache));
-      return setSavedStores(defaultCache);
-    }
-
     if (!savedStores) {
-      getSavedStored();
+      getCache(
+        "@savedStores",
+        setSavedStores,
+        stores.filter((item) => item.isActive === 1)
+      );
     }
   }, [savedStores, stores]);
 
@@ -58,12 +36,12 @@ function Settings({ stores }) {
     if (!value) {
       const newSaved = savedStores.filter((item) => item.storeID !== storeID);
       setSavedStores(newSaved);
-      return setCache(newSaved);
+      return setCache("@savedStores", newSaved, setSavedStores);
     }
-
+    // setCache(key, value, callback = null, type = "object")
     const store = stores.find((item) => item.storeID === storeID);
     setSavedStores(savedStores.concat(store));
-    return setCache(savedStores.concat(store));
+    return setCache("@savedStores", savedStores.concat(store), setSavedStores);
   };
 
   const getSwitchState = (storeID) => {
@@ -113,8 +91,17 @@ function Settings({ stores }) {
               ) : null
             )}
         </View>
-        <Button title="Check Cache" onPress={() => logStores()} />
-        <Button title="Clear Cache" onPress={() => clearSavedStores()} />
+        <Button title="Check Cache" onPress={() => logCache("@savedStores")} />
+        <Button
+          title="Clear Cache"
+          onPress={() =>
+            clearCache(
+              "@savedStores",
+              setSavedStores,
+              stores.filter((item) => item.isActive === 1)
+            )
+          }
+        />
       </ScrollView>
     </View>
   );
