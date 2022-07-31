@@ -23,7 +23,10 @@ function Main() {
     setMode("dark");
   }, [setMode]);
 
-  const HomeComponent = useCallback(() => <Home setStores={setStores} />, []);
+  const HomeComponent = useCallback(
+    () => <Home stores={stores} setStores={setStores} />,
+    [stores]
+  );
   const SettingsComponent = useCallback(
     () => <Settings stores={stores} />,
     [stores]
