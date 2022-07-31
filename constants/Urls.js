@@ -5,7 +5,7 @@ export const HOME_FILTER = `https://www.cheapshark.com/api/1.0/deals?storeID=${D
 
 export const DEALS = "https://www.cheapshark.com/api/1.0/deals?";
 export const GAMES = "https://www.cheapshark.com/api/1.0/games?";
-export const STORES = "https://www.cheapshark.com/api/1.0/stores?";
+export const STORES_URL = "https://www.cheapshark.com/api/1.0/stores";
 
 export const STEAM_HEADER = `https://cdn.cloudflare.steamstatic.com/steam/apps/${DELIM_ID}/header.jpg`;
 export const STEAM_HERO = `https://cdn.cloudflare.steamstatic.com/steam/apps/${DELIM_ID}/hero_capsule.jpg`;

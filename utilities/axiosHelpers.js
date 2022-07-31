@@ -1,13 +1,25 @@
 import axios from "axios";
+import { useDispatch } from "react-redux";
+
+function returnData(data) {
+  return data;
+}
+
+const dispatch = useDispatch();
+export async function fetch(url, action = null) {
+  const response = await axios.get(url).then((res) => console.log(res));
+  console.log(response.data, "with await");
+}
 
 export const getRequest = async (apiUrl) => {
   const configurationObject = {
     method: "get",
     url: apiUrl,
   };
-  const response = await axios(configurationObject);
 
-  return response.data;
+  await Promise.all(
+    await axios(configurationObject).then((res) => returnData(res))
+  );
 };
 
 Promise.allSettled =
