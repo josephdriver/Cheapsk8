@@ -22,7 +22,13 @@
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "no-console": 0,
+    "react/jsx-props-no-spreading": 0,
     // allow for styles to be defined at bottom of file
-    "no-use-before-define": ["error", { "variables": false }]
+    "no-use-before-define": ["error", { "variables": false }],
+    "react/prop-types": [
+      "error",
+      { "ignore": ["navigation", "descriptors", "state"] }
+    ],
+    "react/no-unstable-nested-components": ["error", { "allowAsProps": true }]
   }
 }
