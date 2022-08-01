@@ -11,14 +11,15 @@ export const StoresSlice = createSlice({
     error: false,
   },
   reducers: {
-    setLoading: (state) => {
-      state.loading = true;
+    setLoading: (state, { payload }) => {
+      state.loading = payload;
     },
     setStores: (state, { payload }) => {
       state.loading = false;
       state.error = false;
       state.stores = payload;
       if (state.savedStores.length === 0) {
+        console.log(payload);
         state.savedStores = payload.filter((item) => item.isActive === 1);
       }
     },

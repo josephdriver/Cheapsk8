@@ -17,16 +17,10 @@ Promise.allSettled =
       )
     ));
 
-export default async function multiGetRequest(
-  apiUrlArray,
-  callback,
-  config = {}
-) {
+export default async function multiGetRequest(apiUrlArray, config = {}) {
   const result = await Promise.allSettled(
     apiUrlArray.map((apiUrl) => axios.get(apiUrl, config))
-  ).then((res) => {
-    callback(res);
-  });
+  ).then((res) => res);
 
   return result;
 }

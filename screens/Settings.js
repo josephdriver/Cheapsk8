@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { View, StyleSheet, ScrollView, Image } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE } from "../constants/Urls";
 import { setSavedStores } from "../redux/storesSlice";
+import IconImage from "../components/IconImage";
 
 function Settings() {
   const { stores, savedStores } = useSelector((state) => state.stores);
@@ -43,12 +43,7 @@ function Settings() {
               <View key={store.storeID}>
                 <View style={styles.storeWrapper} key={store.storeID}>
                   <View style={styles.image}>
-                    <Image
-                      style={{ width: 24, height: 24 }}
-                      source={{
-                        uri: `${BASE}${store.images.logo}`,
-                      }}
-                    />
+                    <IconImage url={store.images.logo} width={24} height={24} />
                   </View>
                   <View style={[styles.title, { color: theme.colors.black }]}>
                     <Text style={{ fontSize: 18 }}>{store.storeName}</Text>

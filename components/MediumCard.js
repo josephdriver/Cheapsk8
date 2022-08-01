@@ -1,25 +1,40 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { View, StyleSheet } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
-import PropTypes from "prop-types";
-import HeaderImage from "./HeaderImage";
+import LargeCapsule from "./LargeCapsule";
 
-function LargeCard({ deal }) {
+function MediumCard({ deal }) {
   const { theme } = useTheme();
+
   return (
-    <View style={[styles.cardWrapper, { backgroundColor: "#306187" }]}>
-      <View style={{ width: "100%", height: 200 }}>
-        <HeaderImage steamAppID={deal.steamAppID} />
-      </View>
-      <View style={{ flexDirection: "row", padding: 8 }}>
-        <View style={{ flex: 7 }}>
-          <Text style={styles.title}>{deal.title}</Text>
-          <Text>
-            {deal.steamRatingText} ({deal.steamRatingPercent}%)
-          </Text>
-        </View>
-        <View style={{ flex: 3, alignItems: "flex-end" }}>
-          <View style={{ flexDirection: "row" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "space-between",
+      }}
+    >
+      <View style={styles.cardWrapper}>
+        <LargeCapsule steamAppID={deal.steamAppID} url={deal.thumb} />
+
+        <View
+          style={{
+            flexDirection: "column",
+            paddingHorizontal: 8,
+            paddingBottom: 3,
+          }}
+        >
+          <View style={{ flex: 7 }}>
+            <Text style={styles.title}>{deal.title}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "flex-end",
+              paddingVertical: 3,
+            }}
+          >
             <View
               style={{
                 height: 21,
@@ -31,15 +46,6 @@ function LargeCard({ deal }) {
               <Text>-{deal.savings.split(".")[0]}%</Text>
             </View>
             <View>
-              <Text
-                style={{
-                  color: theme.colors.grey2,
-                  fontSize: 15,
-                  paddingBottom: 2,
-                }}
-              >
-                ${deal.normalPrice}
-              </Text>
               <Text style={{ fontWeight: "700", fontSize: 15 }}>
                 ${deal.salePrice}
               </Text>
@@ -47,22 +53,29 @@ function LargeCard({ deal }) {
           </View>
         </View>
       </View>
+      <View style={styles.cardWrapper}>
+        <LargeCapsule steamAppID={deal.steamAppID} url={deal.thumb} />
+        <Text style={styles.title}>{deal.title}</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    borderRadius: 8,
     marginBottom: 16,
+    width: "47.5%",
+    backgroundColor: "#306187",
+    borderRadius: 8,
   },
   title: {
-    fontWeight: "bold",
-    fontSize: 18,
+    fontWeight: "700",
+    fontSize: 15,
     paddingBottom: 1,
   },
 });
-LargeCard.propTypes = {
+
+MediumCard.propTypes = {
   deal: PropTypes.shape({
     internalName: PropTypes.string,
     title: PropTypes.string,
@@ -86,4 +99,4 @@ LargeCard.propTypes = {
   }).isRequired,
 };
 
-export default LargeCard;
+export default MediumCard;

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, Image } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import {
   SearchBar,
   Button,
@@ -9,36 +10,47 @@ import {
   Divider,
   Text,
 } from "@rneui/themed";
-import {
-  logCache,
-  clearCache,
-  getCache,
-  setCache,
-} from "../utilities/cacheHelpers";
-import { HOME_FILTER, DELIM_ID, BASE } from "../constants/Urls";
-import { multiGetRequest } from "../utilities/axiosHelpers";
-import HorizontalCollection from "../components/HorizontalCollection";
+import { fetchDeals } from "../redux/dealsSlice";
+import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 
-function Home({ stores, setStores }) {
+// import HorizontalCollection from "../components/HorizontalCollection";
+import MediumCard from "../components/MediumCard";
+import IconImage from "../components/IconImage";
+import LargeCard from "../components/LargeCard";
+
+function Home() {
   const [search, setSearch] = useState("");
-  const [savedStores, setSavedStores] = useState(null);
-  const [deals, setDeals] = useState(null);
-  const [getDeals, setGetDeals] = useState(null);
   const { mode, setMode } = useThemeMode();
   const { theme } = useTheme();
+  const { deals, fetchTime } = useSelector((state) => state.deals);
+  const { stores, savedStores } = useSelector((state) => state.stores);
+  const dispatch = useDispatch();
 
   const updateSearch = (e) => {
     setSearch(e);
   };
 
+  function getUrlArray(collection) {
+    const array = [];
+    let count = 0;
+    collection.map((item) => {
+      if (count < 10 && item.isActive === 1) {
+        array.push(HOME_FILTER.replace(DELIM_ID, item.storeID));
+        count += 1;
+      }
+      return item;
+    });
+    return array;
+  }
+
   useEffect(() => {
-    if (!savedStores) {
-      getCache("@savedStores", setSavedStores);
+    if (deals.length === 0) {
+      dispatch(fetchDeals(getUrlArray(savedStores)));
     }
-  }, [savedStores]);
+  }, [deals, fetchTime, savedStores, dispatch]);
 
   function getStoreTitle(id) {
-    if (stores && stores.length > 0) {
+    if (stores.length > 0) {
       const storeName = stores.find((item) => item.storeID === id);
       return storeName.storeName;
     }
@@ -46,46 +58,12 @@ function Home({ stores, setStores }) {
   }
 
   function getStoreLogo(id) {
-    if (stores && stores.length > 0) {
+    if (stores.length > 0) {
       const storeName = stores.find((item) => item.storeID === id);
       return storeName.images.logo;
     }
     return null;
   }
-
-  // useEffect(() => {
-  //   if (!deals) {
-  //     // getCache("@deals", setDeals, setGetDeals, true);
-  //     setGetDeals(true);
-  //   }
-
-  //   if (deals && deals.length > 0) {
-  //     const date = new Date();
-  //     const dealObj = { data: [], expireTime: date.getTime() + 3600000 };
-
-  //     deals.map((item) => {
-  //       if (item.status === "fulfilled") {
-  //         dealObj.data.push(item.value.data);
-  //       }
-  //       return item;
-  //     });
-  //     setGetDeals(false);
-  //     setCache("@deals");
-  //     setDeals(dealObj);
-  //   }
-  // }, [deals]);
-
-  // useEffect(() => {
-  //   const urlArray = [];
-  //   if (savedStores) {
-  //     savedStores.map((store) =>
-  //       urlArray.push(HOME_FILTER.replace(DELIM_ID, store.storeID))
-  //     );
-  //     if (urlArray.length > 0) {
-  //       multiGetRequest(urlArray, setDeals);
-  //     }
-  //   }
-  // }, [getDeals, savedStores, deals]);
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
@@ -101,110 +79,39 @@ function Home({ stores, setStores }) {
             borderTopColor: "transparent",
           }}
         />
-        {deals &&
-          deals.data &&
-          deals.data.length > 0 &&
-          deals.data.map((store) => (
-            <>
+        {deals.length > 0 &&
+          deals.map((store) => (
+            <View key={store.storeID}>
               <View style={{ flexDirection: "row" }}>
                 <View style={styles.image}>
-                  <Image
-                    style={{ width: 30, height: 30 }}
-                    source={{
-                      uri: `${BASE}${getStoreLogo(
-                        store[0].storeID ? store[0].storeID : null
-                      )}`,
-                    }}
+                  <IconImage
+                    url={getStoreLogo(store.storeID)}
+                    width={30}
+                    height={30}
                   />
                 </View>
                 <View style={{ flex: 9, padding: 10 }}>
-                  <Text h3 style={{ color: theme.colors.primary }}>
-                    {getStoreTitle(store[0].storeID ? store[0].storeID : null)}{" "}
-                    Deals
+                  <Text h4 style={{ color: theme.colors.primary }}>
+                    {getStoreTitle(store.storeID)} Deals
                   </Text>
                 </View>
               </View>
               <Divider />
-              <ScrollView horizontal>
-                <HorizontalCollection data={store} />
-                {/* <View style={{ flexDirection: "row" }}>
-                  {store.map((item, index) => {
-                    if (index === 0 || index === 5) {
-                      return (
-                        <View key={item.dealID}>
-                          <View>
-                            <Image
-                              style={{ width: 300, height: 200 }}
-                              source={{
-                                uri: `${STEAM_HEADER.replace(
-                                  DELIM_ID,
-                                  item.steamAppID
-                                )}`,
-                              }}
-                            />
-                          </View>
-                          <Text>{item.title}</Text>
-                        </View>
-                      );
-                    }
-                    return (
-                      <View key={item.dealID}>
-                        <View>
-                          <Image
-                            style={{ width: 184, height: 69 }}
-                            source={{
-                              uri: `${STEAM_MEDIUM_CAP.replace(
-                                DELIM_ID,
-                                item.steamAppID
-                              )}`,
-                            }}
-                          />
-                        </View>
-                        <Text>{item.title}</Text>
-                      </View>
-                    );
-                  })}
-                </View> */}
+              <ScrollView>
+                {/* <HorizontalCollection data={store} /> */}
+                <View>
+                  {store.data.map((item, index) =>
+                    index === 0 || index === 5 ? (
+                      <LargeCard key={item.dealID} deal={item} />
+                    ) : (
+                      <MediumCard key={item.dealID} deal={item} />
+                    )
+                  )}
+                </View>
               </ScrollView>
-            </>
+            </View>
           ))}
-        {/* <>
-          {favoritesData.map((item) =>
-            item.data && item.data.length > 0 ? (
-              <View key={item.storeId}>
-                <Text style={{ color: "black" }}>Store {item.storeId}</Text>
-                {item.data.map((row) => (
-                  <View key={row.dealID}>
-                    <Text style={{ color: "black" }}>{row.title}</Text>
-                  </View>
-                ))}
-              </View>
-            ) : (
-              ""
-            )
-          )}
-        </> */}
-        <Button title="Check saved" onPress={() => logCache("@savedStores")} />
-        <Button title="Check deals" onPress={() => logCache("@deals")} />
-        <Button
-          title="Clear deals"
-          onPress={() => {
-            clearCache("@deals", setDeals, null);
-          }}
-        />
-        <Button
-          title="Clear saved"
-          onPress={() => {
-            clearCache("@savedStores", setSavedStores, null);
-          }}
-        />
-        <Button title="Check store" onPress={() => logCache("@stores")} />
-        <Button
-          title="Clear stores"
-          onPress={() => {
-            clearCache("@stores", setStores, null);
-          }}
-        />
+
         <Button
           title={`Toggle Theme ${mode}`}
           onPress={() => setMode(mode === "dark" ? "light" : "dark")}
