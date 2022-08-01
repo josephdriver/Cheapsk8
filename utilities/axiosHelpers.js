@@ -1,15 +1,5 @@
 import axios from "axios";
 
-export const getRequest = async (apiUrl) => {
-  const configurationObject = {
-    method: "get",
-    url: apiUrl,
-  };
-  const response = await axios(configurationObject);
-
-  return response.data;
-};
-
 Promise.allSettled =
   Promise.allSettled ||
   ((promises) =>
@@ -27,7 +17,11 @@ Promise.allSettled =
       )
     ));
 
-export async function multiGetRequest(apiUrlArray, callback, config = {}) {
+export default async function multiGetRequest(
+  apiUrlArray,
+  callback,
+  config = {}
+) {
   const result = await Promise.allSettled(
     apiUrlArray.map((apiUrl) => axios.get(apiUrl, config))
   ).then((res) => {
