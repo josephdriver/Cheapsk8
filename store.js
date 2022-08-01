@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import storesSlice from "./redux/storesSlice";
+import StoresSlice from "./redux/storesSlice";
 
 const persistConfig = {
   key: "root",
@@ -10,7 +10,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  stores: storesSlice,
+  stores: StoresSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

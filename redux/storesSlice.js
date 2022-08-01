@@ -2,10 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { STORES_URL } from "../constants/Urls";
 
-export const storesSlice = createSlice({
+export const StoresSlice = createSlice({
   name: "stores",
   initialState: {
-    items: [],
+    stores: [],
+    savedStores: [],
     loading: false,
     error: false,
   },
@@ -13,21 +14,28 @@ export const storesSlice = createSlice({
     setLoading: (state) => {
       state.loading = true;
     },
-    setItems: (state, { payload }) => {
+    setStores: (state, { payload }) => {
       state.loading = false;
       state.error = false;
-      state.items = payload;
+      state.stores = payload;
+      if (state.savedStores.length === 0) {
+        state.savedStores = payload.filter((item) => item.isActive === 1);
+      }
     },
     setError: (state) => {
       state.error = true;
+    },
+    setSavedStores: (state, { payload }) => {
+      state.savedStores = payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, setItems, setError } = storesSlice.actions;
+export const { setLoading, setStores, setError, setSavedStores } =
+  StoresSlice.actions;
 
-export default storesSlice.reducer;
+export default StoresSlice.reducer;
 
 // set up axios - simple json-server prototype config here
 const api = axios.create({
@@ -39,15 +47,17 @@ const api = axios.create({
   },
 });
 
-// fetch all items
-export function fetchItems() {
+// fetch stores
+export function fetchStores() {
   return async (dispatch) => {
+    dispatch(setLoading(true));
     api
       .get()
       .then((response) => {
-        dispatch(setItems(response.data));
+        dispatch(setStores(response.data));
+        dispatch(setLoading(false));
       })
-      .catch((er) => {
+      .catch(() => {
         dispatch(setError());
       });
   };

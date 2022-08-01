@@ -1,48 +1,29 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, StyleSheet, ScrollView, Image } from "react-native";
 import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE } from "../constants/Urls";
-import {
-  logCache,
-  clearCache,
-  getCache,
-  setCache,
-} from "../utilities/cacheHelpers";
+import { setSavedStores } from "../redux/storesSlice";
 
-function Settings({ stores }) {
+function Settings() {
+  const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
-  const [savedStores, setSavedStores] = useState();
-
-  useEffect(() => {
-    if (!savedStores) {
-      getCache(
-        "@savedStores",
-        setSavedStores,
-        null,
-        null,
-        stores.filter((item) => item.isActive === 1)
-      );
-    }
-  }, [savedStores, stores]);
+  const dispatch = useDispatch();
 
   const handleSwitch = (storeID, value) => {
     if (!value) {
-      const newSaved = savedStores.filter((item) => item.storeID !== storeID);
-      setSavedStores(newSaved);
-      return setCache("@savedStores", newSaved, setSavedStores);
+      dispatch(
+        setSavedStores(savedStores.filter((item) => item.storeID !== storeID))
+      );
+    } else {
+      const store = stores.find((item) => item.storeID === storeID);
+      dispatch(setSavedStores(savedStores.concat(store)));
     }
-    // setCache(key, value, callback = null, type = "object")
-    const store = stores.find((item) => item.storeID === storeID);
-    setSavedStores(savedStores.concat(store));
-    return setCache("@savedStores", savedStores.concat(store), setSavedStores);
   };
 
   const getSwitchState = (storeID) => {
-    const store =
-      savedStores &&
-      savedStores.length &&
-      savedStores.find((item) => item.storeID === storeID);
+    const store = savedStores.find((item) => item.storeID === storeID);
     return !!store;
   };
 
@@ -57,48 +38,37 @@ function Settings({ stores }) {
             Available Stores
           </Text>
           <Divider />
-          {stores &&
-            stores.map((store) =>
-              store.isActive ? (
-                <View key={store.storeID}>
-                  <View style={styles.storeWrapper} key={store.storeID}>
-                    <View style={styles.image}>
-                      <Image
-                        style={{ width: 24, height: 24 }}
-                        source={{
-                          uri: `${BASE}${store.images.logo}`,
-                        }}
-                      />
-                    </View>
-                    <View style={[styles.title, { color: theme.colors.black }]}>
-                      <Text style={{ fontSize: 18 }}>{store.storeName}</Text>
-                    </View>
-
-                    <View style={{ flex: 2 }}>
-                      <Switch
-                        value={getSwitchState(store.storeID)}
-                        onValueChange={(value) =>
-                          handleSwitch(store.storeID, value)
-                        }
-                      />
-                    </View>
+          {stores.map((store) =>
+            store.isActive ? (
+              <View key={store.storeID}>
+                <View style={styles.storeWrapper} key={store.storeID}>
+                  <View style={styles.image}>
+                    <Image
+                      style={{ width: 24, height: 24 }}
+                      source={{
+                        uri: `${BASE}${store.images.logo}`,
+                      }}
+                    />
                   </View>
-                  <Divider />
+                  <View style={[styles.title, { color: theme.colors.black }]}>
+                    <Text style={{ fontSize: 18 }}>{store.storeName}</Text>
+                  </View>
+
+                  <View style={{ flex: 2 }}>
+                    <Switch
+                      value={getSwitchState(store.storeID)}
+                      onValueChange={(value) =>
+                        handleSwitch(store.storeID, value)
+                      }
+                    />
+                  </View>
                 </View>
-              ) : null
-            )}
+                <Divider />
+              </View>
+            ) : null
+          )}
         </View>
-        <Button title="Check Cache" onPress={() => logCache("@savedStores")} />
-        <Button
-          title="Clear Cache"
-          onPress={() =>
-            clearCache(
-              "@savedStores",
-              setSavedStores,
-              stores.filter((item) => item.isActive === 1)
-            )
-          }
-        />
+        <Button title="Clear Cache" onPress={() => console.log("To do")} />
       </ScrollView>
     </View>
   );
