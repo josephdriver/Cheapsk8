@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useThemeMode } from "@rneui/themed";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,40 +28,39 @@ function Main() {
     setMode("dark");
   }, [setMode]);
 
-  const HomeComponent = useCallback(() => <Home stores={stores} />, [stores]);
-  const SettingsComponent = useCallback(
-    () => <Settings stores={stores} />,
-    [stores]
-  );
+  const HomeComponent = useCallback(() => <Home />, []);
+  const SettingsComponent = useCallback(() => <Settings />, []);
 
   const SearchComponent = useCallback(() => <Search />, []);
   const WatchListComponent = useCallback(() => <WatchList />, []);
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
-        <Tab.Screen
-          name="home"
-          options={{ headerShown: false }}
-          component={HomeComponent}
-        />
-        <Tab.Screen
-          name="search"
-          options={{ headerShown: false }}
-          component={SearchComponent}
-        />
-        <Tab.Screen
-          name="binoculars"
-          options={{ headerShown: false }}
-          component={WatchListComponent}
-        />
-        <Tab.Screen
-          name="cog"
-          options={{ headerShown: false }}
-          component={SettingsComponent}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+          <Tab.Screen
+            name="home"
+            options={{ headerShown: false }}
+            component={HomeComponent}
+          />
+          <Tab.Screen
+            name="search"
+            options={{ headerShown: false }}
+            component={SearchComponent}
+          />
+          <Tab.Screen
+            name="binoculars"
+            options={{ headerShown: false }}
+            component={WatchListComponent}
+          />
+          <Tab.Screen
+            name="cog"
+            options={{ headerShown: false }}
+            component={SettingsComponent}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

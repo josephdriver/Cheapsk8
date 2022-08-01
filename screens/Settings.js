@@ -2,6 +2,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, Image } from "react-native";
 import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE } from "../constants/Urls";
 import { setSavedStores } from "../redux/storesSlice";
@@ -10,6 +11,7 @@ function Settings() {
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   const handleSwitch = (storeID, value) => {
     if (!value) {
@@ -28,7 +30,12 @@ function Settings() {
   };
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View
+      style={[
+        styles.view,
+        { backgroundColor: theme.colors.grey5, paddingTop: insets.top },
+      ]}
+    >
       <ScrollView>
         <View>
           <Text
