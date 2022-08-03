@@ -18,10 +18,12 @@ function Main() {
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
-    if (stores && stores.length === 0) {
+    if (stores.length === 0) {
+      console.log(stores);
       dispatch(fetchStores());
     }
   }, [dispatch, stores]);
+
   // Set dark on app init
   useEffect(() => {
     setMode("dark");

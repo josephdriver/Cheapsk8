@@ -4,10 +4,13 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { setSavedStores } from "../redux/storesSlice";
+import { fetchDeal } from "../redux/dealsSlice";
 import IconImage from "../components/IconImage";
+import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 
 function Settings() {
   const { stores, savedStores } = useSelector((state) => state.stores);
+  const { deals } = useSelector((state) => state.deals);
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
@@ -19,6 +22,14 @@ function Settings() {
     } else {
       const store = stores.find((item) => item.storeID === storeID);
       dispatch(setSavedStores(savedStores.concat(store)));
+      if (
+        !deals.find(
+          (item) => parseInt(item.storeID, 10) === parseInt(storeID, 10)
+        )
+      ) {
+        dispatch(fetchDeal(HOME_FILTER.replace(DELIM_ID, storeID), deals));
+        console.log("Deal does not exist");
+      }
     }
   };
 

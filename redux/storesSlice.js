@@ -18,10 +18,6 @@ export const StoresSlice = createSlice({
       state.loading = false;
       state.error = false;
       state.stores = payload;
-      if (state.savedStores.length === 0) {
-        console.log(payload);
-        state.savedStores = payload.filter((item) => item.isActive === 1);
-      }
     },
     setError: (state) => {
       state.error = true;
