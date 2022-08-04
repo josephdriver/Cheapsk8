@@ -14,7 +14,6 @@ export const DealsSlice = createSlice({
       state.loading = payload;
     },
     setDeals: (state, { payload }) => {
-      console.log(payload);
       const deals = [];
       payload.map((collection) => {
         if (collection.value.data.length > 0) {

@@ -13,7 +13,7 @@ function OneByTwoCard({ deals }) {
       }}
     >
       {deals.map((item) => (
-        <SmallCard deal={item} />
+        <SmallCard key={item.thumb} deal={item} />
       ))}
     </View>
   );

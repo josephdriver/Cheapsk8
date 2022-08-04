@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import HeaderImage from "./HeaderImage";
 
 function LargeCard({ deal }) {
-  console.log(deal);
   const { theme } = useTheme();
   return (
     <View style={[styles.cardWrapper, { backgroundColor: "#306187" }]}>

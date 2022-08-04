@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { useTheme, Text, Switch, Divider, Button } from "@rneui/themed";
+import { useTheme, Text, Switch, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { setSavedStores } from "../redux/storesSlice";
 import { fetchDeal } from "../redux/dealsSlice";
@@ -28,7 +28,6 @@ function Settings() {
         )
       ) {
         dispatch(fetchDeal(HOME_FILTER.replace(DELIM_ID, storeID), deals));
-        console.log("Deal does not exist");
       }
     }
   };
@@ -74,7 +73,6 @@ function Settings() {
             ) : null
           )}
         </View>
-        <Button title="Clear Cache" onPress={() => console.log("To do")} />
       </ScrollView>
     </View>
   );

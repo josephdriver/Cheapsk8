@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { SearchBar, Button, useThemeMode, useTheme } from "@rneui/themed";
+import { SearchBar, useTheme, Text } from "@rneui/themed";
 import { fetchDeals } from "../redux/dealsSlice";
 import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 import DEFAULT_STORES from "../constants/Defaults";
@@ -11,9 +11,9 @@ import ContentBlock from "../components/ContentBlock";
 
 function Home() {
   const [search, setSearch] = useState("");
-  const { mode, setMode } = useThemeMode();
+  const [contentLoading, setContentLoading] = useState(false);
   const { theme } = useTheme();
-  const { deals } = useSelector((state) => state.deals);
+  const { deals, fetchTime, loading } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
 
@@ -42,10 +42,30 @@ function Home() {
   }, [savedStores]);
 
   useEffect(() => {
-    if (deals.length === 0) {
+    const time = new Date();
+    if (deals.length === 0 || fetchTime + 3600000 < time.getTime()) {
       dispatch(fetchDeals(getUrlArray()));
     }
-  }, [deals, getUrlArray, dispatch]);
+  }, [deals, fetchTime, getUrlArray, dispatch]);
+
+  if (contentLoading || loading) {
+    return (
+      <View
+        style={{
+          height: "100%",
+          justifyContent: "space-around",
+          backgroundColor: theme.colors.grey5,
+        }}
+      >
+        <View style={{ width: "100%" }}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={{ alignSelf: "center" }}>
+            Getting the latest deals... Hold tight!
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
@@ -61,10 +81,13 @@ function Home() {
             borderTopColor: "transparent",
           }}
         />
-        <ContentBlock deals={deals} savedStores={savedStores} stores={stores} />
-        <Button
-          title={`Toggle Theme ${mode}`}
-          onPress={() => setMode(mode === "dark" ? "light" : "dark")}
+        <ContentBlock
+          deals={deals}
+          savedStores={savedStores}
+          stores={stores}
+          loading={loading}
+          contentLoading={contentLoading}
+          setContentLoading={setContentLoading}
         />
       </ScrollView>
     </View>

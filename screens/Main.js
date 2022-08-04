@@ -19,7 +19,6 @@ function Main() {
 
   useEffect(() => {
     if (stores.length === 0) {
-      console.log(stores);
       dispatch(fetchStores());
     }
   }, [dispatch, stores]);
