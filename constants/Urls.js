@@ -14,3 +14,5 @@ export const STEAM_S_CAP = `https://cdn.cloudflare.steamstatic.com/steam/apps/${
 export const STEAM_M_CAP = `https://cdn.cloudflare.steamstatic.com/steam/apps/${DELIM_ID}/capsule_184x69.jpg`;
 export const STEAM_L_CAP = `https://cdn.cloudflare.steamstatic.com/steam/apps/${DELIM_ID}/capsule_231x87.jpg`;
 export const STEAM_XL_CAP = `https://cdn.cloudflare.steamstatic.com/steam/apps/${DELIM_ID}/capsule_616x353.jpg`;
+
+export const STEAM_FALL_BACK_XL = `https://cdn.cloudflare.steamstatic.com/steam/subs/${DELIM_ID}/capsule_616x353.jpg`;
