@@ -1,21 +1,14 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Divider, Text, useTheme } from "@rneui/themed";
 import IconImage from "./IconImage";
 import DEFAULT_STORES from "../constants/Defaults";
 import LargeCard from "./LargeCard";
 import OneByTwoCard from "./OnebyTwoCard";
 
-function ContentBlock({
-  deals,
-  savedStores,
-  stores,
-  loading,
-  contentLoading,
-  setContentLoading,
-}) {
+function ContentBlock({ deals, savedStores, stores, setContentLoading }) {
   const [data, setData] = useState([]);
   const { theme } = useTheme();
 
