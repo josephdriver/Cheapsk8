@@ -45,6 +45,7 @@ function Main() {
           options={{ headerShown: false }}
           component={HomeComponent}
         />
+
         <Tab.Screen
           name="search"
           options={{ headerShown: false }}

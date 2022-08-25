@@ -4,10 +4,13 @@ import { Text, useTheme } from "@rneui/themed";
 import PropTypes from "prop-types";
 import HeaderImage from "./HeaderImage";
 
-function LargeCard({ deal }) {
+function LargeCard({ navigation, deal }) {
   const { theme } = useTheme();
   return (
-    <View style={[styles.cardWrapper, { backgroundColor: "#306187" }]}>
+    <View
+      onPress={() => navigation.navigate("deal")}
+      style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
+    >
       <View style={{ width: "100%", height: 200 }}>
         <HeaderImage steamAppID={deal.steamAppID} />
       </View>

@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { SearchBar, useTheme, Text } from "@rneui/themed";
-import { fetchDeals } from "../redux/dealsSlice";
+import { SearchBar, useTheme, Text, Button } from "@rneui/themed";
+import { fetchDeals, clearDeals } from "../redux/dealsSlice";
 import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 import DEFAULT_STORES from "../constants/Defaults";
-
+import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
 
 function Home() {
   const [search, setSearch] = useState("");
-  const [contentLoading, setContentLoading] = useState(false);
+
   const { theme } = useTheme();
   const { deals, fetchTime, loading } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
@@ -43,12 +43,14 @@ function Home() {
 
   useEffect(() => {
     const time = new Date();
-    if (deals.length === 0 || fetchTime + 3600000 < time.getTime()) {
+    console.log(deals);
+    if (deals.length === 0 || fetchTime + dealsCache < time.getTime()) {
+      console.log("In here");
       dispatch(fetchDeals(getUrlArray()));
     }
   }, [deals, fetchTime, getUrlArray, dispatch]);
 
-  if (contentLoading || loading) {
+  if (loading) {
     return (
       <View
         style={{
@@ -69,27 +71,24 @@ function Home() {
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <ScrollView>
-        <SearchBar
-          placeholder="Type Here..."
-          onChangeText={(e) => updateSearch(e)}
-          value={search}
-          round={2}
-          containerStyle={{
-            backgroundColor: theme.colors.grey5,
-            borderBottomColor: "transparent",
-            borderTopColor: "transparent",
-          }}
-        />
-        <ContentBlock
-          deals={deals}
-          savedStores={savedStores}
-          stores={stores}
-          loading={loading}
-          contentLoading={contentLoading}
-          setContentLoading={setContentLoading}
-        />
-      </ScrollView>
+      <Button onPress={() => dispatch(clearDeals())}>Clear Deals</Button>
+      <SearchBar
+        placeholder="Find a game"
+        onChangeText={(e) => updateSearch(e)}
+        value={search}
+        round={2}
+        containerStyle={{
+          backgroundColor: theme.colors.grey5,
+          borderBottomColor: "transparent",
+          borderTopColor: "transparent",
+        }}
+      />
+      <ContentBlock
+        deals={deals}
+        savedStores={savedStores}
+        stores={stores}
+        loading={loading}
+      />
     </View>
   );
 }

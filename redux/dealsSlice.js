@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { parseDeals } from "../utilities/dealsHelpers";
 
 export const DealsSlice = createSlice({
   name: "deals",
   initialState: {
     deals: [],
+    dealBlocks: [],
     fetchTime: null,
     loading: false,
     error: false,
@@ -14,22 +16,14 @@ export const DealsSlice = createSlice({
       state.loading = payload;
     },
     setDeals: (state, { payload }) => {
-      const deals = [];
-      payload.map((collection) => {
-        if (collection.value.data.length > 0) {
-          const storeObj = {
-            storeID: collection.value.data[0].storeID,
-            data: collection.value.data,
-          };
-          deals.push(storeObj);
-        }
-        return collection;
-      });
+      const content = parseDeals(payload);
 
       const date = new Date();
 
-      state.deals = deals;
+      state.deals = content.deals;
+      state.dealBlocks = content.blocks;
       state.fetchTime = date.getTime();
+      state.loading = false;
     },
     addDeal: (state, { payload }) => {
       const newDeals = [];
@@ -44,12 +38,23 @@ export const DealsSlice = createSlice({
     setError: (state) => {
       state.error = true;
     },
+    clearDeals: (state) => {
+      state.deals = [];
+      state.dealBlocks = [];
+      state.fetchTime = null;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, setDeals, addDeal, setError, setSavedStores } =
-  DealsSlice.actions;
+export const {
+  setLoading,
+  setDeals,
+  addDeal,
+  setError,
+  setSavedStores,
+  clearDeals,
+} = DealsSlice.actions;
 
 export default DealsSlice.reducer;
 
@@ -81,7 +86,6 @@ export function fetchDeals(apiUrlArray) {
         dispatch(setError());
       });
     dispatch(setDeals(result));
-    dispatch(setLoading(false));
   };
 }
 
