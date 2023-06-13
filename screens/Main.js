@@ -5,7 +5,7 @@ import { useThemeMode } from "@rneui/themed";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchStores } from "../redux/storesSlice";
 
-import Home from "./Home";
+import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
 import TabBar from "../components/TabBar";
 import Search from "./Search";
@@ -28,7 +28,7 @@ function Main() {
     setMode("dark");
   }, [setMode]);
 
-  const HomeComponent = useCallback(() => <Home stores={stores} />, [stores]);
+  const HomeComponent = useCallback(() => <HomeWrapper />, []);
   const SettingsComponent = useCallback(
     () => <Settings stores={stores} />,
     [stores]

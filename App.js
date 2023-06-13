@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import React from "react";
 import { ThemeProvider } from "@rneui/themed";
 import { Provider } from "react-redux";

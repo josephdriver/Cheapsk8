@@ -1,13 +1,14 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
-import { Divider, Text, useTheme } from "@rneui/themed";
+import { Divider, Text, useTheme, Button } from "@rneui/themed";
 import { useSelector } from "react-redux";
 import IconImage from "./IconImage";
 import DEFAULT_STORES from "../constants/Defaults";
 import LargeCard from "./LargeCard";
 import OneByTwoCard from "./OneByTwoCard";
 
-function ContentBlock() {
+function ContentBlock({ handleNavigate }) {
   const { dealBlocks } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
@@ -55,7 +56,11 @@ function ContentBlock() {
           </View>
           <Divider style={{ color: theme.colors.platform }} />
 
-          <View style={{ marginVertical: 10 }}>
+          <View
+            style={{
+              marginTop: 10,
+            }}
+          >
             {item.data.map((row) =>
               row.header ? (
                 <LargeCard key={row.header.dealID} deal={row.header} />
@@ -64,6 +69,12 @@ function ContentBlock() {
               )
             )}
           </View>
+          <Button
+            title={`...more from ${getStoreTitle(item.storeID)}`}
+            type="clear"
+            onPress={() => handleNavigate(item.storeID)}
+            buttonStyle={{ justifyContent: "flex-end" }}
+          />
         </View>
       );
     }

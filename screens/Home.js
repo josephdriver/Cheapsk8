@@ -1,25 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { SearchBar, useTheme, Text, Button } from "@rneui/themed";
-import { fetchDeals, clearDeals } from "../redux/dealsSlice";
+import { useTheme, Text, Button } from "@rneui/themed";
+import { fetchDeals } from "../redux/dealsSlice";
 import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 import DEFAULT_STORES from "../constants/Defaults";
 import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
 
-function Home() {
-  const [search, setSearch] = useState("");
-
+function Home({ navigation }) {
   const { theme } = useTheme();
   const { deals, fetchTime, loading } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
-
-  const updateSearch = (e) => {
-    setSearch(e);
-  };
 
   const getUrlArray = useCallback(() => {
     let storesArray = savedStores;
@@ -41,14 +35,33 @@ function Home() {
     return urlArray;
   }, [savedStores]);
 
+  const getStoreTitle = useCallback(
+    (id) => {
+      if (stores.length > 0) {
+        const storeName = stores.find((item) => item.storeID === id);
+        return storeName.storeName;
+      }
+      return null;
+    },
+    [stores]
+  );
+
   useEffect(() => {
     const time = new Date();
-    console.log(deals);
     if (deals.length === 0 || fetchTime + dealsCache < time.getTime()) {
-      console.log("In here");
       dispatch(fetchDeals(getUrlArray()));
     }
   }, [deals, fetchTime, getUrlArray, dispatch]);
+
+  const handleNavigate = useCallback(
+    (storeId) => {
+      navigation.navigate("StoreDeals", {
+        storeId,
+        name: getStoreTitle(storeId),
+      });
+    },
+    [navigation, getStoreTitle]
+  );
 
   if (loading) {
     return (
@@ -71,23 +84,15 @@ function Home() {
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <Button onPress={() => dispatch(clearDeals())}>Clear Deals</Button>
-      <SearchBar
-        placeholder="Find a game"
-        onChangeText={(e) => updateSearch(e)}
-        value={search}
-        round={2}
-        containerStyle={{
-          backgroundColor: theme.colors.grey5,
-          borderBottomColor: "transparent",
-          borderTopColor: "transparent",
-        }}
-      />
+      <Button onPress={() => navigation.navigate("StoreDeals")}>
+        Navigate
+      </Button>
       <ContentBlock
         deals={deals}
         savedStores={savedStores}
         stores={stores}
         loading={loading}
+        handleNavigate={handleNavigate}
       />
     </View>
   );

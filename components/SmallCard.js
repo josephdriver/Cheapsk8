@@ -51,7 +51,7 @@ function SmallCard({ deal }) {
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    marginBottom: 16,
+    marginTop: 16,
     width: "47.5%",
     backgroundColor: "#306187",
     borderRadius: 8,
