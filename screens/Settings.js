@@ -3,6 +3,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useTheme, Text, Switch, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
+import { clone } from "lodash";
 import { setSavedStores } from "../redux/storesSlice";
 import { fetchDeal } from "../redux/dealsSlice";
 import IconImage from "../components/IconImage";
@@ -16,12 +17,17 @@ function Settings() {
 
   const handleSwitch = (storeID, value) => {
     if (!value) {
-      dispatch(
-        setSavedStores(savedStores.filter((item) => item.storeID !== storeID))
-      );
+      const clonedStores = clone(savedStores);
+      const newStores = clonedStores.filter((item) => item.storeID !== storeID);
+      dispatch(setSavedStores(newStores));
     } else {
-      const store = stores.find((item) => item.storeID === storeID);
-      dispatch(setSavedStores(savedStores.concat(store)));
+      const newStore = stores.find((item) => item.storeID === storeID);
+      const newStores = clone(savedStores);
+      if (newStores) {
+        newStores.push(newStore);
+      }
+      dispatch(setSavedStores(newStores));
+
       if (
         !deals.find(
           (item) => parseInt(item.storeID, 10) === parseInt(storeID, 10)

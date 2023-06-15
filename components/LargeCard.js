@@ -56,7 +56,7 @@ function LargeCard({ navigation, deal }) {
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    borderRadius: 8,
+    borderRadius: 2,
     marginTop: 16,
     overflow: "hidden",
   },

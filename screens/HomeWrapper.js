@@ -11,7 +11,11 @@ function HomeWrapper() {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Featured" component={Home} />
+      <Stack.Screen
+        name="Featured"
+        component={Home}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="StoreDeals"
         component={StoreDeals}
@@ -20,10 +24,5 @@ function HomeWrapper() {
     </Stack.Navigator>
   );
 }
-// const styles = StyleSheet.create({
-//   view: {
-//     border: "none",
-//     height: "100%",
-//   },
-// });
+
 export default HomeWrapper;

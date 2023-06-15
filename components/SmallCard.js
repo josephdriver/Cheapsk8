@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: "47.5%",
     backgroundColor: "#306187",
-    borderRadius: 8,
+    borderRadius: 2,
     overflow: "hidden",
   },
   title: {

@@ -37,6 +37,7 @@ export const DealsSlice = createSlice({
     },
     setError: (state) => {
       state.error = true;
+      state.loading = false;
     },
     clearDeals: (state) => {
       state.deals = [];

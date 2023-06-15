@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { SearchBar, useTheme, Text, Icon } from "@rneui/themed";
 
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS } from "../constants/Urls";
+import ListItem from "../components/ListItem";
 
 function StoreDeals({ route }) {
   const { storeId, name } = route.params;
@@ -18,15 +19,6 @@ function StoreDeals({ route }) {
     false,
     true,
     false,
-    []
-  );
-
-  const Item = useCallback(
-    ({ deal }) => (
-      <View>
-        <Text>{deal.title}</Text>
-      </View>
-    ),
     []
   );
 
@@ -73,9 +65,14 @@ function StoreDeals({ route }) {
 
   return (
     <View>
-      <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+      <View
+        style={[
+          styles.view,
+          { backgroundColor: theme.colors.grey5, paddingBottom: 10 },
+        ]}
+      >
         <SearchBar
-          placeholder="Find a game"
+          placeholder={`Search ${name}`}
           onChangeText={(e) => setSearch(e)}
           value={search}
           round={2}
@@ -89,7 +86,7 @@ function StoreDeals({ route }) {
           <FlatList
             keyExtractor={(item) => item.dealID}
             data={data}
-            renderItem={({ item }) => <Item deal={item} />}
+            renderItem={({ item }) => <ListItem deal={item} />}
           />
         ) : (
           <View />
