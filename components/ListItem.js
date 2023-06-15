@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import IconImage from "./IconImage";
 import { STEAM_L_CAP, DELIM_ID } from "../constants/Urls";
 
-function ListItem({ deal }) {
+function ListItem({ deal, handleDealNavigate }) {
   const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
   const [imageURl, setImageURL] = useState(
@@ -26,14 +26,13 @@ function ListItem({ deal }) {
     [stores]
   );
 
-  console.log(imageURl);
-
   const fallbackURl = () => {
     setImageURL(deal.thumb);
   };
 
   return (
     <Pressable
+      onPress={() => handleDealNavigate(deal)}
       style={{
         width: "100%",
         alignItems: "center",
@@ -192,6 +191,9 @@ ListItem.propTypes = {
     dealRating: PropTypes.string,
     thumb: PropTypes.string,
   }).isRequired,
+  handleDealNavigate: PropTypes.func,
 };
+
+ListItem.defaultProps = { handleDealNavigate: null };
 
 export default ListItem;

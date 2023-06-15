@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native";
 import { SearchBar, useTheme, Text, Icon } from "@rneui/themed";
 
@@ -7,7 +7,7 @@ import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS } from "../constants/Urls";
 import ListItem from "../components/ListItem";
 
-function StoreDeals({ route }) {
+function StoreDeals({ route, navigation }) {
   const { storeId, name } = route.params;
   const { theme } = useTheme();
 
@@ -20,6 +20,15 @@ function StoreDeals({ route }) {
     true,
     false,
     []
+  );
+
+  const handleDealNavigate = useCallback(
+    (deal) => {
+      navigation.navigate("Deal", {
+        deal,
+      });
+    },
+    [navigation]
   );
 
   if (error) {
@@ -86,7 +95,9 @@ function StoreDeals({ route }) {
           <FlatList
             keyExtractor={(item) => item.dealID}
             data={data}
-            renderItem={({ item }) => <ListItem deal={item} />}
+            renderItem={({ item }) => (
+              <ListItem deal={item} handleDealNavigate={handleDealNavigate} />
+            )}
           />
         ) : (
           <View />

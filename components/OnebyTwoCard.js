@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { View } from "react-native";
 import SmallCard from "./SmallCard";
 
-function OneByTwoCard({ deals }) {
+function OneByTwoCard({ deals, handleDealNavigate }) {
   return (
     <View
       style={{
@@ -13,7 +13,11 @@ function OneByTwoCard({ deals }) {
       }}
     >
       {deals.map((item) => (
-        <SmallCard key={item.thumb} deal={item} />
+        <SmallCard
+          key={item.thumb}
+          deal={item}
+          handleDealNavigate={handleDealNavigate}
+        />
       ))}
     </View>
   );
@@ -43,6 +47,9 @@ OneByTwoCard.propTypes = {
       thumb: PropTypes.string,
     })
   ).isRequired,
+  handleDealNavigate: PropTypes.func,
 };
+
+OneByTwoCard.defaultProps = { handleDealNavigate: null };
 
 export default OneByTwoCard;

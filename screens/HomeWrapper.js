@@ -5,6 +5,7 @@ import React from "react";
 
 import Home from "./Home";
 import StoreDeals from "./StoreDeals";
+import Deal from "./Deal";
 
 function HomeWrapper() {
   //   const { theme } = useTheme();
@@ -41,6 +42,7 @@ function HomeWrapper() {
         component={StoreDeals}
         options={({ route }) => ({ title: route.params.name })}
       />
+      <Stack.Screen name="Deal" component={Deal} />
     </Stack.Navigator>
   );
 }

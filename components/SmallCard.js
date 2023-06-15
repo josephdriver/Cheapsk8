@@ -1,14 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import LargeCapsule from "./LargeCapsule";
 
-function SmallCard({ deal }) {
+function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
 
   return (
-    <View style={styles.cardWrapper}>
+    <Pressable
+      onPress={() => handleDealNavigate(deal)}
+      style={styles.cardWrapper}
+    >
       <LargeCapsule steamAppID={deal.steamAppID} url={deal.thumb} />
 
       <View
@@ -45,7 +48,7 @@ function SmallCard({ deal }) {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -86,6 +89,8 @@ SmallCard.propTypes = {
     dealRating: PropTypes.string,
     thumb: PropTypes.string,
   }).isRequired,
+  handleDealNavigate: PropTypes.func,
 };
 
+SmallCard.defaultProps = { handleDealNavigate: null };
 export default SmallCard;

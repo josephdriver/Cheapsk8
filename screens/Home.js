@@ -98,6 +98,16 @@ function Home({ navigation }) {
     [navigation, getStoreTitle]
   );
 
+  const handleDealNavigate = useCallback(
+    (deal) => {
+      console.log(deal);
+      navigation.navigate("Deal", {
+        deal,
+      });
+    },
+    [navigation]
+  );
+
   const changeHandler = useCallback(() => {
     setFetch(true);
   }, []);
@@ -182,6 +192,7 @@ function Home({ navigation }) {
             stores={stores}
             loading={loading}
             handleNavigate={handleNavigate}
+            handleDealNavigate={handleDealNavigate}
           />
         </View>
       )}

@@ -8,7 +8,7 @@ import DEFAULT_STORES from "../constants/Defaults";
 import LargeCard from "./LargeCard";
 import OneByTwoCard from "./OneByTwoCard";
 
-function ContentBlock({ handleNavigate }) {
+function ContentBlock({ handleNavigate, handleDealNavigate }) {
   const { dealBlocks } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
@@ -45,7 +45,6 @@ function ContentBlock({ handleNavigate }) {
               key={item.storeID}
               style={{
                 flexDirection: "row",
-                paddingBottom: 5,
               }}
             >
               <View style={styles.image}>
@@ -63,16 +62,20 @@ function ContentBlock({ handleNavigate }) {
             </View>
             <Divider style={{ color: theme.colors.platform }} />
 
-            <View
-              style={{
-                marginTop: 10,
-              }}
-            >
+            <View>
               {item.data.map((row) =>
                 row.header ? (
-                  <LargeCard key={row.header.dealID} deal={row.header} />
+                  <LargeCard
+                    key={row.header.dealID}
+                    deal={row.header}
+                    handleDealNavigate={handleDealNavigate}
+                  />
                 ) : (
-                  <OneByTwoCard key={row.row[0].dealID} deals={row.row} />
+                  <OneByTwoCard
+                    key={row.row[0].dealID}
+                    deals={row.row}
+                    handleDealNavigate={handleDealNavigate}
+                  />
                 )
               )}
             </View>
@@ -87,7 +90,14 @@ function ContentBlock({ handleNavigate }) {
       }
       return null;
     },
-    [getStoreLogo, getStoreTitle, handleNavigate, savedStores, theme]
+    [
+      getStoreLogo,
+      getStoreTitle,
+      handleNavigate,
+      handleDealNavigate,
+      savedStores,
+      theme,
+    ]
   );
 
   if (dealBlocks && dealBlocks.length > 0) {

@@ -1,14 +1,15 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import PropTypes from "prop-types";
+
 import HeaderImage from "./HeaderImage";
 
-function LargeCard({ navigation, deal }) {
+function LargeCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
   return (
-    <View
-      onPress={() => navigation.navigate("deal")}
+    <Pressable
+      onPress={() => handleDealNavigate(deal)}
       style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
     >
       <View style={{ width: "100%", height: 200 }}>
@@ -50,7 +51,7 @@ function LargeCard({ navigation, deal }) {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -88,6 +89,9 @@ LargeCard.propTypes = {
     dealRating: PropTypes.string,
     thumb: PropTypes.string,
   }).isRequired,
+  handleDealNavigate: PropTypes.func,
 };
+
+LargeCard.defaultProps = { handleDealNavigate: null };
 
 export default LargeCard;
