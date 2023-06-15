@@ -86,7 +86,7 @@ function Home({ navigation }) {
     if (deals.length === 0 || fetchTime + dealsCache < time.getTime()) {
       dispatch(fetchDeals(getUrlArray()));
     }
-  }, [deals, fetchTime, getUrlArray, dispatch]);
+  }, [deals, fetchTime, savedStores, getUrlArray, dispatch]);
 
   const handleNavigate = useCallback(
     (storeId) => {
@@ -175,7 +175,7 @@ function Home({ navigation }) {
           )}
         </View>
       ) : (
-        <View style={{ paddingBottom: 100 }}>
+        <View style={{ paddingBottom: 70 }}>
           <ContentBlock
             deals={deals}
             savedStores={savedStores}
