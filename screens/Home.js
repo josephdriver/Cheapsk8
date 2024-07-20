@@ -1,54 +1,20 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  Keyboard,
-} from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { View, StyleSheet, ActivityIndicator, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Text, SearchBar } from "@rneui/themed";
-import { debounce } from "lodash";
 
 import { fetchDeals } from "../redux/dealsSlice";
-import { HOME_FILTER, DELIM_ID, DEALS } from "../constants/Urls";
+import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 import DEFAULT_STORES from "../constants/Defaults";
 import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
-import useAxiosFetch from "../utilities/useAxiosFetch";
-import ListItem from "../components/ListItem";
 
 function Home({ navigation }) {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const { deals, fetchTime, loading } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
-  const [query, setQuery] = useState("");
-  const [fetch, setFetch] = useState(false);
-  const [result, setResult] = useState(null);
-  const [storeIds, setStoreIds] = useState(null);
-
-  useEffect(() => {
-    setStoreIds(savedStores.map((item) => item.storeID).join(","));
-  }, [savedStores]);
-
-  const { data, loading: queryLoading } = useAxiosFetch(
-    `${DEALS}storeID=${storeIds}&title=${query}&pageSize=30`,
-    0,
-    !!(query && fetch),
-    false,
-    false,
-    null
-  );
-
-  useEffect(() => {
-    if (data) {
-      setResult(data);
-    }
-    Keyboard.dismiss();
-    setFetch(false);
-  }, [data]);
 
   const getUrlArray = useCallback(() => {
     let storesArray = savedStores;
@@ -90,7 +56,7 @@ function Home({ navigation }) {
 
   const handleNavigate = useCallback(
     (storeId) => {
-      navigation.navigate("StoreDeals", {
+      navigation.navigate("search", {
         storeId,
         name: getStoreTitle(storeId),
       });
@@ -100,7 +66,6 @@ function Home({ navigation }) {
 
   const handleDealNavigate = useCallback(
     (deal) => {
-      console.log(deal);
       navigation.navigate("Deal", {
         deal,
       });
@@ -108,30 +73,9 @@ function Home({ navigation }) {
     [navigation]
   );
 
-  const changeHandler = useCallback(() => {
-    setFetch(true);
-  }, []);
-
-  useEffect(() => {
-    if (!query && fetch) {
-      setFetch(false);
-      setResult(null);
-    } else if (!query && !fetch) {
-      setResult(null);
-    }
-  }, [query, fetch]);
-
-  const debouncedChangeHandler = useMemo(
-    () => debounce(changeHandler, 300),
-    [changeHandler]
-  );
-
-  const onChange = useCallback(
-    (event) => {
-      setQuery(event);
-      debouncedChangeHandler();
-    },
-    [debouncedChangeHandler]
+  const handleSearchNavigate = useCallback(
+    () => navigation.navigate("Search"),
+    [navigation]
   );
 
   if (loading) {
@@ -152,50 +96,32 @@ function Home({ navigation }) {
       </View>
     );
   }
-
+  console.log("main");
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <SearchBar
-        autofocus={false}
-        placeholder="Find a game"
-        onChangeText={(e) => onChange(e)}
-        value={query}
-        round={2}
-        showLoading={queryLoading}
-        containerStyle={{
-          backgroundColor: theme.colors.grey5,
-          borderBottomColor: "transparent",
-          borderTopColor: "transparent",
-        }}
-      />
-      {result ? (
-        <View>
-          {result.length === 0 ? (
-            <View>
-              <Text>No results</Text>
-            </View>
-          ) : (
-            <View style={{ paddingBottom: 70 }}>
-              <FlatList
-                keyExtractor={(item) => item.dealID}
-                data={data}
-                renderItem={({ item }) => <ListItem deal={item} />}
-              />
-            </View>
-          )}
-        </View>
-      ) : (
-        <View style={{ paddingBottom: 70 }}>
-          <ContentBlock
-            deals={deals}
-            savedStores={savedStores}
-            stores={stores}
-            loading={loading}
-            handleNavigate={handleNavigate}
-            handleDealNavigate={handleDealNavigate}
-          />
-        </View>
-      )}
+      <Pressable onPress={() => handleSearchNavigate()}>
+        <SearchBar
+          placeholder="Find a game"
+          round={2}
+          editable={false}
+          containerStyle={{
+            backgroundColor: theme.colors.grey5,
+            borderBottomColor: "transparent",
+            borderTopColor: "transparent",
+          }}
+        />
+      </Pressable>
+
+      <View style={{ paddingBottom: 70 }}>
+        <ContentBlock
+          deals={deals}
+          savedStores={savedStores}
+          stores={stores}
+          loading={loading}
+          handleNavigate={handleNavigate}
+          handleDealNavigate={handleDealNavigate}
+        />
+      </View>
     </View>
   );
 }

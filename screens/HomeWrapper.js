@@ -3,9 +3,11 @@ import React from "react";
 // import { StyleSheet } from "react-native";
 // import { useTheme } from "@rneui/themed";
 
+import { OPTIONS } from "../constants/NavigatorConfig";
 import Home from "./Home";
-import StoreDeals from "./StoreDeals";
 import Deal from "./Deal";
+import WebViewWrapper from "../components/WebViewWrapper";
+import Search from "./Search";
 
 function HomeWrapper() {
   //   const { theme } = useTheme();
@@ -20,13 +22,6 @@ function HomeWrapper() {
           outputRange: [0, 1],
         }),
       },
-      overlayStyle: {
-        opacity: progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.5],
-          extrapolate: "clamp",
-        }),
-      },
     }),
   };
 
@@ -37,12 +32,13 @@ function HomeWrapper() {
         component={Home}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Deal" component={Deal} options={OPTIONS} />
+      <Stack.Screen name="Search" component={Search} options={OPTIONS} />
       <Stack.Screen
-        name="StoreDeals"
-        component={StoreDeals}
-        options={({ route }) => ({ title: route.params.name })}
+        name="WebView"
+        component={WebViewWrapper}
+        options={OPTIONS}
       />
-      <Stack.Screen name="Deal" component={Deal} />
     </Stack.Navigator>
   );
 }

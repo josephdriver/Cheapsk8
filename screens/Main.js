@@ -9,8 +9,8 @@ import { fetchStores } from "../redux/storesSlice";
 import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
 import TabBar from "../components/TabBar";
-import Search from "./Search";
 import WatchList from "./WatchList";
+import { OPTIONS } from "../constants/NavigatorConfig";
 
 function Main() {
   const { stores } = useSelector((state) => state.stores);
@@ -37,32 +37,21 @@ function Main() {
     [stores]
   );
 
-  const SearchComponent = useCallback(() => <Search />, []);
   const WatchListComponent = useCallback(() => <WatchList />, []);
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
-          <Tab.Screen
-            name="home"
-            options={{ headerShown: false }}
-            component={HomeComponent}
-          />
-
-          <Tab.Screen
-            name="search"
-            options={{ headerShown: false }}
-            component={SearchComponent}
-          />
+          <Tab.Screen name="home" options={OPTIONS} component={HomeComponent} />
           <Tab.Screen
             name="binoculars"
-            options={{ headerShown: false }}
             component={WatchListComponent}
+            options={OPTIONS}
           />
           <Tab.Screen
             name="cog"
-            options={{ headerShown: false }}
+            options={OPTIONS}
             component={SettingsComponent}
           />
         </Tab.Navigator>
