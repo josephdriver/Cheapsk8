@@ -6,13 +6,14 @@ import { useSelector } from "react-redux";
 
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { GAMES } from "../constants/Urls";
+import DEFAULT_STORES from "../constants/Defaults";
 import HeaderImage from "../components/HeaderImage";
 import DealItem from "../components/DealItem";
 import Loading from "../components/Loading";
 
 function Deal({ route, navigation }) {
   const { deal } = route.params;
-  const { savedStores } = useSelector((state) => state.stores);
+  const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
   const { data, loading } = useAxiosFetch(
@@ -32,11 +33,6 @@ function Deal({ route, navigation }) {
     [savedStores, deal.storeID]
   );
 
-  const stores = useMemo(
-    () => savedStores.filter((s) => s.storeID !== deal.storeID) || [],
-    [savedStores, deal.storeID]
-  );
-
   const handlePress = useCallback(
     (val) => {
       console.log(val);
@@ -51,7 +47,7 @@ function Deal({ route, navigation }) {
     return <Loading message="Getting the latest deals... Hold tight!" />;
   }
   if (!data) return null;
-
+  console.log("Deal");
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <View style={{ width: "100%", height: 200 }}>
@@ -72,9 +68,17 @@ function Deal({ route, navigation }) {
       <Divider />
       <DealItem deal={deal} store={store} handlePress={handlePress} />
       {data.deals
-        .filter((d) => stores.some((s) => s.storeID.toString() === d.storeID))
+        .filter((d) =>
+          savedStores.length > 0
+            ? savedStores.some((s) => s.storeID.toString() === d.storeID)
+            : DEFAULT_STORES.some((s) => s.storeID.toString() === d.storeID)
+        )
         .map((d) => {
-          const st = stores.find((s) => s.storeID.toString() === d.storeID);
+          const storesArray =
+            savedStores.length > 0 ? savedStores : DEFAULT_STORES;
+          const st = storesArray.find(
+            (s) => s.storeID.toString() === d.storeID
+          );
           return (
             <DealItem
               key={d.dealID}

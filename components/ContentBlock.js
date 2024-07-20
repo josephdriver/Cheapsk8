@@ -1,30 +1,16 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { Divider, Text, useTheme, Button } from "@rneui/themed";
+import { View, FlatList } from "react-native";
 import { useSelector } from "react-redux";
-import IconImage from "./IconImage";
-import DEFAULT_STORES from "../constants/Defaults";
 import LargeCard from "./LargeCard";
 import OneByTwoCard from "./OneByTwoCard";
+import generateId from "../utilities/guidGenerator";
 
-function ContentBlock({ handleNavigate, handleDealNavigate }) {
-  const { dealBlocks } = useSelector((state) => state.deals);
-  const { stores, savedStores } = useSelector((state) => state.stores);
-  const { theme } = useTheme();
+function ContentBlock({ handleDealNavigate }) {
+  const { content } = useSelector((state) => state.deals);
 
-  const getStoreTitle = useCallback(
-    (id) => {
-      if (stores.length > 0) {
-        const storeName = stores.find((item) => item.storeID === id);
-        return storeName.storeName;
-      }
-      return null;
-    },
-    [stores]
-  );
-
-  const getStoreLogo = useCallback(
+  {
+    /* const getStoreLogo = useCallback(
     (id) => {
       if (stores.length > 0) {
         const storeName = stores.find((item) => item.storeID === id);
@@ -33,93 +19,42 @@ function ContentBlock({ handleNavigate, handleDealNavigate }) {
       return null;
     },
     [stores]
-  );
+  ); */
+  }
 
   const renderItem = useCallback(
-    ({ item }) => {
-      const storeIDs = savedStores.length > 0 ? savedStores : DEFAULT_STORES;
-      if (storeIDs.find((store) => store.storeID === item.storeID)) {
-        return (
-          <View key={item.storeID} style={{ marginHorizontal: 10 }}>
-            <View
-              key={item.storeID}
-              style={{
-                flexDirection: "row",
-              }}
-            >
-              <View style={styles.image}>
-                <IconImage
-                  url={getStoreLogo(item.storeID)}
-                  width={30}
-                  height={30}
-                />
-              </View>
-              <View style={{ flex: 9 }}>
-                <Text h4 style={{ color: theme.colors.primary }}>
-                  {getStoreTitle(item.storeID)} Deals
-                </Text>
-              </View>
-            </View>
-            <Divider style={{ color: theme.colors.platform }} />
-
-            <View>
-              {item.data.map((row) =>
-                row.header ? (
-                  <LargeCard
-                    key={row.header.dealID}
-                    deal={row.header}
-                    handleDealNavigate={handleDealNavigate}
-                  />
-                ) : (
-                  <OneByTwoCard
-                    key={row.row[0].dealID}
-                    deals={row.row}
-                    handleDealNavigate={handleDealNavigate}
-                  />
-                )
-              )}
-            </View>
-            <Button
-              title={`...more from ${getStoreTitle(item.storeID)}`}
-              type="clear"
-              onPress={() => handleNavigate(item.storeID)}
-              buttonStyle={{ justifyContent: "flex-end" }}
+    ({ item }) => (
+      <View key={item.dealID} style={{ marginHorizontal: 10 }}>
+        <View>
+          {item.header ? (
+            <LargeCard
+              key={generateId()}
+              deal={item.header}
+              handleDealNavigate={handleDealNavigate}
             />
-          </View>
-        );
-      }
-      return null;
-    },
-    [
-      getStoreLogo,
-      getStoreTitle,
-      handleNavigate,
-      handleDealNavigate,
-      savedStores,
-      theme,
-    ]
+          ) : (
+            <OneByTwoCard
+              key={generateId()}
+              deals={item.row}
+              handleDealNavigate={handleDealNavigate}
+            />
+          )}
+        </View>
+      </View>
+    ),
+    [handleDealNavigate]
   );
 
-  if (dealBlocks && dealBlocks.length > 0) {
+  if (content && content.length > 0) {
     return (
       <FlatList
         key={(item) => item.storeID}
-        data={dealBlocks}
+        data={content}
         renderItem={renderItem}
       />
     );
   }
   return null;
 }
-
-const styles = StyleSheet.create({
-  view: {
-    height: "100%",
-  },
-  image: {
-    flex: 1,
-    alignSelf: "center",
-  },
-});
 
 export default ContentBlock;

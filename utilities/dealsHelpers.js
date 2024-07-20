@@ -13,73 +13,46 @@ export function shuffle(arr) {
 }
 
 export function parseDeals(payload) {
-  const deals = [];
-  const blocks = [];
-
   let largeCardCount = 0;
   let pairArray = [];
-
-  payload.map((collection) => {
-    if (collection.value.data.length > 0) {
-      const storeObj = {
-        storeID: collection.value.data[0].storeID,
-        data: collection.value.data,
-      };
-      deals.push(storeObj);
-
-      const blockObj = {
-        storeID: collection.value.data[0].storeID,
-        data: [],
-      };
-
-      collection.value.data.map((dealItem, index) => {
-        if (dealItem.steamAppID && largeCardCount < 2) {
-          blockObj.data.push({ header: dealItem });
-          largeCardCount += 1;
-        } else if (pairArray.length === 1) {
-          pairArray.push(dealItem);
-          blockObj.data.push({ row: pairArray });
-          pairArray = [];
-        } else {
-          pairArray.push(dealItem);
-          if (collection.value.data.length - 1 === index) {
-            blockObj.data.push({ row: pairArray });
-            pairArray = [];
-          }
-        }
-        return dealItem;
-      });
-
-      if (blockObj.data.length > 1 && blockObj.data[0].header) {
-        const firstEl = blockObj.data[0];
-        const arrayToShuffle = blockObj.data.slice(1);
-        const shuffledArray = shuffle(arrayToShuffle);
-        shuffledArray.unshift(firstEl);
-        blockObj.data = shuffledArray;
+  let rows = [];
+  payload.forEach((dealItem, index) => {
+    if (dealItem.steamAppID && largeCardCount < 11) {
+      rows.push({ header: dealItem });
+      largeCardCount += 1;
+    } else if (pairArray.length === 1) {
+      pairArray.push(dealItem);
+      rows.push({ row: pairArray });
+      pairArray = [];
+    } else {
+      pairArray.push(dealItem);
+      if (payload.length - 1 === index) {
+        rows.push({ row: pairArray });
+        pairArray = [];
       }
-
-      let partialRow = [];
-      const finalArray = [];
-      blockObj.data.map((row) => {
-        if (!row.row || row.row.length !== 1) {
-          return finalArray.push(row);
-        }
-        partialRow = row;
-        return row;
-      });
-
-      if (partialRow.length > 0) {
-        finalArray.push({ row: partialRow });
-      }
-
-      blockObj.data = finalArray;
-
-      blocks.push(blockObj);
-      largeCardCount = 0;
-      return collection;
     }
-    return collection;
   });
 
-  return { deals, blocks };
+  if (rows.length > 1 && rows[0].header) {
+    const firstEl = rows[0];
+    const arrayToShuffle = rows.slice(1);
+    const shuffledArray = shuffle(arrayToShuffle);
+    shuffledArray.unshift(firstEl);
+    rows = shuffledArray;
+  }
+
+  let partialRow = [];
+  const finalArray = [];
+  rows.forEach((row) => {
+    if (!row.row || row.row.length !== 1) {
+      finalArray.push(row);
+    }
+    partialRow = row;
+  });
+
+  if (partialRow.length > 0) {
+    finalArray.push({ row: partialRow });
+  }
+
+  return { deals: payload, rows: finalArray };
 }

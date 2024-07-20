@@ -5,13 +5,10 @@ import { useTheme, Text, Switch, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { clone } from "lodash";
 import { setSavedStores } from "../redux/storesSlice";
-import { fetchDeal } from "../redux/dealsSlice";
 import IconImage from "../components/IconImage";
-import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
 
 function Settings() {
   const { stores, savedStores } = useSelector((state) => state.stores);
-  const { deals } = useSelector((state) => state.deals);
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
@@ -27,14 +24,6 @@ function Settings() {
         newStores.push(newStore);
       }
       dispatch(setSavedStores(newStores));
-
-      if (
-        !deals.find(
-          (item) => parseInt(item.storeID, 10) === parseInt(storeID, 10)
-        )
-      ) {
-        dispatch(fetchDeal(HOME_FILTER.replace(DELIM_ID, storeID), deals));
-      }
     }
   };
 

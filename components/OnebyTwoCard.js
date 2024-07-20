@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { View } from "react-native";
 import SmallCard from "./SmallCard";
+import generateId from "../utilities/guidGenerator";
 
 function OneByTwoCard({ deals, handleDealNavigate }) {
   return (
@@ -14,7 +15,7 @@ function OneByTwoCard({ deals, handleDealNavigate }) {
     >
       {deals.map((item) => (
         <SmallCard
-          key={item.thumb}
+          key={generateId()}
           deal={item}
           handleDealNavigate={handleDealNavigate}
         />

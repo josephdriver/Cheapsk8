@@ -1,68 +1,64 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Text, SearchBar } from "@rneui/themed";
 
-import { fetchDeals } from "../redux/dealsSlice";
-import { HOME_FILTER, DELIM_ID } from "../constants/Urls";
+import { setDeals, setLoading } from "../redux/dealsSlice";
 import DEFAULT_STORES from "../constants/Defaults";
+import { DEALS } from "../constants/Urls";
 import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
+import useAxiosFetch from "../utilities/useAxiosFetch";
+import Loading from "../components/Loading";
+import { parseDeals } from "../utilities/dealsHelpers";
 
 function Home({ navigation }) {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-  const { deals, fetchTime, loading } = useSelector((state) => state.deals);
+  const { deals, fetchTime } = useSelector((state) => state.deals);
   const { stores, savedStores } = useSelector((state) => state.stores);
 
-  const getUrlArray = useCallback(() => {
-    let storesArray = savedStores;
+  const [fetch, setFetch] = useState(false);
+  const [params, setParams] = useState({
+    storeID:
+      savedStores.length > 0
+        ? savedStores.map((s) => s.storeID)
+        : DEFAULT_STORES.map((s) => s.storeID),
+    onSale: 1,
+    sortBy: "reviews",
+    desc: 0,
+    AAA: 1,
+    pageNumber: 0,
+  });
 
-    if (savedStores.length === 0) {
-      storesArray = DEFAULT_STORES;
-    }
-
-    const urlArray = [];
-    let count = 0;
-    storesArray.map((item) => {
-      if (count < 10 && item.isActive === 1) {
-        urlArray.push(HOME_FILTER.replace(DELIM_ID, item.storeID));
-        count += 1;
-      }
-      return item;
-    });
-
-    return urlArray;
-  }, [savedStores]);
-
-  const getStoreTitle = useCallback(
-    (id) => {
-      if (stores.length > 0) {
-        const storeName = stores.find((item) => item.storeID === id);
-        return storeName.storeName;
-      }
-      return null;
-    },
-    [stores]
+  const { data, loading } = useAxiosFetch(
+    `${DEALS}`,
+    0,
+    fetch,
+    false,
+    params,
+    null
   );
 
   useEffect(() => {
-    const time = new Date();
-    if (deals.length === 0 || fetchTime + dealsCache < time.getTime()) {
-      dispatch(fetchDeals(getUrlArray()));
+    if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
+      setFetch(true);
     }
-  }, [deals, fetchTime, savedStores, getUrlArray, dispatch]);
+  }, [deals, fetchTime]);
 
-  const handleNavigate = useCallback(
-    (storeId) => {
-      navigation.navigate("search", {
-        storeId,
-        name: getStoreTitle(storeId),
-      });
-    },
-    [navigation, getStoreTitle]
-  );
+  useEffect(() => {
+    if (data) {
+      setFetch(false);
+      if (params.pageNumber === 0) {
+        dispatch(setDeals(parseDeals(data)));
+      }
+    }
+  }, [data, dispatch, params.pageNumber]);
+
+  useEffect(() => {
+    dispatch(setLoading(loading));
+  }, [loading, dispatch]);
 
   const handleDealNavigate = useCallback(
     (deal) => {
@@ -79,24 +75,9 @@ function Home({ navigation }) {
   );
 
   if (loading) {
-    return (
-      <View
-        style={{
-          height: "100%",
-          justifyContent: "space-around",
-          backgroundColor: theme.colors.grey5,
-        }}
-      >
-        <View style={{ width: "100%" }}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={{ alignSelf: "center" }}>
-            Getting the latest deals... Hold tight!
-          </Text>
-        </View>
-      </View>
-    );
+    <Loading message="Getting the latest deals... Hold tight!" />;
   }
-  console.log("main");
+
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <Pressable onPress={() => handleSearchNavigate()}>
@@ -115,10 +96,7 @@ function Home({ navigation }) {
       <View style={{ paddingBottom: 70 }}>
         <ContentBlock
           deals={deals}
-          savedStores={savedStores}
-          stores={stores}
           loading={loading}
-          handleNavigate={handleNavigate}
           handleDealNavigate={handleDealNavigate}
         />
       </View>

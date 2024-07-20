@@ -6,12 +6,12 @@ import { useTheme, Text, Divider } from "@rneui/themed";
 import IconImage from "./IconImage";
 
 function DealItem({ deal, store, handlePress }) {
+  const { theme } = useTheme();
+  console.log(store);
   const noDiscount = useMemo(
     () => parseInt(deal.savings, 10) > 0,
     [deal.savings]
   );
-
-  const { theme } = useTheme();
 
   return (
     <View key={deal.storeID}>
