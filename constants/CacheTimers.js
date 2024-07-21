@@ -1,4 +1,3 @@
-const milliseconds = 1000;
-const dealsCache = 1200 * milliseconds;
+const dealsCache = 1200000;
 
 export default dealsCache;

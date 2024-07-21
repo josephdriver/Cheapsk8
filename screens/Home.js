@@ -31,12 +31,23 @@ function Home({ navigation }) {
         : 0,
   });
 
+  const triggerDealFetch = useCallback(() => {
+    console.log("In trigger deal fetch");
+    dispatch(fetchDeals(params));
+  }, [dispatch, params]);
+
   useEffect(() => {
-    if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
-      dispatch(fetchDeals(params));
-      setParams((prevState) => ({ ...prevState, pageNumber: 0 }));
+    console.log(fetchTime + dealsCache);
+    console.log(new Date().getTime());
+    if (fetchTime + dealsCache < new Date().getTime()) {
+      console.log("expired");
     }
-  }, [deals, dispatch, fetchTime, params]);
+    console.log();
+    if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
+      console.log("In init fetch use effect");
+      triggerDealFetch();
+    }
+  }, [triggerDealFetch, deals, fetchTime]);
 
   const handleDealNavigate = useCallback(
     (deal) => {
