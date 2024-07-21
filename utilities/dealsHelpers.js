@@ -13,10 +13,11 @@ export function shuffle(arr) {
 }
 
 export function parseDeals(payload) {
+  const shuffledPayload = shuffle(payload);
   let largeCardCount = 0;
   let pairArray = [];
   let rows = [];
-  payload.forEach((dealItem, index) => {
+  shuffledPayload.forEach((dealItem, index) => {
     if (dealItem.steamAppID && largeCardCount < 11) {
       rows.push({ header: dealItem });
       largeCardCount += 1;
@@ -41,18 +42,11 @@ export function parseDeals(payload) {
     rows = shuffledArray;
   }
 
-  let partialRow = [];
   const finalArray = [];
   rows.forEach((row) => {
     if (!row.row || row.row.length !== 1) {
       finalArray.push(row);
     }
-    partialRow = row;
   });
-
-  if (partialRow.length > 0) {
-    finalArray.push({ row: partialRow });
-  }
-
   return { deals: payload, rows: finalArray };
 }

@@ -1,56 +1,47 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback } from "react";
-import { View, FlatList } from "react-native";
+import { FlatList, View, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
-import LargeCard from "./LargeCard";
-import OneByTwoCard from "./OneByTwoCard";
-import generateId from "../utilities/guidGenerator";
+import { useTheme } from "@rneui/themed";
 
-function ContentBlock({ handleDealNavigate }) {
+import FlatListItem from "./FlatListItem";
+
+function ContentBlock({
+  handleDealNavigate,
+  handlePageIncrement,
+  loading,
+  pageNumber,
+}) {
+  const { theme } = useTheme();
   const { content } = useSelector((state) => state.deals);
 
-  {
-    /* const getStoreLogo = useCallback(
-    (id) => {
-      if (stores.length > 0) {
-        const storeName = stores.find((item) => item.storeID === id);
-        return storeName.images.logo;
-      }
-      return null;
-    },
-    [stores]
-  ); */
-  }
-
-  const renderItem = useCallback(
-    ({ item }) => (
-      <View key={item.dealID} style={{ marginHorizontal: 10 }}>
-        <View>
-          {item.header ? (
-            <LargeCard
-              key={generateId()}
-              deal={item.header}
-              handleDealNavigate={handleDealNavigate}
-            />
-          ) : (
-            <OneByTwoCard
-              key={generateId()}
-              deals={item.row}
-              handleDealNavigate={handleDealNavigate}
-            />
-          )}
-        </View>
+  const renderFooter = useCallback(
+    () => (
+      <View>
+        {loading && (
+          <ActivityIndicator
+            style={{ padding: 50 }}
+            size="large"
+            color={theme.colors.primary}
+          />
+        )}
       </View>
     ),
-    [handleDealNavigate]
+    [loading, theme.colors.primary]
   );
 
   if (content && content.length > 0) {
     return (
       <FlatList
-        key={(item) => item.storeID}
+        onEndReached={() => handlePageIncrement(pageNumber + 1)}
+        onEndReachedThreshold={5}
+        initialNumToRender={30}
+        key={(item) => `${item.dealID}${item.storeID}`}
         data={content}
-        renderItem={renderItem}
+        renderItem={({ item }) => (
+          <FlatListItem item={item} handleDealNavigate={handleDealNavigate} />
+        )}
+        ListFooterComponent={renderFooter}
       />
     );
   }

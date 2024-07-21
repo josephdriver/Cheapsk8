@@ -25,17 +25,8 @@ function Deal({ route, navigation }) {
     null
   );
 
-  const store = useMemo(
-    () =>
-      savedStores.find(
-        (s) => s.storeID.toString() === deal.storeID.toString()
-      ) || [],
-    [savedStores, deal.storeID]
-  );
-
   const handlePress = useCallback(
     (val) => {
-      console.log(val);
       navigation.navigate("WebView", {
         url: val,
       });
@@ -43,15 +34,24 @@ function Deal({ route, navigation }) {
     [navigation]
   );
 
+  const storesArray = useMemo(() => {
+    if (savedStores.length > 0) {
+      return savedStores;
+    }
+    return DEFAULT_STORES.map((ds) =>
+      stores.find((s) => s.storeID === ds.storeID.toString())
+    );
+  }, [savedStores, stores]);
+
   if (loading) {
     return <Loading message="Getting the latest deals... Hold tight!" />;
   }
   if (!data) return null;
-  console.log("Deal");
+
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <View style={{ width: "100%", height: 200 }}>
-        <HeaderImage steamAppID={deal.steamAppID} />
+        <HeaderImage steamAppID={deal.steamAppID} isCap />
       </View>
       <View
         style={{
@@ -66,16 +66,11 @@ function Deal({ route, navigation }) {
         </Text>
       </View>
       <Divider />
-      <DealItem deal={deal} store={store} handlePress={handlePress} />
       {data.deals
         .filter((d) =>
-          savedStores.length > 0
-            ? savedStores.some((s) => s.storeID.toString() === d.storeID)
-            : DEFAULT_STORES.some((s) => s.storeID.toString() === d.storeID)
+          storesArray.some((s) => s.storeID.toString() === d.storeID)
         )
         .map((d) => {
-          const storesArray =
-            savedStores.length > 0 ? savedStores : DEFAULT_STORES;
           const st = storesArray.find(
             (s) => s.storeID.toString() === d.storeID
           );

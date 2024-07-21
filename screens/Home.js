@@ -1,25 +1,21 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useTheme, Text, SearchBar } from "@rneui/themed";
+import { useTheme, SearchBar } from "@rneui/themed";
 
-import { setDeals, setLoading } from "../redux/dealsSlice";
+import { fetchDeals } from "../redux/dealsSlice";
 import DEFAULT_STORES from "../constants/Defaults";
-import { DEALS } from "../constants/Urls";
 import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
-import useAxiosFetch from "../utilities/useAxiosFetch";
 import Loading from "../components/Loading";
-import { parseDeals } from "../utilities/dealsHelpers";
 
 function Home({ navigation }) {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-  const { deals, fetchTime } = useSelector((state) => state.deals);
-  const { stores, savedStores } = useSelector((state) => state.stores);
+  const { deals, loading, fetchTime } = useSelector((state) => state.deals);
+  const { savedStores } = useSelector((state) => state.stores);
 
-  const [fetch, setFetch] = useState(false);
   const [params, setParams] = useState({
     storeID:
       savedStores.length > 0
@@ -29,36 +25,18 @@ function Home({ navigation }) {
     sortBy: "reviews",
     desc: 0,
     AAA: 1,
-    pageNumber: 0,
+    pageNumber:
+      Math.floor((deals.length - 1) / 60) >= 0
+        ? Math.floor((deals.length - 1) / 60)
+        : 0,
   });
-
-  const { data, loading } = useAxiosFetch(
-    `${DEALS}`,
-    0,
-    fetch,
-    false,
-    params,
-    null
-  );
 
   useEffect(() => {
     if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
-      setFetch(true);
+      dispatch(fetchDeals(params));
+      setParams((prevState) => ({ ...prevState, pageNumber: 0 }));
     }
-  }, [deals, fetchTime]);
-
-  useEffect(() => {
-    if (data) {
-      setFetch(false);
-      if (params.pageNumber === 0) {
-        dispatch(setDeals(parseDeals(data)));
-      }
-    }
-  }, [data, dispatch, params.pageNumber]);
-
-  useEffect(() => {
-    dispatch(setLoading(loading));
-  }, [loading, dispatch]);
+  }, [deals, dispatch, fetchTime, params]);
 
   const handleDealNavigate = useCallback(
     (deal) => {
@@ -74,8 +52,18 @@ function Home({ navigation }) {
     [navigation]
   );
 
-  if (loading) {
-    <Loading message="Getting the latest deals... Hold tight!" />;
+  const handlePageIncrement = useCallback(
+    (pageNumber) => {
+      if (!loading) {
+        setParams((prevState) => ({ ...prevState, pageNumber }));
+        dispatch(fetchDeals({ ...params, pageNumber }, true));
+      }
+    },
+    [loading, dispatch, params, setParams]
+  );
+
+  if (loading && params.pageNumber === 0) {
+    return <Loading message="Getting the latest deals... Hold tight!" />;
   }
 
   return (
@@ -93,8 +81,10 @@ function Home({ navigation }) {
         />
       </Pressable>
 
-      <View style={{ paddingBottom: 70 }}>
+      <View style={{ paddingBottom: 80 }}>
         <ContentBlock
+          pageNumber={params.pageNumber}
+          handlePageIncrement={handlePageIncrement}
           deals={deals}
           loading={loading}
           handleDealNavigate={handleDealNavigate}

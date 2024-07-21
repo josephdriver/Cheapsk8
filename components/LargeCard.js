@@ -12,7 +12,7 @@ function LargeCard({ deal, handleDealNavigate }) {
       onPress={() => handleDealNavigate(deal)}
       style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
     >
-      <View style={{ width: "100%", height: 200 }}>
+      <View style={{ width: "100%", height: 180 }}>
         <HeaderImage steamAppID={deal.steamAppID} />
       </View>
       <View style={{ flexDirection: "row", padding: 8 }}>

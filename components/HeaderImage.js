@@ -1,16 +1,17 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { Image } from "react-native";
-import { STEAM_FALL_BACK_XL, STEAM_XL_CAP, DELIM_ID } from "../constants/Urls";
+import { STEAM_XL_CAP, STEAM_HEADER, DELIM_ID } from "../constants/Urls";
 
-function HeaderImage({ steamAppID }) {
+function HeaderImage({ steamAppID, isCap = false }) {
   const imageURL = useMemo(
-    () => STEAM_XL_CAP.replace(DELIM_ID, steamAppID),
-    [steamAppID]
+    () =>
+      `${isCap ? STEAM_XL_CAP : STEAM_HEADER}`.replace(DELIM_ID, steamAppID),
+    [steamAppID, isCap]
   );
 
   const fallbackUrl = useMemo(
-    () => STEAM_FALL_BACK_XL.replace(DELIM_ID, steamAppID),
+    () => STEAM_XL_CAP.replace(DELIM_ID, steamAppID),
     [steamAppID]
   );
 
@@ -26,10 +27,12 @@ function HeaderImage({ steamAppID }) {
 }
 HeaderImage.defaultProps = {
   steamAppID: null,
+  isCap: false,
 };
 
 HeaderImage.propTypes = {
   steamAppID: PropTypes.string,
+  isCap: PropTypes.bool,
 };
 
 export default HeaderImage;

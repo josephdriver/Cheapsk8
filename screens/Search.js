@@ -7,13 +7,20 @@ import { debounce } from "lodash";
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS } from "../constants/Urls";
 import ListItem from "../components/ListItem";
+import generateId from "../utilities/guidGenerator";
 
 function Search({ navigation }) {
   const { theme } = useTheme();
+  const { savedStores } = useSelector((state) => state.stores);
+
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(null);
   const [fetch, setFetch] = useState(false);
-  const { savedStores } = useSelector((state) => state.stores);
+  const [params, setParams] = useState({
+    title: query,
+    storeID: savedStores.map((s) => s.storeID),
+    pageSize: 30,
+  });
 
   useEffect(() => {
     if (!query && fetch) {
@@ -36,6 +43,7 @@ function Search({ navigation }) {
   const onChange = useCallback(
     (event) => {
       setQuery(event);
+      setParams((prevState) => ({ ...prevState, title: event }));
       debouncedChangeHandler();
     },
     [debouncedChangeHandler]
@@ -50,13 +58,11 @@ function Search({ navigation }) {
   );
 
   const { data, loading: queryLoading } = useAxiosFetch(
-    `${DEALS}storeID=${savedStores.map(
-      (s) => s.storeID
-    )}&title=${query}&pageSize=30`,
+    DEALS,
     0,
     !!(query && fetch),
     false,
-    false,
+    params,
     null
   );
 
@@ -67,6 +73,7 @@ function Search({ navigation }) {
     setFetch(false);
   }, [data]);
 
+  console.log("search");
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <SearchBar
@@ -85,10 +92,16 @@ function Search({ navigation }) {
       {result && (
         <View style={{ paddingBottom: 70 }}>
           <FlatList
-            keyExtractor={(item) => item.dealID}
             data={data}
+            initialNumToRender={4}
+            onEndReached={() => console.log("Here")}
+            onEndReachedThreshold={0}
             renderItem={({ item }) => (
-              <ListItem deal={item} handleDealNavigate={handleDealNavigate} />
+              <ListItem
+                key={generateId()}
+                deal={item}
+                handleDealNavigate={handleDealNavigate}
+              />
             )}
           />
         </View>

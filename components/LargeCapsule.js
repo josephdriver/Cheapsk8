@@ -2,14 +2,14 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Image, View } from "react-native";
 import { Skeleton, useTheme } from "@rneui/themed";
-import { STEAM_XL_CAP, DELIM_ID } from "../constants/Urls";
+import { STEAM_S_HEADER, DELIM_ID } from "../constants/Urls";
 
 function LargeCapsule({ steamAppID, url }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
 
   const imageURL = useMemo(
-    () => (steamAppID ? STEAM_XL_CAP.replace(DELIM_ID, steamAppID) : url),
+    () => (steamAppID ? STEAM_S_HEADER.replace(DELIM_ID, steamAppID) : url),
     [steamAppID, url]
   );
 
@@ -18,7 +18,7 @@ function LargeCapsule({ steamAppID, url }) {
   return (
     <View>
       <Image
-        style={{ width: "100%", height: 90 }}
+        style={{ width: "100%", height: 70 }}
         onError={() => fallbackURL}
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => setLoading(false)}
@@ -32,7 +32,7 @@ function LargeCapsule({ steamAppID, url }) {
             animation="pulse"
             style={{ backgroundColor: theme.colors.grey3, borderRadius: 0 }}
             width={180}
-            height={90}
+            height={70}
           />
         </View>
       )}
