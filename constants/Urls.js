@@ -3,7 +3,7 @@ export const DELIM_ID = "DELIM_ID";
 export const BASE = "https://www.cheapshark.com";
 
 export const DEALS = "https://www.cheapshark.com/api/1.0/deals";
-export const GAMES = "https://www.cheapshark.com/api/1.0/games?";
+export const GAMES = "https://www.cheapshark.com/api/1.0/games";
 export const STORES_URL = "https://www.cheapshark.com/api/1.0/stores";
 export const REDIRECT = `https://www.cheapshark.com/redirect?dealID=${DELIM_ID}`;
 

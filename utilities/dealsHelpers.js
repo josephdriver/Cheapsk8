@@ -18,7 +18,14 @@ export function parseDeals(payload) {
   let pairArray = [];
   let rows = [];
   shuffledPayload.forEach((dealItem, index) => {
-    if (dealItem.steamAppID && largeCardCount < 11) {
+    if (
+      dealItem.steamAppID &&
+      largeCardCount < 11 &&
+      !dealItem.title.toLowerCase().includes("collection") &&
+      !dealItem.title.toLowerCase().includes("edition") &&
+      !dealItem.title.toLowerCase().includes("bundle") &&
+      !dealItem.title.toLowerCase().includes("pack")
+    ) {
       rows.push({ header: dealItem });
       largeCardCount += 1;
     } else if (pairArray.length === 1) {

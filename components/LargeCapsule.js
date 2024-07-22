@@ -4,22 +4,26 @@ import { Image, View } from "react-native";
 import { Skeleton, useTheme } from "@rneui/themed";
 import { STEAM_S_HEADER, DELIM_ID } from "../constants/Urls";
 
-function LargeCapsule({ steamAppID, url }) {
+function LargeCapsule({ steamAppID, title, url }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
 
   const imageURL = useMemo(
-    () => (steamAppID ? STEAM_S_HEADER.replace(DELIM_ID, steamAppID) : url),
-    [steamAppID, url]
+    () =>
+      steamAppID &&
+      !title.toLowerCase().includes("edition") &&
+      !title.toLowerCase().includes("collection") &&
+      !title.toLowerCase().includes("bunlde") &&
+      !title.toLowerCase().includes("pack")
+        ? STEAM_S_HEADER.replace(DELIM_ID, steamAppID)
+        : url,
+    [steamAppID, title, url]
   );
-
-  const fallbackURL = useMemo(() => url, [url]);
 
   return (
     <View>
       <Image
         style={{ width: "100%", height: 70 }}
-        onError={() => fallbackURL}
         onLoadStart={() => setLoading(true)}
         onLoadEnd={() => setLoading(false)}
         source={{
@@ -47,6 +51,7 @@ LargeCapsule.defaultProps = {
 
 LargeCapsule.propTypes = {
   steamAppID: PropTypes.string,
+  title: PropTypes.string.isRequired,
   url: PropTypes.string,
 };
 

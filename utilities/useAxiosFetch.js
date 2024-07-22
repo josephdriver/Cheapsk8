@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import { get } from "lodash";
+import qs from "qs";
 
 const useAxiosFetch = (
   url,
@@ -31,7 +32,10 @@ const useAxiosFetch = (
         options.params = searchParams;
       }
 
-      Axios.get(url, options)
+      Axios.get(url, {
+        ...options,
+        paramsSerializer: (params) => qs.stringify(params, { encode: false }),
+      })
         .then((a) => {
           initialLoadDone.current = true;
           if (!unmounted) {

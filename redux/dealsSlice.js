@@ -8,6 +8,7 @@ export const DealsSlice = createSlice({
   initialState: {
     deals: [],
     content: [],
+    offset: null,
     fetchTime: null,
     loading: false,
     error: false,
@@ -15,6 +16,9 @@ export const DealsSlice = createSlice({
   reducers: {
     setLoading: (state, { payload }) => {
       state.loading = payload;
+    },
+    setOffset: (state, { payload }) => {
+      state.offset = payload;
     },
     setDeals: (state, { payload }) => {
       const { deals, rows } = parseDeals(payload);
@@ -25,11 +29,7 @@ export const DealsSlice = createSlice({
       state.error = false;
     },
     appendDeals: (state, { payload }) => {
-      console.log("in append");
       const { deals: newDeals, rows } = parseDeals(payload);
-      console.log("JERE");
-      const { deals } = state.deals;
-      const { content } = state.content;
 
       state.deals = [...state.deals, ...newDeals];
       state.content = [...state.content, ...rows];
@@ -37,25 +37,30 @@ export const DealsSlice = createSlice({
       state.loading = false;
       state.error = false;
     },
-    setError: (state) => {
-      state.error = true;
+    setError: (state, { payload }) => {
+      state.error = payload;
       state.loading = false;
     },
     clearDeals: (state) => {
       state.deals = [];
-      state.dealBlocks = [];
+      state.content = [];
+      state.offset = null;
       state.fetchTime = null;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setLoading, setDeals, appendDeals, setError, clearDeals } =
-  DealsSlice.actions;
+export const {
+  setLoading,
+  setDeals,
+  setOffset,
+  appendDeals,
+  setError,
+  clearDeals,
+} = DealsSlice.actions;
 
 export default DealsSlice.reducer;
-
-// set up axios - simple json-server prototype config here
 
 // fetch stores
 export function fetchDeals(params, append = false) {
@@ -71,6 +76,11 @@ export function fetchDeals(params, append = false) {
 
   return async (dispatch) => {
     dispatch(setLoading(true));
+    if (append) {
+      dispatch(setOffset(params.pageNumber));
+    } else {
+      dispatch(setOffset(0));
+    }
     api
       .get()
       .then((response) => {
@@ -79,11 +89,12 @@ export function fetchDeals(params, append = false) {
         } else {
           dispatch(setDeals(response.data));
         }
-        dispatch(setLoading(false));
-        dispatch(setError(false));
       })
       .catch(() => {
         dispatch(setError(true));
+        if (append) {
+          setOffset(params.pageNumber - 1 > 0 ? params.pageNumber : 0);
+        }
       });
   };
 }

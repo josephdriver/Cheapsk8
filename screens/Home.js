@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, SearchBar } from "@rneui/themed";
 
 import { fetchDeals } from "../redux/dealsSlice";
-import DEFAULT_STORES from "../constants/Defaults";
 import dealsCache from "../constants/CacheTimers";
 import ContentBlock from "../components/ContentBlock";
 import Loading from "../components/Loading";
@@ -13,41 +13,40 @@ import Loading from "../components/Loading";
 function Home({ navigation }) {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-  const { deals, loading, fetchTime } = useSelector((state) => state.deals);
-  const { savedStores } = useSelector((state) => state.stores);
+  const { deals, loading, offset, fetchTime } = useSelector(
+    (state) => state.deals
+  );
+  const { savedStores, stores } = useSelector((state) => state.stores);
 
-  const [params, setParams] = useState({
-    storeID:
-      savedStores.length > 0
-        ? savedStores.map((s) => s.storeID)
-        : DEFAULT_STORES.map((s) => s.storeID),
-    onSale: 1,
-    sortBy: "reviews",
-    desc: 0,
-    AAA: 1,
-    pageNumber:
-      Math.floor((deals.length - 1) / 60) >= 0
-        ? Math.floor((deals.length - 1) / 60)
-        : 0,
-  });
+  const getParams = useMemo(
+    () => ({
+      storeID:
+        savedStores.length > 0
+          ? savedStores.map((s) => s.storeID)
+          : stores.map((s) => s.storeID),
+      onSale: 1,
+      sortBy: "reviews",
+      desc: 0,
+      AAA: 1,
+      pageNumber: offset || 0,
+    }),
+    [offset, savedStores, stores]
+  );
 
   const triggerDealFetch = useCallback(() => {
-    console.log("In trigger deal fetch");
-    dispatch(fetchDeals(params));
-  }, [dispatch, params]);
+    dispatch(fetchDeals(getParams));
+  }, [dispatch, getParams]);
 
-  useEffect(() => {
-    console.log(fetchTime + dealsCache);
-    console.log(new Date().getTime());
-    if (fetchTime + dealsCache < new Date().getTime()) {
-      console.log("expired");
-    }
-    console.log();
-    if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
-      console.log("In init fetch use effect");
-      triggerDealFetch();
-    }
-  }, [triggerDealFetch, deals, fetchTime]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (fetchTime + dealsCache < new Date().getTime()) {
+        console.log("expired");
+      }
+      if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
+        triggerDealFetch();
+      }
+    }, [triggerDealFetch, deals, fetchTime])
+  );
 
   const handleDealNavigate = useCallback(
     (deal) => {
@@ -63,17 +62,13 @@ function Home({ navigation }) {
     [navigation]
   );
 
-  const handlePageIncrement = useCallback(
-    (pageNumber) => {
-      if (!loading) {
-        setParams((prevState) => ({ ...prevState, pageNumber }));
-        dispatch(fetchDeals({ ...params, pageNumber }, true));
-      }
-    },
-    [loading, dispatch, params, setParams]
-  );
+  const handlePageIncrement = useCallback(() => {
+    if (!loading) {
+      dispatch(fetchDeals({ ...getParams, pageNumber: offset + 1 }, true));
+    }
+  }, [loading, dispatch, getParams, offset]);
 
-  if (loading && params.pageNumber === 0) {
+  if (loading && !offset) {
     return <Loading message="Getting the latest deals... Hold tight!" />;
   }
 
@@ -94,7 +89,7 @@ function Home({ navigation }) {
 
       <View style={{ paddingBottom: 80 }}>
         <ContentBlock
-          pageNumber={params.pageNumber}
+          pageNumber={offset}
           handlePageIncrement={handlePageIncrement}
           deals={deals}
           loading={loading}

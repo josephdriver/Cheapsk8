@@ -24,3 +24,23 @@ export default async function multiGetRequest(apiUrlArray, config = {}) {
 
   return result;
 }
+
+// fetch stores
+export function axiosFetch(url, params) {
+  const api = axios.create({
+    baseURL: url,
+    withCredentials: false,
+    params,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+
+  return async () => {
+    api
+      .get()
+      .then((response) => ({ data: response.data, error: false }))
+      .catch(() => ({ data: [], error: true }));
+  };
+}

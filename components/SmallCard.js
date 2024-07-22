@@ -12,31 +12,30 @@ function SmallCard({ deal, handleDealNavigate }) {
       onPress={() => handleDealNavigate(deal)}
       style={styles.cardWrapper}
     >
-      <LargeCapsule steamAppID={deal.steamAppID} url={deal.thumb} />
+      <LargeCapsule
+        steamAppID={deal.steamAppID}
+        title={deal.title}
+        url={deal.thumb}
+      />
 
       <View
         style={{
-          flexDirection: "column",
-          paddingHorizontal: 8,
+          flexDirection: "row",
+          paddingHorizontal: 3,
           paddingBottom: 3,
         }}
       >
         <View style={{ flex: 7 }}>
-          <Text style={styles.title}>{deal.title}</Text>
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
+            {deal.title}
+          </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "flex-end",
-            paddingVertical: 3,
-          }}
-        >
+        <View>
           <View
             style={{
               height: 21,
-              paddingHorizontal: 5,
               backgroundColor: theme.colors.secondary,
-              marginHorizontal: 3,
+              alignItems: "center",
             }}
           >
             <Text>-{deal.savings.split(".")[0]}%</Text>
@@ -54,8 +53,8 @@ function SmallCard({ deal, handleDealNavigate }) {
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    marginTop: 16,
-    width: "47.5%",
+    marginTop: 9,
+    width: "48.75%",
     backgroundColor: "#306187",
     borderRadius: 2,
     overflow: "hidden",

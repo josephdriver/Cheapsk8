@@ -1,35 +1,20 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { View, Pressable } from "react-native";
 import { Text, useTheme, Image, Skeleton } from "@rneui/themed";
-import { useSelector } from "react-redux";
 
-import IconImage from "./IconImage";
-import { STEAM_L_CAP, DELIM_ID } from "../constants/Urls";
+import { STEAM_S_HEADER, DELIM_ID } from "../constants/Urls";
 
 function ListItem({ deal, handleDealNavigate }) {
-  const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
-  const [imageURl, setImageURL] = useState(
-    STEAM_L_CAP.replace(DELIM_ID, deal.steamAppID)
+  const imageURL = useMemo(
+    () =>
+      deal.steamAppID
+        ? STEAM_S_HEADER.replace(DELIM_ID, deal.steamAppID)
+        : deal.thumb,
+    [deal.steamAppID, deal.thumb]
   );
   const [loading, setLoading] = useState(false);
-
-  const getStoreLogo = useCallback(
-    (id) => {
-      if (stores.length > 0) {
-        const storeName = stores.find((item) => item.storeID === id);
-        return storeName.images.logo;
-      }
-      return null;
-    },
-    [stores]
-  );
-
-  const fallbackURl = () => {
-    setImageURL(deal.thumb);
-  };
-
   return (
     <Pressable
       onPress={() => handleDealNavigate(deal)}
@@ -43,23 +28,28 @@ function ListItem({ deal, handleDealNavigate }) {
       <View
         style={{
           width: "97%",
-          height: 92.25,
+          height: 110,
           backgroundColor: theme.colors.searchBg,
+          flex: 1,
         }}
       >
-        <View style={{ width: "100%", flexDirection: "row" }}>
-          <>
+        <View
+          style={{
+            width: "100%",
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ flex: 1 }}>
             <Image
               resizeImage="cover"
               style={{
                 width: 173.25,
-                height: 65.25,
+                height: 80,
               }}
-              onError={() => fallbackURl()}
               onLoadStart={() => setLoading(true)}
               onLoadEnd={() => setLoading(false)}
               source={{
-                uri: deal.steamAppID ? imageURl : deal.thumb,
+                uri: imageURL,
               }}
             />
             {loading && (
@@ -68,101 +58,31 @@ function ListItem({ deal, handleDealNavigate }) {
                   animation="pulse"
                   style={{ backgroundColor: theme.colors.grey3 }}
                   width={175.25}
-                  height={65.25}
+                  height={80}
                 />
               </View>
             )}
-          </>
-          <View
-            style={{
-              flexDirection: "column",
-              flex: 1,
-              justifyContent: "space-between",
-              marginHorizontal: 5,
-            }}
-          >
-            <View style={{ alignItems: "flex-end" }}>
-              <View style={{ flexDirection: "column" }}>
-                {parseInt(deal.savings, 10) !== 0 && (
-                  <View style={{ flexDirection: "row" }}>
-                    <View
-                      style={{
-                        height: 21,
-                        paddingHorizontal: 5,
-                        backgroundColor: theme.colors.secondary,
-                        marginHorizontal: 3,
-                      }}
-                    >
-                      <Text>-{deal.savings.split(".")[0]}%</Text>
-                    </View>
-                    <View
-                      style={{
-                        alignItems: "flex-end",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: theme.colors.grey2,
-                          fontSize: 15,
-                          paddingBottom: 2,
-                          textDecorationLine: "line-through",
-                        }}
-                      >
-                        ${deal.normalPrice}
-                      </Text>
-                    </View>
-                  </View>
-                )}
-                <View style={{ alignItems: "flex-end" }}>
-                  <Text style={{ fontWeight: "700", fontSize: 15 }}>
-                    ${deal.salePrice}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={{ alignItems: "flex-end" }}>
-              {parseInt(deal.steamRatingPercent, 10) > 0 ||
-              parseInt(deal.metacriticScore, 10) > 0 ? (
-                <View>
-                  {parseInt(deal.steamRatingPercent, 10) > 0 ? (
-                    <Text>
-                      {deal.steamRatingText} {deal.steamRatingPercent}%
-                    </Text>
-                  ) : (
-                    <Text>Metacritic Score {deal.metacriticScore}</Text>
-                  )}
-                </View>
-              ) : null}
-            </View>
           </View>
-        </View>
-        <View style={{ flexDirection: "row", height: 27, marginHorizontal: 5 }}>
-          <View style={{ flex: 4, justifyContent: "center" }}>
-            <Text
-              numberOfLines={1}
-              style={{
-                fontWeight: "700",
-                fontSize: 16,
-                paddingBottom: 1,
-                color: theme.colors.primary,
-              }}
-            >
-              {deal.title}
+          <View style={{ alignItems: "flex-end", margin: 5 }}>
+            <Text>Cheapest Deal</Text>
+            <Text style={{ fontWeight: "700", fontSize: 15 }}>
+              ${deal.cheapest}
             </Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: "flex-end",
-              justifyContent: "center",
-            }}
+        </View>
+        <View
+          style={{
+            height: "100%",
+            flex: 1,
+            justifyContent: "space-around",
+            backgroundColor: "#306187",
+          }}
+        >
+          <Text
+            style={{ color: "white", paddingHorizontal: 5, fontWeight: "700" }}
           >
-            <IconImage
-              url={getStoreLogo(deal.storeID)}
-              width={23}
-              height={23}
-            />
-          </View>
+            {deal.external}
+          </Text>
         </View>
       </View>
     </Pressable>
@@ -171,25 +91,12 @@ function ListItem({ deal, handleDealNavigate }) {
 
 ListItem.propTypes = {
   deal: PropTypes.shape({
-    internalName: PropTypes.string,
-    title: PropTypes.string,
-    metacriticLink: PropTypes.string,
-    dealID: PropTypes.string,
-    storeID: PropTypes.string,
-    gameID: PropTypes.string,
-    salePrice: PropTypes.string,
-    normalPrice: PropTypes.string,
-    isOnSale: PropTypes.string,
-    savings: PropTypes.string,
-    metacriticScore: PropTypes.string,
-    steamRatingText: PropTypes.string,
-    steamRatingPercent: PropTypes.string,
-    steamRatingCount: PropTypes.string,
+    gameID: PropTypes.string.isRequired,
     steamAppID: PropTypes.string,
-    releaseDate: PropTypes.number,
-    lastChange: PropTypes.number,
-    dealRating: PropTypes.string,
-    thumb: PropTypes.string,
+    cheapest: PropTypes.string.isRequired,
+    cheapestDealID: PropTypes.string.isRequired,
+    external: PropTypes.string.isRequired,
+    thumb: PropTypes.string.isRequired,
   }).isRequired,
   handleDealNavigate: PropTypes.func,
 };

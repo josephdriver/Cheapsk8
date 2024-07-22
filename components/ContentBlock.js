@@ -35,7 +35,8 @@ function ContentBlock({
       <FlatList
         onEndReached={() => handlePageIncrement(pageNumber + 1)}
         onEndReachedThreshold={5}
-        initialNumToRender={30}
+        initialNumToRender={40}
+        maxToRenderPerBatch={40}
         key={(item) => `${item.dealID}${item.storeID}`}
         data={content}
         renderItem={({ item }) => (

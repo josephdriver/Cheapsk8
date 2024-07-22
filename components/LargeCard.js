@@ -12,12 +12,14 @@ function LargeCard({ deal, handleDealNavigate }) {
       onPress={() => handleDealNavigate(deal)}
       style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
     >
-      <View style={{ width: "100%", height: 180 }}>
+      <View style={{ width: "100%", height: 160 }}>
         <HeaderImage steamAppID={deal.steamAppID} />
       </View>
       <View style={{ flexDirection: "row", padding: 8 }}>
         <View style={{ flex: 7 }}>
-          <Text style={styles.title}>{deal.title}</Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
+            {deal.title}
+          </Text>
           <Text>
             {deal.steamRatingText} ({deal.steamRatingPercent}%)
           </Text>
@@ -30,6 +32,8 @@ function LargeCard({ deal, handleDealNavigate }) {
                 paddingHorizontal: 5,
                 backgroundColor: theme.colors.secondary,
                 marginHorizontal: 3,
+                alignItems: "flex-end",
+                marginTop: 23,
               }}
             >
               <Text>-{deal.savings.split(".")[0]}%</Text>
@@ -58,7 +62,7 @@ function LargeCard({ deal, handleDealNavigate }) {
 const styles = StyleSheet.create({
   cardWrapper: {
     borderRadius: 2,
-    marginTop: 16,
+    marginTop: 9,
     overflow: "hidden",
   },
   title: {
