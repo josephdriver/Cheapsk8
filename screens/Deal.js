@@ -77,8 +77,7 @@ function Deal({ route, navigation }) {
     return <Loading message="Getting the latest deals... Hold tight!" />;
   }
   if (!data || !gameData) return null;
-  console.log(data);
-  console.log(gameData);
+
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <View style={{ width: "100%", height: 200 }}>

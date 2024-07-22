@@ -1,19 +1,30 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 
 import HeaderImage from "./HeaderImage";
 
 function LargeCard({ deal, handleDealNavigate }) {
+  const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
+
+  const getStore = useMemo(
+    () => stores.find((s) => s.storeID === deal.storeID),
+    [stores, deal.storeID]
+  );
+
   return (
     <Pressable
       onPress={() => handleDealNavigate(deal)}
       style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
     >
       <View style={{ width: "100%", height: 160 }}>
-        <HeaderImage steamAppID={deal.steamAppID} />
+        <HeaderImage
+          steamAppID={deal.steamAppID}
+          iconImage={getStore.images.logo}
+        />
       </View>
       <View style={{ flexDirection: "row", padding: 8 }}>
         <View style={{ flex: 7 }}>

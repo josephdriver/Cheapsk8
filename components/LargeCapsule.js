@@ -2,9 +2,9 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Image, View } from "react-native";
 import { Skeleton, useTheme } from "@rneui/themed";
-import { STEAM_S_HEADER, DELIM_ID } from "../constants/Urls";
+import { STEAM_S_HEADER, DELIM_ID, BASE } from "../constants/Urls";
 
-function LargeCapsule({ steamAppID, title, url }) {
+function LargeCapsule({ steamAppID, title, url, hasLogo }) {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
 
@@ -22,14 +22,32 @@ function LargeCapsule({ steamAppID, title, url }) {
 
   return (
     <View>
-      <Image
-        style={{ width: "100%", height: 70 }}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-        source={{
-          uri: imageURL,
-        }}
-      />
+      <>
+        <Image
+          style={{ width: "100%", height: 70 }}
+          onLoadStart={() => setLoading(true)}
+          onLoadEnd={() => setLoading(false)}
+          source={{
+            uri: imageURL,
+          }}
+        />
+        {hasLogo && (
+          <Image
+            style={{
+              opacity: 0.9,
+              position: "absolute",
+              left: 3,
+              top: 3,
+              width: 23,
+              height: 23,
+            }}
+            source={{
+              uri: `${BASE}/${hasLogo}`,
+            }}
+          />
+        )}
+      </>
+
       {loading && (
         <View style={{ position: "absolute", left: -1 }}>
           <Skeleton
@@ -47,12 +65,14 @@ function LargeCapsule({ steamAppID, title, url }) {
 LargeCapsule.defaultProps = {
   steamAppID: null,
   url: null,
+  hasLogo: "",
 };
 
 LargeCapsule.propTypes = {
   steamAppID: PropTypes.string,
   title: PropTypes.string.isRequired,
   url: PropTypes.string,
+  hasLogo: PropTypes.string,
 };
 
 export default LargeCapsule;

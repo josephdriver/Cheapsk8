@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
+import { useSelector } from "react-redux";
+
 import LargeCapsule from "./LargeCapsule";
 
 function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
+  const { stores } = useSelector((state) => state.stores);
+
+  const getStore = useMemo(
+    () => stores.find((s) => s.storeID === deal.storeID),
+    [stores, deal.storeID]
+  );
 
   return (
     <Pressable
@@ -16,6 +24,7 @@ function SmallCard({ deal, handleDealNavigate }) {
         steamAppID={deal.steamAppID}
         title={deal.title}
         url={deal.thumb}
+        hasLogo={getStore.images.logo}
       />
 
       <View
