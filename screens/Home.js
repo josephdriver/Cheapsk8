@@ -7,7 +7,7 @@ import { useTheme, SearchBar } from "@rneui/themed";
 
 import { fetchDeals } from "../redux/dealsSlice";
 import dealsCache from "../constants/CacheTimers";
-import ContentBlock from "../components/ContentBlock";
+import FeaturedDeals from "../components/FeaturedDeals";
 import Loading from "../components/Loading";
 
 function Home({ navigation }) {
@@ -88,7 +88,7 @@ function Home({ navigation }) {
       </Pressable>
 
       <View style={{ paddingBottom: 80 }}>
-        <ContentBlock
+        <FeaturedDeals
           pageNumber={offset}
           handlePageIncrement={handlePageIncrement}
           deals={deals}

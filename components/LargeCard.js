@@ -1,33 +1,31 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
-import { Text, useTheme } from "@rneui/themed";
+import React from "react";
+import { View, StyleSheet, Pressable, Text } from "react-native";
+import { useTheme } from "@rneui/themed";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
 import HeaderImage from "./HeaderImage";
+import { dealListType } from "../propTypes/dealType";
 
 function LargeCard({ deal, handleDealNavigate }) {
   const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
-  const getStore = useMemo(
-    () => stores.find((s) => s.storeID === deal.storeID),
-    [stores, deal.storeID]
-  );
+  const store = stores.find((s) => s.storeID === deal.storeID);
 
   return (
     <Pressable
       onPress={() => handleDealNavigate(deal)}
-      style={[styles.cardWrapper, { backgroundColor: "#306187" }]}
+      style={[styles.cardWrapper, { backgroundColor: theme.colors.primary }]}
     >
-      <View style={{ width: "100%", height: 160 }}>
+      <View style={styles.headerImageContainer}>
         <HeaderImage
           steamAppID={deal.steamAppID}
-          iconImage={getStore.images.logo}
+          iconImage={store?.images.logo}
         />
       </View>
-      <View style={{ flexDirection: "row", padding: 8 }}>
-        <View style={{ flex: 7 }}>
+      <View style={styles.contentContainer}>
+        <View style={styles.titleContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
             {deal.title}
           </Text>
@@ -35,34 +33,18 @@ function LargeCard({ deal, handleDealNavigate }) {
             {deal.steamRatingText} ({deal.steamRatingPercent}%)
           </Text>
         </View>
-        <View style={{ flex: 3, alignItems: "flex-end" }}>
-          <View style={{ flexDirection: "row" }}>
-            <View
-              style={{
-                height: 21,
-                paddingHorizontal: 5,
-                backgroundColor: theme.colors.secondary,
-                marginHorizontal: 3,
-                alignItems: "flex-end",
-                marginTop: 23,
-              }}
-            >
-              <Text>-{deal.savings.split(".")[0]}%</Text>
-            </View>
-            <View>
-              <Text
-                style={{
-                  color: theme.colors.grey2,
-                  fontSize: 15,
-                  paddingBottom: 2,
-                }}
-              >
-                ${deal.normalPrice}
-              </Text>
-              <Text style={{ fontWeight: "700", fontSize: 15 }}>
-                ${deal.salePrice}
-              </Text>
-            </View>
+        <View style={styles.priceContainer}>
+          <View
+            style={[
+              styles.savingsContainer,
+              { backgroundColor: theme.colors.secondary },
+            ]}
+          >
+            <Text>-{deal.savings.split(".")[0]}%</Text>
+          </View>
+          <View style={styles.priceValues}>
+            <Text style={styles.normalPrice}>${deal.normalPrice}</Text>
+            <Text style={styles.salePrice}>${deal.salePrice}</Text>
           </View>
         </View>
       </View>
@@ -76,37 +58,60 @@ const styles = StyleSheet.create({
     marginTop: 9,
     overflow: "hidden",
   },
+  headerImageContainer: {
+    width: "100%",
+    height: 160,
+  },
+  contentContainer: {
+    flexDirection: "row",
+    padding: 8,
+    backgroundColor: "#306187",
+  },
+  titleContainer: {
+    flex: 7,
+  },
   title: {
     fontWeight: "bold",
     fontSize: 18,
     paddingBottom: 1,
+    color: "white",
+  },
+  priceContainer: {
+    flex: 3,
+    justifyContent: "flex-end",
+    flexDirection: "row",
+  },
+  savingsContainer: {
+    height: 21,
+    paddingHorizontal: 5,
+    marginHorizontal: 3,
+    alignItems: "flex-end",
+    marginTop: 23,
+  },
+  priceValues: {
+    flexDirection: "column",
+    alignItems: "flex-end",
+    color: "white",
+  },
+  normalPrice: {
+    color: "#777",
+    fontSize: 15,
+    paddingBottom: 2,
+  },
+  salePrice: {
+    fontWeight: "700",
+    fontSize: 15,
+    color: "white",
   },
 });
+
 LargeCard.propTypes = {
-  deal: PropTypes.shape({
-    internalName: PropTypes.string,
-    title: PropTypes.string,
-    metacriticLink: PropTypes.string,
-    dealID: PropTypes.string,
-    storeID: PropTypes.string,
-    gameID: PropTypes.string,
-    salePrice: PropTypes.string,
-    normalPrice: PropTypes.string,
-    isOnSale: PropTypes.string,
-    savings: PropTypes.string,
-    metacriticScore: PropTypes.string,
-    steamRatingText: PropTypes.string,
-    steamRatingPercent: PropTypes.string,
-    steamRatingCount: PropTypes.string,
-    steamAppID: PropTypes.string,
-    releaseDate: PropTypes.number,
-    lastChange: PropTypes.number,
-    dealRating: PropTypes.string,
-    thumb: PropTypes.string,
-  }).isRequired,
+  deal: dealListType.isRequired,
   handleDealNavigate: PropTypes.func,
 };
 
-LargeCard.defaultProps = { handleDealNavigate: null };
+LargeCard.defaultProps = {
+  handleDealNavigate: null,
+};
 
 export default LargeCard;

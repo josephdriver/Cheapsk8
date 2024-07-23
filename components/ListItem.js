@@ -1,106 +1,104 @@
-import React, { useState, useMemo } from "react";
+import React, { useCallback } from "react";
 import PropTypes from "prop-types";
-import { View, Pressable } from "react-native";
-import { Text, useTheme, Image, Skeleton } from "@rneui/themed";
+import { View, Pressable, StyleSheet } from "react-native";
+import { Text, useTheme } from "@rneui/themed";
 
-import { STEAM_S_HEADER, DELIM_ID } from "../constants/Urls";
+import CapsuleImage from "./CapsuleImage";
 
 function ListItem({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
-  const imageURL = useMemo(
-    () =>
-      deal.steamAppID
-        ? STEAM_S_HEADER.replace(DELIM_ID, deal.steamAppID)
-        : deal.thumb,
-    [deal.steamAppID, deal.thumb]
+
+  /**
+   * Handle navigation to the deal screen
+   */
+  const handlePress = useCallback(
+    () => handleDealNavigate(deal),
+    [deal, handleDealNavigate]
   );
-  const [loading, setLoading] = useState(false);
+
   return (
-    <Pressable
-      onPress={() => handleDealNavigate(deal)}
-      style={{
-        width: "100%",
-        alignItems: "center",
-        marginVertical: 5,
-        borderRadius: 2,
-      }}
-    >
+    <Pressable onPress={handlePress} style={styles.container}>
       <View
-        style={{
-          width: "97%",
-          height: 110,
-          backgroundColor: theme.colors.searchBg,
-          flex: 1,
-        }}
+        style={[
+          styles.innerContainer,
+          { backgroundColor: theme.colors.searchBg },
+        ]}
       >
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <Image
-              resizeImage="cover"
-              style={{
-                width: 173.25,
-                height: 80,
-              }}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-              source={{
-                uri: imageURL,
-              }}
+        <View style={styles.imageRowContainer}>
+          <View style={styles.imageContainer}>
+            <CapsuleImage
+              steamAppID={deal.steamAppID}
+              title={deal.external}
+              url={deal.thumb}
             />
-            {loading && (
-              <View style={{ position: "absolute", left: -1 }}>
-                <Skeleton
-                  animation="pulse"
-                  style={{ backgroundColor: theme.colors.grey3 }}
-                  width={175.25}
-                  height={80}
-                />
-              </View>
-            )}
           </View>
-          <View style={{ alignItems: "flex-end", margin: 5 }}>
+          <View style={styles.dealTextContainer}>
             <Text>Cheapest Deal</Text>
-            <Text style={{ fontWeight: "700", fontSize: 15 }}>
-              ${deal.cheapest}
-            </Text>
+            <Text style={styles.dealTextStyle}>${deal.cheapest}</Text>
           </View>
         </View>
-        <View
-          style={{
-            height: "100%",
-            flex: 1,
-            justifyContent: "space-around",
-            backgroundColor: "#306187",
-          }}
-        >
-          <Text
-            style={{ color: "white", paddingHorizontal: 5, fontWeight: "700" }}
-          >
-            {deal.external}
-          </Text>
+
+        <View style={styles.gameTitleContainer}>
+          <Text style={styles.gameTitleText}>{deal.external}</Text>
         </View>
       </View>
     </Pressable>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    alignItems: "center",
+    marginVertical: 5,
+    borderRadius: 2,
+  },
+  innerContainer: {
+    width: "100%",
+    height: 100,
+    flex: 1,
+  },
+  imageRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  imageRowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  imageContainer: { width: 180, height: 70 },
+
+  dealTextContainer: {
+    alignItems: "flex-end",
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
+  dealTextStyle: {
+    fontWeight: "700",
+    fontSize: 15,
+  },
+  gameTitleContainer: {
+    height: "100%",
+    flex: 1,
+    justifyContent: "space-around",
+    backgroundColor: "#306187",
+  },
+  gameTitleText: {
+    color: "white",
+    paddingHorizontal: 5,
+    fontWeight: "700",
+  },
+});
+
 ListItem.propTypes = {
   deal: PropTypes.shape({
     gameID: PropTypes.string.isRequired,
     steamAppID: PropTypes.string,
     cheapest: PropTypes.string.isRequired,
-    cheapestDealID: PropTypes.string.isRequired,
+    thumb: PropTypes.string,
     external: PropTypes.string.isRequired,
-    thumb: PropTypes.string.isRequired,
   }).isRequired,
-  handleDealNavigate: PropTypes.func,
+  handleDealNavigate: PropTypes.func.isRequired,
 };
-
-ListItem.defaultProps = { handleDealNavigate: null };
 
 export default ListItem;

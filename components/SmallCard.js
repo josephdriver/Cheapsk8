@@ -4,7 +4,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 
-import LargeCapsule from "./LargeCapsule";
+import CapsuleImage from "./CapsuleImage";
 
 function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
@@ -20,7 +20,7 @@ function SmallCard({ deal, handleDealNavigate }) {
       onPress={() => handleDealNavigate(deal)}
       style={styles.cardWrapper}
     >
-      <LargeCapsule
+      <CapsuleImage
         steamAppID={deal.steamAppID}
         title={deal.title}
         url={deal.thumb}
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 15,
     paddingBottom: 1,
+    color: "white",
   },
 });
 
