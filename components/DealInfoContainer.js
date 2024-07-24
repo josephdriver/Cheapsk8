@@ -1,14 +1,17 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-import { METACRITIC_SCORES } from "../constants/Colours";
 import { dealType, gameListType } from "../propTypes/dealType";
+import {
+  TEXT_COLOUR_WHITE,
+  METACRITIC_SCORES,
+  INFO_BACKGROUND,
+} from "../constants/Colours";
 
 function DealInfoContainer({ gameData, data }) {
   const { cheapestPriceEver } = data;
   const { gameInfo } = gameData;
-  console.log(gameData);
-  console.log(data);
+
   /**
    * useMemo to determine the colour of the metacritic score
    * @returns {string} - colour of the metacritic score
@@ -19,6 +22,21 @@ function DealInfoContainer({ gameData, data }) {
       return METACRITIC_SCORES.GOOD;
     }
     if (gameInfo.metacriticScore >= 50) {
+      return METACRITIC_SCORES.AVERAGE;
+    }
+    return METACRITIC_SCORES.BAD;
+  }, [gameInfo]);
+
+  /**
+   * useMemo to determine the colour of the metacritic score
+   * @returns {string} - colour of the metacritic score
+   */
+  const steamScore = useMemo(() => {
+    if (!gameInfo) return null;
+    if (gameInfo.steamRatingPercent >= 80) {
+      return METACRITIC_SCORES.GOOD;
+    }
+    if (gameInfo.steamRatingPercent >= 50) {
       return METACRITIC_SCORES.AVERAGE;
     }
     return METACRITIC_SCORES.BAD;
@@ -51,18 +69,28 @@ function DealInfoContainer({ gameData, data }) {
 
         <View style={styles.info}>
           <View>
-            <Text>
+            <Text
+              style={[
+                styles.bold,
+                {
+                  color: steamScore,
+                },
+              ]}
+            >
               {gameInfo.steamAppID
                 ? `${gameInfo.steamRatingText} (${gameInfo.steamRatingPercent}%)`
                 : ` `}
             </Text>
             <Text
-              style={{
-                color: metacriticScore,
-              }}
+              style={[
+                styles.bold,
+                {
+                  color: metacriticScore,
+                },
+              ]}
             >
               {gameInfo.metacriticScore > 0
-                ? `Metacritic Score ${gameInfo.metacriticScore}`
+                ? `Metacritic Score ${gameInfo.metacriticScore}/100`
                 : ` `}
             </Text>
           </View>
@@ -84,13 +112,13 @@ const styles = StyleSheet.create({
   dealTitle: {
     fontWeight: "700",
     fontSize: 20,
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
   infoContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: "#306187",
+    backgroundColor: INFO_BACKGROUND,
   },
   gameInfo: {
     flex: 7,
@@ -98,7 +126,7 @@ const styles = StyleSheet.create({
   info: {
     flexDirection: "row",
     justifyContent: "space-between",
-    fontWeight: "500",
+    fontWeight: "700",
   },
   alignEnd: {
     alignItems: "flex-end",

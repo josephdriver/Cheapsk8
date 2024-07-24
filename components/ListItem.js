@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 
+import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../constants/Colours";
+
 import CapsuleImage from "./CapsuleImage";
 
 function ListItem({ deal, handleDealNavigate }) {
@@ -81,10 +83,10 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "space-around",
-    backgroundColor: "#306187",
+    backgroundColor: INFO_BACKGROUND,
   },
   gameTitleText: {
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
     paddingHorizontal: 5,
     fontWeight: "700",
   },
