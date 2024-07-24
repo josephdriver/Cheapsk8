@@ -24,9 +24,9 @@ export const DealsSlice = createSlice({
       const { deals, rows } = parseDeals(payload);
       state.deals = deals;
       state.content = rows;
-      state.fetchTime = new Date().getTime();
       state.loading = false;
       state.error = false;
+      state.fetchTime = new Date().getTime();
     },
     appendDeals: (state, { payload }) => {
       const { deals: newDeals, rows } = parseDeals(payload);

@@ -40,7 +40,7 @@ function CapsuleImage({ steamAppID, title, url, hasLogo }) {
         <View style={styles.loading}>
           <Skeleton
             animation="pulse"
-            style={{ backgroundColor: theme.colors.grey3, borderRadius: 0 }}
+            style={[styles.skeleton, { backgroundColor: theme.colors.grey3 }]}
             width={180}
             height={70}
           />
@@ -82,6 +82,9 @@ const styles = StyleSheet.create({
   loading: {
     position: "absolute",
     left: -1,
+  },
+  skeleton: {
+    borderRadius: 0,
   },
 });
 

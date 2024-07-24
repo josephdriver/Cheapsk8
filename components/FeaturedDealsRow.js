@@ -42,16 +42,15 @@ const styles = StyleSheet.create({
 FeaturedDealsRow.defaultProps = {
   item: {
     header: null,
-    row: null,
+    row: [],
   },
 };
 
 FeaturedDealsRow.propTypes = {
   item: PropTypes.shape({
-    header: PropTypes.shape(dealListType),
+    header: dealListType,
     row: PropTypes.arrayOf(dealListType),
   }),
   handleDealNavigate: PropTypes.func.isRequired,
 };
-
 export default FeaturedDealsRow;

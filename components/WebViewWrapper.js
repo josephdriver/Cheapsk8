@@ -1,7 +1,7 @@
-/* eslint-disable react/prop-types */
 import React, { useMemo, useState } from "react";
+import PropTypes from "prop-types";
 import { WebView } from "react-native-webview";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { REDIRECT, DELIM_ID } from "../constants/Urls";
 import Loading from "./Loading";
@@ -9,14 +9,11 @@ import Loading from "./Loading";
 function WebViewWrapper({ route }) {
   const { url } = route.params;
   const [redirects, setRedirects] = useState(0);
-  console.log(url);
   const redirect = useMemo(() => REDIRECT.replace(DELIM_ID, url), [url]);
 
-  console.log(redirects);
-
   return (
-    <View style={{ backgroundColor: "red", flex: 1 }}>
-      {redirects < 3 && <Loading message="Loading.." />}
+    <View style={styles.container}>
+      {redirects < 3 && <Loading message="Loading..." />}
       <WebView
         source={{ uri: redirect }}
         startInLoadingState
@@ -30,5 +27,20 @@ function WebViewWrapper({ route }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "red",
+    flex: 1,
+  },
+});
+
+WebViewWrapper.propTypes = {
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 
 export default WebViewWrapper;

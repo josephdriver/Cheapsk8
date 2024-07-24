@@ -1,24 +1,28 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useTheme, Text, Divider } from "@rneui/themed";
-import { useSelector } from "react-redux";
+import { useTheme, Text, Divider, Switch } from "@rneui/themed";
+import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 import axios from "axios";
 import qs from "qs";
 
+import { setFavourites } from "../redux/favouritesSlice";
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS, GAMES } from "../constants/Urls";
 import HeaderImage from "../components/HeaderImage";
 import DealItem from "../components/DealItem";
 import Loading from "../components/Loading";
-import { METACRITIC_SCORES } from "../constants/Colours";
 import { dealListType, gameListType } from "../propTypes/dealType";
+import DealInfoContainer from "../components/DealInfoContainer";
+import DealNotificationsSettings from "../components/DealNotificationsSettings";
 
 function Deal({ route, navigation }) {
   const { deal } = route.params;
   const { stores, savedStores } = useSelector((state) => state.stores);
+  const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
+  const dispatch = useDispatch();
 
   const [gameData, setGameData] = useState(deal);
   const [gameDataLoading, setGameDataLoading] = useState(false);
@@ -78,33 +82,22 @@ function Deal({ route, navigation }) {
   }, [data, stores]);
 
   /**
-   * useMemo to convert the date from seconds to a readable format
-   * @returns {string} - formatted date
+   * useMemo to determine if the game is a favourite
    */
-  const secondsToDate = useMemo(() => {
-    if (!data) return null;
+  const isFavourite = useMemo(
+    () =>
+      gameData && gameData.gameInfo && gameData.gameInfo.gameID
+        ? favourites.some((f) => f.gameID === gameData.gameInfo.gameID)
+        : false,
+    [gameData, favourites]
+  );
 
-    const date = new Date(data.cheapestPriceEver.date * 1000);
-    const day = date.getUTCDate().toString().padStart(2, "0");
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-    const year = date.getUTCFullYear().toString().substr(-2);
-    return `${day}/${month}/${year}`;
-  }, [data]);
-
-  /**
-   * useMemo to determine the colour of the metacritic score
-   * @returns {string} - colour of the metacritic score
-   */
-  const metacriticScore = useMemo(() => {
-    if (!gameData.gameInfo) return null;
-    if (gameData.gameInfo.metacriticScore >= 80) {
-      return METACRITIC_SCORES.GOOD;
-    }
-    if (gameData.gameInfo.metacriticScore >= 50) {
-      return METACRITIC_SCORES.AVERAGE;
-    }
-    return METACRITIC_SCORES.BAD;
-  }, [gameData]);
+  const handleToggleFavourite = useCallback(() => {
+    const newFavourites = isFavourite
+      ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
+      : [...favourites, { ...data, gameID: gameData.gameInfo.gameID }];
+    dispatch(setFavourites(newFavourites));
+  }, [gameData, dispatch, favourites, isFavourite, data]);
 
   /**
    * useMemo to determine the stores to display
@@ -121,74 +114,57 @@ function Deal({ route, navigation }) {
    * If the data is loading, display the loading component
    * If the data is not loaded, return null
    */
-  if (!data || !gameData) return null;
+
   if (loading || gameDataLoading) {
     return <Loading message="Getting the latest deals... Hold tight!" />;
   }
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <Pressable onPress={() => console.log(data)} style={styles.iconContainer}>
-        <Icon name="heart" color="white" size={35} style={styles.icon} />
-      </Pressable>
-      <View style={styles.imageContainer}>
-        <HeaderImage
-          steamAppID={gameData.gameInfo.steamAppID}
-          isCap
-          fallback={gameData.gameInfo.thumb}
-        />
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.dealTitle}>{gameData.gameInfo.name}</Text>
-
-        <View style={styles.info}>
-          <View>
-            <Text>
-              {gameData.gameInfo.steamAppID
-                ? `${gameData.gameInfo.steamRatingText} (${gameData.gameInfo.steamRatingPercent}%)`
-                : ` `}
-            </Text>
-            <Text
-              style={{
-                color: metacriticScore,
-              }}
-            >
-              {gameData.gameInfo.metacriticScore > 0
-                ? `Metacritic Score ${gameData.gameInfo.metacriticScore}`
-                : ` `}
-            </Text>
-            <Text>
-              {gameData.gameInfo.publisher &&
-                `Publisher: ${gameData.gameInfo.publisher}`}
-            </Text>
+      {data && gameData && (
+        <>
+          <Pressable
+            onPress={() => handleToggleFavourite(gameData)}
+            style={styles.iconContainer}
+          >
+            <Icon
+              name="heart"
+              color={isFavourite ? "yellow" : "white"}
+              size={35}
+              style={styles.icon}
+            />
+          </Pressable>
+          <View style={styles.imageContainer}>
+            <HeaderImage
+              steamAppID={gameData.gameInfo.steamAppID}
+              isCap
+              fallback={gameData.gameInfo.thumb}
+            />
           </View>
-          <View style={styles.alignEnd}>
-            <Text>Lowest Ever</Text>
-            <Text>{`$${data.cheapestPriceEver.price}`}</Text>
-            <Text>{secondsToDate}</Text>
-          </View>
-        </View>
-      </View>
-      <Divider />
-      <ScrollView>
-        {data.deals
-          .filter((d) =>
-            storesArray.some((s) => s.storeID.toString() === d.storeID)
-          )
-          .map((d) => {
-            const st = storesArray.find(
-              (s) => s.storeID.toString() === d.storeID
-            );
-            return (
-              <DealItem
-                key={d.dealID}
-                deal={d}
-                store={st}
-                handlePress={handlePress}
-              />
-            );
-          })}
-      </ScrollView>
+          <DealInfoContainer gameData={gameData} data={data} />
+          <Divider />
+          {isFavourite && <DealNotificationsSettings />}
+          <ScrollView>
+            {data.deals
+              .filter((d) =>
+                storesArray.some((s) => s.storeID.toString() === d.storeID)
+              )
+              .map((d) => {
+                const st = storesArray.find(
+                  (s) => s.storeID.toString() === d.storeID
+                );
+                return (
+                  <DealItem
+                    key={d.dealID}
+                    deal={d}
+                    store={st}
+                    handlePress={handlePress}
+                  />
+                );
+              })}
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 }
@@ -211,12 +187,11 @@ const styles = StyleSheet.create({
   iconContainer: {
     zIndex: 1,
     position: "absolute",
-    top: 10,
-    left: 10,
+    top: 265,
+    right: 10,
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: "#306187",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -226,15 +201,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     height: 200,
-  },
-  infoContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    backgroundColor: "#306187",
-  },
-  info: { flexDirection: "row", justifyContent: "space-between" },
-  alignEnd: {
-    alignItems: "flex-end",
   },
 });
 export default Deal;

@@ -65,6 +65,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  iconContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
 });
 
 export default TabBar;

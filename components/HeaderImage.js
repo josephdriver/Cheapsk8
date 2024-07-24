@@ -1,6 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
-import { Image, StyleSheet } from "react-native";
+import { useTheme, Skeleton } from "@rneui/themed";
+import { Image, StyleSheet, View } from "react-native";
+
 import { STEAM_XL_CAP, STEAM_HEADER, DELIM_ID, BASE } from "../constants/Urls";
 
 function HeaderImage({
@@ -9,6 +11,8 @@ function HeaderImage({
   isCap = false,
   fallback = false,
 }) {
+  const { theme } = useTheme();
+  const [loading, setLoading] = useState(false);
   /**
    * Memoized image URL
    * If a fallback is provided and no steamAppID is provided, use the fallback
@@ -25,9 +29,11 @@ function HeaderImage({
   );
 
   return (
-    <>
+    <View style={styles.container}>
       <Image
         style={styles.mainImage}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
         source={{
           uri: imageURL,
         }}
@@ -40,7 +46,17 @@ function HeaderImage({
           }}
         />
       )}
-    </>
+      {loading && (
+        <View style={styles.loading}>
+          <Skeleton
+            animation="pulse"
+            style={[styles.skeleton, { backgroundColor: theme.colors.grey3 }]}
+            width={180}
+            height={70}
+          />
+        </View>
+      )}
+    </View>
   );
 }
 HeaderImage.defaultProps = {
@@ -58,6 +74,9 @@ HeaderImage.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+  },
   mainImage: {
     width: "100%",
     height: "100%",

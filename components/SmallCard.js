@@ -1,19 +1,16 @@
-import React, { useMemo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 
 import CapsuleImage from "./CapsuleImage";
+import { dealListType } from "../propTypes/dealType";
 
 function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
   const { stores } = useSelector((state) => state.stores);
-
-  const getStore = useMemo(
-    () => stores.find((s) => s.storeID === deal.storeID),
-    [stores, deal.storeID]
-  );
+  const store = stores.find((s) => s.storeID === deal.storeID);
 
   return (
     <Pressable
@@ -24,16 +21,10 @@ function SmallCard({ deal, handleDealNavigate }) {
         steamAppID={deal.steamAppID}
         title={deal.title}
         url={deal.thumb}
-        hasLogo={getStore.images.logo}
+        hasLogo={store.images.logo}
       />
 
-      <View
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 3,
-          paddingBottom: 3,
-        }}
-      >
+      <View style={styles.infoContainer}>
         <View style={{ flex: 7 }}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
             {deal.title}
@@ -41,18 +32,15 @@ function SmallCard({ deal, handleDealNavigate }) {
         </View>
         <View>
           <View
-            style={{
-              height: 21,
-              backgroundColor: theme.colors.secondary,
-              alignItems: "center",
-            }}
+            style={[
+              styles.priceContainer,
+              { backgroundColor: theme.colors.grey3 },
+            ]}
           >
             <Text>-{deal.savings.split(".")[0]}%</Text>
           </View>
           <View>
-            <Text style={{ fontWeight: "700", fontSize: 15 }}>
-              ${deal.salePrice}
-            </Text>
+            <Text style={styles.price}>${deal.salePrice}</Text>
           </View>
         </View>
       </View>
@@ -68,36 +56,29 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     overflow: "hidden",
   },
+  infoContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 3,
+    paddingBottom: 3,
+  },
   title: {
     fontWeight: "700",
     fontSize: 15,
     paddingBottom: 1,
     color: "white",
   },
+  priceContainer: {
+    height: 21,
+    alignItems: "center",
+  },
+  price: {
+    fontWeight: "700",
+    fontSize: 15,
+  },
 });
 
 SmallCard.propTypes = {
-  deal: PropTypes.shape({
-    internalName: PropTypes.string,
-    title: PropTypes.string,
-    metacriticLink: PropTypes.string,
-    dealID: PropTypes.string,
-    storeID: PropTypes.string,
-    gameID: PropTypes.string,
-    salePrice: PropTypes.string,
-    normalPrice: PropTypes.string,
-    isOnSale: PropTypes.string,
-    savings: PropTypes.string,
-    metacriticScore: PropTypes.string,
-    steamRatingText: PropTypes.string,
-    steamRatingPercent: PropTypes.string,
-    steamRatingCount: PropTypes.string,
-    steamAppID: PropTypes.string,
-    releaseDate: PropTypes.number,
-    lastChange: PropTypes.number,
-    dealRating: PropTypes.string,
-    thumb: PropTypes.string,
-  }).isRequired,
+  deal: dealListType.isRequired,
   handleDealNavigate: PropTypes.func,
 };
 

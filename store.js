@@ -1,9 +1,11 @@
+/* eslint-disable import/no-named-as-default */
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StoresSlice from "./redux/storesSlice";
 import DealsSlice from "./redux/dealsSlice";
+import FavouritesSlice from "./redux/favouritesSlice";
 
 const persistConfig = {
   key: "root",
@@ -13,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   stores: StoresSlice,
   deals: DealsSlice,
+  favourites: FavouritesSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,104 +1,105 @@
-import PropTypes from "prop-types";
+import { string, number, shape, arrayOf, oneOfType } from "prop-types";
 
-export const infoPropTypes = PropTypes.shape({
-  title: PropTypes.string.isRequired,
-  steamAppID: PropTypes.string.isRequired,
-  thumb: PropTypes.string.isRequired,
+export const infoPropTypes = shape({
+  title: string.isRequired,
+  steamAppID: string,
+  thumb: string.isRequired,
 }).isRequired;
 
-export const cheapestPriceEverType = PropTypes.shape({
-  price: PropTypes.string.isRequired,
-  date: PropTypes.number.isRequired,
+export const cheapestPriceEverType = shape({
+  price: string.isRequired,
+  date: number.isRequired,
 }).isRequired;
 
-export const dealPropTypes = PropTypes.shape({
-  storeID: PropTypes.string.isRequired,
-  dealID: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
-  retailPrice: PropTypes.string.isRequired,
-  savings: PropTypes.string.isRequired,
+export const dealPropTypes = shape({
+  storeID: string.isRequired,
+  dealID: string.isRequired,
+  price: string.isRequired,
+  retailPrice: string.isRequired,
+  savings: string.isRequired,
 });
 
-export const gameType = PropTypes.shape({
+export const gameType = shape({
   info: infoPropTypes,
   cheapestPriceEver: cheapestPriceEverType,
-  deals: PropTypes.arrayOf(dealPropTypes),
+  deals: arrayOf(dealPropTypes),
 });
 
-export const gameListType = PropTypes.shape({
-  gameID: PropTypes.string.isRequired,
-  steamAppID: PropTypes.string, // Nullable
-  cheapest: PropTypes.string.isRequired,
-  cheapestDealID: PropTypes.string.isRequired,
-  external: PropTypes.string.isRequired,
-  internalName: PropTypes.string.isRequired,
-  thumb: PropTypes.string.isRequired,
+export const gameListType = shape({
+  gameID: string.isRequired,
+  steamAppID: string,
+  cheapest: string.isRequired,
+  cheapestDealID: string.isRequired,
+  external: string.isRequired,
+  internalName: string.isRequired,
+  thumb: string.isRequired,
 });
 
-export const dealListType = PropTypes.shape({
-  internalName: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  metacriticLink: PropTypes.string.isRequired,
-  dealID: PropTypes.string.isRequired,
-  storeID: PropTypes.string.isRequired,
-  gameID: PropTypes.string.isRequired,
-  salePrice: PropTypes.string.isRequired,
-  normalPrice: PropTypes.string.isRequired,
-  isOnSale: PropTypes.string.isRequired,
-  savings: PropTypes.string.isRequired,
-  metacriticScore: PropTypes.string.isRequired,
-  steamRatingText: PropTypes.string.isRequired,
-  steamRatingPercent: PropTypes.string.isRequired,
-  steamRatingCount: PropTypes.string.isRequired,
-  steamAppID: PropTypes.string.isRequired,
-  releaseDate: PropTypes.number.isRequired,
-  lastChange: PropTypes.number.isRequired,
-  dealRating: PropTypes.string.isRequired,
-  thumb: PropTypes.string.isRequired,
+export const dealListType = shape({
+  internalName: string.isRequired,
+  title: string.isRequired,
+  metacriticLink: string,
+  dealID: string.isRequired,
+  storeID: string.isRequired,
+  gameID: string.isRequired,
+  salePrice: string.isRequired,
+  normalPrice: string.isRequired,
+  isOnSale: string.isRequired,
+  savings: string.isRequired,
+  metacriticScore: string,
+  steamRatingText: string,
+  steamRatingPercent: string,
+  steamRatingCount: string,
+  steamAppID: string,
+  releaseDate: number.isRequired,
+  lastChange: number.isRequired,
+  dealRating: string.isRequired,
+  thumb: string.isRequired,
 });
 
-export const gameInfoType = PropTypes.shape({
-  storeID: PropTypes.string.isRequired,
-  gameID: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  steamAppID: PropTypes.string.isRequired,
-  salePrice: PropTypes.string.isRequired,
-  retailPrice: PropTypes.string.isRequired,
-  steamRatingText: PropTypes.string.isRequired,
-  steamRatingPercent: PropTypes.string.isRequired,
-  steamRatingCount: PropTypes.string.isRequired,
-  metacriticScore: PropTypes.string.isRequired,
-  metacriticLink: PropTypes.string.isRequired,
-  releaseDate: PropTypes.number.isRequired,
-  publisher: PropTypes.string.isRequired,
-  steamworks: PropTypes.string.isRequired,
-  thumb: PropTypes.string.isRequired,
+export const gameInfoType = shape({
+  storeID: string.isRequired,
+  gameID: string.isRequired,
+  name: string.isRequired,
+  steamAppID: string,
+  salePrice: string.isRequired,
+  retailPrice: string.isRequired,
+  steamRatingText: string,
+  steamRatingPercent: string,
+  steamRatingCount: string,
+  metacriticScore: string,
+  metacriticLink: string,
+  releaseDate: number.isRequired,
+  publisher: string.isRequired,
+  steamworks: string,
+  thumb: string.isRequired,
 }).isRequired;
 
-export const cheaperStoreType = PropTypes.shape({
-  dealID: PropTypes.string.isRequired,
-  storeID: PropTypes.string.isRequired,
-  salePrice: PropTypes.string.isRequired,
-  retailPrice: PropTypes.string.isRequired,
+export const cheaperStoreType = shape({
+  dealID: string.isRequired,
+  storeID: string.isRequired,
+  salePrice: string.isRequired,
+  retailPrice: string.isRequired,
 }).isRequired;
 
-export const cheapestPriceType = PropTypes.shape({
-  price: PropTypes.string.isRequired,
-  date: PropTypes.number.isRequired,
+export const cheapestPriceType = shape({
+  price: string.isRequired,
+  date: number.isRequired,
 }).isRequired;
 
-export const dealType = PropTypes.shape({
+export const dealType = shape({
   gameInfo: gameInfoType,
-  cheaperStores: PropTypes.arrayOf(cheaperStoreType),
+  cheaperStores: arrayOf(cheaperStoreType),
   cheapestPrice: cheapestPriceType,
 }).isRequired;
 
-export const storeType = PropTypes.shape({
-  storeID: PropTypes.string.isRequired,
-  storeName: PropTypes.string.isRequired,
-  isActive: PropTypes.string.isRequired,
-  images: PropTypes.shape({
-    banner: PropTypes.string.isRequired,
-    logo: PropTypes.string.isRequired,
+export const storeType = shape({
+  storeID: string.isRequired,
+  storeName: string.isRequired,
+  isActive: oneOfType([number.isRequired, string.isRequired]),
+  images: shape({
+    banner: string.isRequired,
+    logo: string.isRequired,
+    icon: string.isRequired,
   }).isRequired,
-}).isRequired;
+});
