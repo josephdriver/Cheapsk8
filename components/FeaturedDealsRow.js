@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { View, StyleSheet } from "react-native";
 
 import LargeCard from "./LargeCard";
-import { dealListType } from "../propTypes/dealType";
+import { dealListType } from "../propTypes/props";
 import SmallCard from "./SmallCard";
 
 function FeaturedDealsRow({ item, handleDealNavigate }) {

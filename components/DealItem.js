@@ -4,7 +4,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useTheme, Text, Divider } from "@rneui/themed";
 
 import IconImage from "./IconImage";
-import { dealPropTypes, storeType } from "../propTypes/dealType";
+import { dealPropTypes, storeType } from "../propTypes/props";
 
 function DealItem({ deal, store, handlePress }) {
   const { theme } = useTheme();

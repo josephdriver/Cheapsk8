@@ -5,7 +5,7 @@ import { Text, useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 
 import CapsuleImage from "./CapsuleImage";
-import { dealListType } from "../propTypes/dealType";
+import { dealListType } from "../propTypes/props";
 import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../constants/Colours";
 
 function SmallCard({ deal, handleDealNavigate }) {

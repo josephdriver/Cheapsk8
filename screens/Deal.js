@@ -13,7 +13,7 @@ import { DEALS, GAMES } from "../constants/Urls";
 import HeaderImage from "../components/HeaderImage";
 import DealItem from "../components/DealItem";
 import Loading from "../components/Loading";
-import { dealListType, gameListType } from "../propTypes/dealType";
+import { dealListType, gameListType } from "../propTypes/props";
 import DealInfoContainer from "../components/DealInfoContainer";
 import DealNotificationsSettings from "../components/DealNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";

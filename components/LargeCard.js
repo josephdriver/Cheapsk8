@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
 import HeaderImage from "./HeaderImage";
-import { dealListType } from "../propTypes/dealType";
+import { dealListType } from "../propTypes/props";
 import {
   TEXT_COLOUR_WHITE,
   INFO_BACKGROUND,

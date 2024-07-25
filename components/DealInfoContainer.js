@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-import { dealType, gameListType } from "../propTypes/dealType";
+import { dealType, gameListType } from "../propTypes/props";
 import {
   TEXT_COLOUR_WHITE,
   METACRITIC_SCORES,
