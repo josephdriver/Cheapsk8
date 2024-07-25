@@ -5,7 +5,7 @@ import { useTheme, Text, Switch, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { clone } from "lodash";
 import { setSavedStores } from "../redux/storesSlice";
-import IconImage from "../components/IconImage";
+import IconImage from "../components/shared/IconImage";
 
 function Settings() {
   const { stores, savedStores } = useSelector((state) => state.stores);

@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Image, View, StyleSheet } from "react-native";
 import { Skeleton, useTheme } from "@rneui/themed";
-import { STEAM_S_HEADER, DELIM_ID, BASE } from "../constants/Urls";
+import { STEAM_S_HEADER, DELIM_ID, BASE } from "../../constants/Urls";
 
 function CapsuleImage({ steamAppID, title, url, hasLogo }) {
   const { theme } = useTheme();

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useTheme } from "@rneui/themed";
 
 import FeaturedDealsRow from "./FeaturedDealsRow";
+import { LARGE_SPINNER } from "../../constants/Defaults";
 
 function FeaturedDeals({
   handleDealNavigate,
@@ -14,7 +15,6 @@ function FeaturedDeals({
 }) {
   const { theme } = useTheme();
   const { content } = useSelector((state) => state.deals);
-  const LARGE = "large";
 
   /**
    * Render the footer component
@@ -26,7 +26,7 @@ function FeaturedDeals({
         {loading && (
           <ActivityIndicator
             style={styles.activityIndicator}
-            size={LARGE}
+            size={LARGE_SPINNER}
             color={theme.colors.primary}
           />
         )}

@@ -4,13 +4,14 @@ import { useTheme } from "@rneui/themed";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
-import HeaderImage from "./HeaderImage";
-import { dealListType } from "../propTypes/props";
+import HeaderImage from "../shared/HeaderImage";
+import { dealListType } from "../../propTypes/props";
 import {
   TEXT_COLOUR_WHITE,
   INFO_BACKGROUND,
   TEXT_INACTIVE,
-} from "../constants/Colours";
+  DISCOUNT_BOX,
+} from "../../constants/Colours";
 
 function LargeCard({ deal, handleDealNavigate }) {
   const { stores } = useSelector((state) => state.stores);
@@ -40,10 +41,7 @@ function LargeCard({ deal, handleDealNavigate }) {
         </View>
         <View style={styles.priceContainer}>
           <View
-            style={[
-              styles.savingsContainer,
-              { backgroundColor: theme.colors.secondary },
-            ]}
+            style={[styles.savingsContainer, { backgroundColor: DISCOUNT_BOX }]}
           >
             <Text>-{deal.savings.split(".")[0]}%</Text>
           </View>

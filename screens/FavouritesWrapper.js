@@ -2,19 +2,17 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 
 import { OPTIONS, NAVIGATOR_OPTIONS } from "../constants/NavigatorConfig";
-import Home from "./Home";
 import Game from "./Game";
 import WebViewWrapper from "../components/WebViewWrapper";
-import Search from "./Search";
+import WatchList from "./WatchList";
 
-function HomeWrapper() {
+function FavouritesWrapper() {
   const Stack = createStackNavigator();
 
   return (
     <Stack.Navigator screenOptions={NAVIGATOR_OPTIONS}>
-      <Stack.Screen name="Featured" component={Home} options={OPTIONS} />
+      <Stack.Screen name="WatchList" component={WatchList} options={OPTIONS} />
       <Stack.Screen name="Deal" component={Game} options={OPTIONS} />
-      <Stack.Screen name="Search" component={Search} options={OPTIONS} />
       <Stack.Screen
         name="WebView"
         component={WebViewWrapper}
@@ -24,4 +22,4 @@ function HomeWrapper() {
   );
 }
 
-export default HomeWrapper;
+export default FavouritesWrapper;

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Image } from "react-native";
-import { BASE } from "../constants/Urls";
+import { BASE } from "../../constants/Urls";
 
 function IconImage({ url, width, height }) {
   return (
