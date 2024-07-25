@@ -6,6 +6,11 @@ import { useSelector } from "react-redux";
 
 import HeaderImage from "./HeaderImage";
 import { dealListType } from "../propTypes/dealType";
+import {
+  TEXT_COLOUR_WHITE,
+  INFO_BACKGROUND,
+  TEXT_INACTIVE,
+} from "../constants/Colours";
 
 function LargeCard({ deal, handleDealNavigate }) {
   const { stores } = useSelector((state) => state.stores);
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexDirection: "row",
     padding: 8,
-    backgroundColor: "#306187",
+    backgroundColor: INFO_BACKGROUND,
   },
   titleContainer: {
     flex: 7,
@@ -74,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
     paddingBottom: 1,
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
   priceContainer: {
     flex: 3,
@@ -91,17 +96,17 @@ const styles = StyleSheet.create({
   priceValues: {
     flexDirection: "column",
     alignItems: "flex-end",
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
   normalPrice: {
-    color: "#777",
+    color: TEXT_INACTIVE,
     fontSize: 15,
     paddingBottom: 2,
   },
   salePrice: {
     fontWeight: "700",
     fontSize: 15,
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
 });
 

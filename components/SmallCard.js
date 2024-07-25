@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 
 import CapsuleImage from "./CapsuleImage";
 import { dealListType } from "../propTypes/dealType";
+import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../constants/Colours";
 
 function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
   cardWrapper: {
     marginTop: 9,
     width: "48.75%",
-    backgroundColor: "#306187",
+    backgroundColor: INFO_BACKGROUND,
     borderRadius: 2,
     overflow: "hidden",
   },
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 15,
     paddingBottom: 1,
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
   priceContainer: {
     height: 21,

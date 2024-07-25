@@ -3,6 +3,8 @@ import { View, Pressable, StyleSheet } from "react-native";
 import { useTheme } from "@rneui/themed";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 
+import { INACTIVE_NAV_ICON } from "../constants/Colours";
+
 function TabBar({ state, descriptors, navigation }) {
   const { theme } = useTheme();
 
@@ -47,7 +49,7 @@ function TabBar({ state, descriptors, navigation }) {
             <View styles={{ flexDirection: "row", flexWrap: "wrap" }}>
               <Icon
                 name={route.name}
-                color={isFocused ? theme.colors.primary : "#262020"}
+                color={isFocused ? theme.colors.primary : INACTIVE_NAV_ICON}
                 size={24}
               />
             </View>

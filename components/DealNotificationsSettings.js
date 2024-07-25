@@ -1,21 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useTheme, Divider, Switch } from "@rneui/themed";
+import { Divider, Slider } from "@rneui/themed";
+
+import { TEXT_COLOUR_WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
+import { ALERT_LEVELS } from "../constants/Defaults";
 
 function DealNotificationsSettings() {
+  const [alertLevel, setAlertLevel] = useState(1);
+
+  console.log(Object.keys(ALERT_LEVELS).length);
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>App Notifiations</Text>
+        <Text style={styles.title}>Game Notifiations</Text>
+        <Text>Get notified when:</Text>
+        <Text
+          style={{ alignSelf: "center", paddingVertical: 7, fontWeight: "700" }}
+        >
+          {ALERT_LEVELS[alertLevel].label}
+        </Text>
         <View style={styles.settingsContainer}>
-          <View style={styles.optionsText}>
-            <Text style={styles.rowPadding}> If game has any sale</Text>
-            <Text style={styles.rowPadding}> If game is 25% off</Text>
-            <Text style={styles.rowPadding}> If game is 50% off</Text>
-            <Text style={styles.rowPadding}> If game is lowest ever</Text>
-          </View>
-          <View style={styles.optionsToggles}>
-            <Switch value onValueChange={(value) => console.log(value)} />
+          <View style={{ marginHorizontal: 10 }}>
+            <Slider
+              value={0}
+              onValueChange={setAlertLevel}
+              maximumValue={Object.keys(ALERT_LEVELS).length}
+              minimumValue={1}
+              step={1}
+              allowTouchTrack
+              minimumTrackTintColor={FAVOURITE_YELLOW}
+              trackStyle={{ height: 5, backgroundColor: TEXT_COLOUR_WHITE }}
+              thumbStyle={{
+                height: 30,
+                width: 30,
+                backgroundColor: FAVOURITE_YELLOW,
+              }}
+            />
           </View>
         </View>
       </View>
@@ -31,16 +51,13 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "700",
     fontSize: 20,
-    color: "white",
+    color: TEXT_COLOUR_WHITE,
   },
   settingsContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
   },
   optionsText: {
     flex: 2,
-  },
-  optionsToggles: {
-    flex: 1,
   },
   rowPadding: {
     paddingVertical: 10,

@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useTheme, Text, Divider, Switch } from "@rneui/themed";
+import { useTheme, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 import axios from "axios";
@@ -16,6 +16,7 @@ import Loading from "../components/Loading";
 import { dealListType, gameListType } from "../propTypes/dealType";
 import DealInfoContainer from "../components/DealInfoContainer";
 import DealNotificationsSettings from "../components/DealNotificationsSettings";
+import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
 
 function Deal({ route, navigation }) {
   const { deal } = route.params;
@@ -95,7 +96,10 @@ function Deal({ route, navigation }) {
   const handleToggleFavourite = useCallback(() => {
     const newFavourites = isFavourite
       ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
-      : [...favourites, { ...data, gameID: gameData.gameInfo.gameID }];
+      : [
+          ...favourites,
+          { ...data, gameID: gameData.gameInfo.gameID, alertLevel: 1 },
+        ];
     dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, isFavourite, data]);
 
@@ -129,7 +133,7 @@ function Deal({ route, navigation }) {
           >
             <Icon
               name="heart"
-              color={isFavourite ? "yellow" : "white"}
+              color={isFavourite ? FAVOURITE_YELLOW : WHITE}
               size={35}
               style={styles.icon}
             />
