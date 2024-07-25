@@ -9,7 +9,7 @@ import { fetchStores } from "../redux/storesSlice";
 import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
 import TabBar from "../components/TabBar";
-import WatchList from "./WatchList";
+import FavouritesWrapper from "./FavouritesWrapper";
 import { OPTIONS } from "../constants/NavigatorConfig";
 
 function Main() {
@@ -37,7 +37,7 @@ function Main() {
     [stores]
   );
 
-  const WatchListComponent = useCallback(() => <WatchList />, []);
+  const WatchListComponent = useCallback(() => <FavouritesWrapper />, []);
 
   return (
     <SafeAreaProvider>
@@ -45,7 +45,7 @@ function Main() {
         <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
           <Tab.Screen name="home" options={OPTIONS} component={HomeComponent} />
           <Tab.Screen
-            name="binoculars"
+            name="heart"
             component={WatchListComponent}
             options={OPTIONS}
           />

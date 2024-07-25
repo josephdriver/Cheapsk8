@@ -10,16 +10,18 @@ import qs from "qs";
 import { setFavourites } from "../redux/favouritesSlice";
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS, GAMES } from "../constants/Urls";
-import HeaderImage from "../components/HeaderImage";
-import DealItem from "../components/DealItem";
-import Loading from "../components/Loading";
-import { dealListType, gameListType } from "../propTypes/dealType";
-import DealInfoContainer from "../components/DealInfoContainer";
-import DealNotificationsSettings from "../components/DealNotificationsSettings";
+import HeaderImage from "../components/shared/HeaderImage";
+import StoreOffer from "../components/shared/StoreOffer";
+import Loading from "../components/shared/Loading";
+import { dealListType, gameListType } from "../propTypes/props";
+import GameInfoContainer from "../components/shared/GameInfoContainer";
+import GameNotificationsSettings from "../components/shared/GameNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
+import { ALERT_LEVELS } from "../constants/Defaults";
 
-function Deal({ route, navigation }) {
+function Game({ route, navigation }) {
   const { deal } = route.params;
+  console.log(deal);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
@@ -29,7 +31,14 @@ function Deal({ route, navigation }) {
   const [gameDataLoading, setGameDataLoading] = useState(false);
 
   const getParams = useMemo(() => ({ id: deal.gameID }), [deal]);
-  const { data, loading } = useAxiosFetch(GAMES, 0, false, true, getParams);
+  const { data, loading } = useAxiosFetch(
+    GAMES,
+    0,
+    false,
+    true,
+    getParams,
+    null
+  );
 
   /**
    * HandlePress function to navigate to the WebView screen
@@ -98,7 +107,13 @@ function Deal({ route, navigation }) {
       ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
       : [
           ...favourites,
-          { ...data, gameID: gameData.gameInfo.gameID, alertLevel: 1 },
+          {
+            ...data,
+            gameID: gameData.gameInfo.gameID,
+            alertLevel: ALERT_LEVELS[1],
+            activeAlert: false,
+            lastSeen: new Date().getTime(),
+          },
         ];
     dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, isFavourite, data]);
@@ -145,9 +160,9 @@ function Deal({ route, navigation }) {
               fallback={gameData.gameInfo.thumb}
             />
           </View>
-          <DealInfoContainer gameData={gameData} data={data} />
+          <GameInfoContainer gameData={gameData} data={data} />
           <Divider />
-          {isFavourite && <DealNotificationsSettings />}
+          {isFavourite && <GameNotificationsSettings gameData={gameData} />}
           <ScrollView>
             {data.deals
               .filter((d) =>
@@ -158,7 +173,7 @@ function Deal({ route, navigation }) {
                   (s) => s.storeID.toString() === d.storeID
                 );
                 return (
-                  <DealItem
+                  <StoreOffer
                     key={d.dealID}
                     deal={d}
                     store={st}
@@ -173,7 +188,7 @@ function Deal({ route, navigation }) {
   );
 }
 
-Deal.propTypes = {
+Game.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       deal: PropTypes.oneOfType([dealListType, gameListType]).isRequired,
@@ -207,4 +222,4 @@ const styles = StyleSheet.create({
     height: 200,
   },
 });
-export default Deal;
+export default Game;

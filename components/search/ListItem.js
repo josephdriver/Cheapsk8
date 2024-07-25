@@ -3,19 +3,18 @@ import PropTypes from "prop-types";
 import { View, Pressable, StyleSheet } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 
-import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../constants/Colours";
+import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../../constants/Colours";
+import CapsuleImage from "../shared/CapsuleImage";
 
-import CapsuleImage from "./CapsuleImage";
-
-function ListItem({ deal, handleDealNavigate }) {
+function ListItem({ item, handleOnPress }) {
   const { theme } = useTheme();
 
   /**
    * Handle navigation to the deal screen
    */
   const handlePress = useCallback(
-    () => handleDealNavigate(deal),
-    [deal, handleDealNavigate]
+    () => handleOnPress(item),
+    [item, handleOnPress]
   );
 
   return (
@@ -29,19 +28,19 @@ function ListItem({ deal, handleDealNavigate }) {
         <View style={styles.imageRowContainer}>
           <View style={styles.imageContainer}>
             <CapsuleImage
-              steamAppID={deal.steamAppID}
-              title={deal.external}
-              url={deal.thumb}
+              steamAppID={item.steamAppID}
+              title={item.external}
+              url={item.thumb}
             />
           </View>
           <View style={styles.dealTextContainer}>
             <Text>Cheapest Deal</Text>
-            <Text style={styles.dealTextStyle}>${deal.cheapest}</Text>
+            <Text style={styles.dealTextStyle}>${item.cheapest}</Text>
           </View>
         </View>
 
         <View style={styles.gameTitleContainer}>
-          <Text style={styles.gameTitleText}>{deal.external}</Text>
+          <Text style={styles.gameTitleText}>{item.external}</Text>
         </View>
       </View>
     </Pressable>
@@ -93,14 +92,14 @@ const styles = StyleSheet.create({
 });
 
 ListItem.propTypes = {
-  deal: PropTypes.shape({
+  item: PropTypes.shape({
     gameID: PropTypes.string.isRequired,
     steamAppID: PropTypes.string,
     cheapest: PropTypes.string.isRequired,
     thumb: PropTypes.string,
     external: PropTypes.string.isRequired,
   }).isRequired,
-  handleDealNavigate: PropTypes.func.isRequired,
+  handleOnPress: PropTypes.func.isRequired,
 };
 
 export default ListItem;

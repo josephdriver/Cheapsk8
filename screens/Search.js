@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { useTheme, SearchBar } from "@rneui/themed";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
 import { GAMES } from "../constants/Urls";
-import ListItem from "../components/ListItem";
+import ListItem from "../components/search/ListItem";
+import { LARGE_SPINNER } from "../constants/Defaults";
+import SearchableFlatList from "../components/shared/SearchableFlatList";
 
 function Search({ navigation }) {
   const { theme } = useTheme();
@@ -89,7 +91,7 @@ function Search({ navigation }) {
     }
   }, [params]);
 
-  const handlePaingate = useCallback(() => {
+  const handlePaginate = useCallback(() => {
     if (!loading && result && result.length >= 60) {
       setParams((prevState) => ({
         ...prevState,
@@ -98,39 +100,34 @@ function Search({ navigation }) {
     }
   }, [loading, result]);
 
+  const renderFooter = useCallback(
+    () => (
+      <View>
+        {loading && (
+          <ActivityIndicator
+            style={styles.activityIndicator}
+            size={LARGE_SPINNER}
+            color={theme.colors.primary}
+          />
+        )}
+      </View>
+    ),
+    [loading, theme.colors.primary]
+  );
+
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <SearchBar
+      <SearchableFlatList
+        inputValue={query}
+        handleInputChange={handleInputChange}
+        data={result}
+        handlePaginate={handlePaginate}
+        renderFooter={renderFooter}
+        loading={loading}
+        handleDealNavigate={handleDealNavigate}
+        ListItem={ListItem}
         autoFocus
-        placeholder="Find a game"
-        onChangeText={(e) => handleInputChange(e)}
-        value={query}
-        round={2}
-        showLoading={loading}
-        containerStyle={{
-          backgroundColor: theme.colors.grey5,
-          borderBottomColor: "transparent",
-          borderTopColor: "transparent",
-        }}
       />
-      {result && (
-        <View style={{ paddingBottom: 70 }}>
-          <FlatList
-            data={result}
-            initialNumToRender={60}
-            maxToRenderPerBatch={60}
-            onEndReached={() => handlePaingate()}
-            onEndReachedThreshold={2}
-            renderItem={({ item }) => (
-              <ListItem
-                key={item.gameID}
-                deal={item}
-                handleDealNavigate={handleDealNavigate}
-              />
-            )}
-          />
-        </View>
-      )}
     </View>
   );
 }

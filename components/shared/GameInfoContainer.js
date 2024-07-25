@@ -1,14 +1,15 @@
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import PropTypes from "prop-types";
 
-import { dealType, gameListType } from "../propTypes/dealType";
+import { dealType, gameType, dealListType } from "../../propTypes/props";
 import {
   TEXT_COLOUR_WHITE,
   METACRITIC_SCORES,
   INFO_BACKGROUND,
-} from "../constants/Colours";
+} from "../../constants/Colours";
 
-function DealInfoContainer({ gameData, data }) {
+function GameInfoContainer({ gameData, data }) {
   const { cheapestPriceEver } = data;
   const { gameInfo } = gameData;
 
@@ -62,37 +63,35 @@ function DealInfoContainer({ gameData, data }) {
       <View style={styles.gameInfo}>
         <View style={styles.titleContainer}>
           <Text style={styles.dealTitle}>{gameInfo.name}</Text>
-          <Text>
-            {gameInfo.publisher && `Publisher: ${gameInfo.publisher}`}
-          </Text>
+          {gameInfo.publisher && <Text>{gameInfo.publisher}</Text>}
         </View>
 
         <View style={styles.info}>
           <View>
-            <Text
-              style={[
-                styles.bold,
-                {
-                  color: steamScore,
-                },
-              ]}
-            >
-              {gameInfo.steamAppID
-                ? `${gameInfo.steamRatingText} (${gameInfo.steamRatingPercent}%)`
-                : ` `}
-            </Text>
-            <Text
-              style={[
-                styles.bold,
-                {
-                  color: metacriticScore,
-                },
-              ]}
-            >
-              {gameInfo.metacriticScore > 0
-                ? `Metacritic Score ${gameInfo.metacriticScore}/100`
-                : ` `}
-            </Text>
+            {gameInfo.steamAppID && (
+              <Text
+                style={[
+                  styles.bold,
+                  {
+                    color: steamScore,
+                  },
+                ]}
+              >
+                {gameInfo.steamRatingText} ({gameInfo.steamRatingPercent}%)
+              </Text>
+            )}
+            {gameInfo.metacriticScore > 0 && (
+              <Text
+                style={[
+                  styles.bold,
+                  {
+                    color: metacriticScore,
+                  },
+                ]}
+              >
+                {`Metacritic Score ${gameInfo.metacriticScore}/100`}
+              </Text>
+            )}
           </View>
         </View>
       </View>
@@ -136,9 +135,9 @@ const styles = StyleSheet.create({
   },
 });
 
-DealInfoContainer.propTypes = {
-  gameData: dealType.isRequired,
-  data: gameListType.isRequired,
+GameInfoContainer.propTypes = {
+  gameData: PropTypes.oneOfType([dealType, dealListType]).isRequired,
+  data: gameType.isRequired,
 };
 
-export default DealInfoContainer;
+export default GameInfoContainer;

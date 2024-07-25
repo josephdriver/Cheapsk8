@@ -1,6 +1,7 @@
 export const TEXT_COLOUR_WHITE = "white";
 export const TEXT_INACTIVE = "#777";
 export const WHITE = "white";
+export const DISCOUNT_BOX = "#66CC33";
 
 export const FAVOURITE_YELLOW = "#F5E960";
 export const INFO_BACKGROUND = "#306187";

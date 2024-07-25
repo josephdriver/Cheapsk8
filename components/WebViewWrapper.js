@@ -4,7 +4,7 @@ import { WebView } from "react-native-webview";
 import { View, StyleSheet } from "react-native";
 
 import { REDIRECT, DELIM_ID } from "../constants/Urls";
-import Loading from "./Loading";
+import Loading from "./shared/Loading";
 
 function WebViewWrapper({ route }) {
   const { url } = route.params;

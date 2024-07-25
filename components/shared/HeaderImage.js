@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import { useTheme, Skeleton } from "@rneui/themed";
 import { Image, StyleSheet, View } from "react-native";
 
-import { STEAM_XL_CAP, STEAM_HEADER, DELIM_ID, BASE } from "../constants/Urls";
+import {
+  STEAM_XL_CAP,
+  STEAM_HEADER,
+  DELIM_ID,
+  BASE,
+} from "../../constants/Urls";
 
 function HeaderImage({
   steamAppID,

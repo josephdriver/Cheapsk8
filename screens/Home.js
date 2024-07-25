@@ -6,9 +6,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme, SearchBar } from "@rneui/themed";
 
 import { fetchDeals } from "../redux/dealsSlice";
-import dealsCache from "../constants/CacheTimers";
-import FeaturedDeals from "../components/FeaturedDeals";
-import Loading from "../components/Loading";
+import { DEALS_CACHE_OFFSET } from "../constants/Defaults";
+import FeaturedDeals from "../components/home/FeaturedDeals";
+import Loading from "../components/shared/Loading";
 
 function Home({ navigation }) {
   const { theme } = useTheme();
@@ -39,10 +39,13 @@ function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (fetchTime + dealsCache < new Date().getTime()) {
+      if (fetchTime + DEALS_CACHE_OFFSET < new Date().getTime()) {
         console.log("expired");
       }
-      if (deals.length === 0 || fetchTime + dealsCache < new Date().getTime()) {
+      if (
+        deals.length === 0 ||
+        fetchTime + DEALS_CACHE_OFFSET < new Date().getTime()
+      ) {
         triggerDealFetch();
       }
     }, [triggerDealFetch, deals, fetchTime])
@@ -50,6 +53,7 @@ function Home({ navigation }) {
 
   const handleDealNavigate = useCallback(
     (deal) => {
+      console.log(deal);
       navigation.navigate("Deal", {
         deal,
       });

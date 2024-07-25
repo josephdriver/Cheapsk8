@@ -1,4 +1,4 @@
-import { string, number, shape, arrayOf, oneOfType } from "prop-types";
+import { string, number, shape, arrayOf, oneOfType, bool } from "prop-types";
 
 export const infoPropTypes = shape({
   title: string.isRequired,
@@ -19,6 +19,22 @@ export const dealPropTypes = shape({
   savings: string.isRequired,
 });
 
+export const alertLevelType = shape({
+  id: number.isRequired,
+  label: string.isRequired,
+  threshold: oneOfType([number.isRequired, string.isRequired]),
+});
+
+export const favouriteType = shape({
+  info: infoPropTypes,
+  cheapestPriceEver: cheapestPriceEverType,
+  deals: arrayOf(dealPropTypes),
+  gameID: string.isRequired,
+  alertLevels: alertLevelType,
+  activeAlert: bool,
+  lastSeen: number,
+});
+
 export const gameType = shape({
   info: infoPropTypes,
   cheapestPriceEver: cheapestPriceEverType,
@@ -28,10 +44,7 @@ export const gameType = shape({
 export const gameListType = shape({
   gameID: string.isRequired,
   steamAppID: string,
-  cheapest: string.isRequired,
-  cheapestDealID: string.isRequired,
   external: string.isRequired,
-  internalName: string.isRequired,
   thumb: string.isRequired,
 });
 

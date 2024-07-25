@@ -4,9 +4,9 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useTheme, Text, Divider } from "@rneui/themed";
 
 import IconImage from "./IconImage";
-import { dealPropTypes, storeType } from "../propTypes/dealType";
+import { dealPropTypes, storeType } from "../../propTypes/props";
 
-function DealItem({ deal, store, handlePress }) {
+function StoreOffer({ deal, store, handlePress }) {
   const { theme } = useTheme();
 
   return (
@@ -52,7 +52,7 @@ function DealItem({ deal, store, handlePress }) {
   );
 }
 
-DealItem.propTypes = {
+StoreOffer.propTypes = {
   deal: dealPropTypes.isRequired,
   store: storeType.isRequired,
   handlePress: PropTypes.func.isRequired,
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DealItem;
+export default StoreOffer;

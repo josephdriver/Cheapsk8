@@ -4,9 +4,9 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 
-import CapsuleImage from "./CapsuleImage";
-import { dealListType } from "../propTypes/dealType";
-import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../constants/Colours";
+import CapsuleImage from "../shared/CapsuleImage";
+import { dealListType } from "../../propTypes/props";
+import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../../constants/Colours";
 
 function SmallCard({ deal, handleDealNavigate }) {
   const { theme } = useTheme();
