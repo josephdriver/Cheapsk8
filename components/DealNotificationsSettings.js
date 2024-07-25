@@ -3,13 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
 
 import { TEXT_COLOUR_WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
-
 import { ALERT_LEVELS } from "../constants/Defaults";
 
 function DealNotificationsSettings() {
   const [alertLevel, setAlertLevel] = useState(1);
 
-  console.log(ALERT_LEVELS[alertLevel]);
+  console.log(Object.keys(ALERT_LEVELS).length);
   return (
     <>
       <View style={styles.container}>
@@ -18,14 +17,14 @@ function DealNotificationsSettings() {
         <Text
           style={{ alignSelf: "center", paddingVertical: 7, fontWeight: "700" }}
         >
-          {ALERT_LEVELS[alertLevel]}
+          {ALERT_LEVELS[alertLevel].label}
         </Text>
         <View style={styles.settingsContainer}>
           <View style={{ marginHorizontal: 10 }}>
             <Slider
               value={0}
               onValueChange={setAlertLevel}
-              maximumValue={4}
+              maximumValue={Object.keys(ALERT_LEVELS).length}
               minimumValue={1}
               step={1}
               allowTouchTrack

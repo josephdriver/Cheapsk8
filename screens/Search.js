@@ -5,12 +5,11 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 
 import { GAMES } from "../constants/Urls";
-import DEFAULT_STORES from "../constants/Defaults";
 import ListItem from "../components/ListItem";
 
 function Search({ navigation }) {
   const { theme } = useTheme();
-  const { savedStores } = useSelector((state) => state.stores);
+  const { stores, savedStores } = useSelector((state) => state.stores);
 
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -21,7 +20,7 @@ function Search({ navigation }) {
     storeID:
       savedStores.length > 0
         ? savedStores.map((s) => s.storeID)
-        : DEFAULT_STORES.map((s) => s.storeID),
+        : stores.map((s) => s.storeID),
     pageSize: 60,
     pageNumber: 0,
   });

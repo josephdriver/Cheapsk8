@@ -1,15 +1,11 @@
-const DEFAULT_STORES = [
-  { storeID: 1, isActive: 1 },
-  { storeID: 3, isActive: 1 },
-  { storeID: 11, isActive: 1 },
-  { storeID: 25, isActive: 1 },
-];
-
 export const ALERT_LEVELS = {
-  1: "On sale",
-  2: "25% Off",
-  3: "50% Off",
-  4: "Lowest Price Ever",
+  1: { label: "On sale", threshold: "onSale" },
+  2: { label: "10% Off", threshold: 90 },
+  3: { label: "25% Off", threshold: 75 },
+  4: { label: "50% Off", threshold: 50 },
+  5: { label: "75% Off", threshold: 25 },
+  6: { label: "90% Off", threshold: 10 },
+  7: { label: "Lowest Ever", threshold: "lowest" },
 };
 
-export default DEFAULT_STORES;
+export const PLACE_HOLDER = null;
