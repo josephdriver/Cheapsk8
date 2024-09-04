@@ -1,24 +1,11 @@
-/**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
- *
- * @format
- */
-const defaultSourceExts =
-  require("metro-config/src/defaults/defaults").sourceExts;
+const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
 
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
-  resolver: {
-    sourceExts: process.env.RN_SRC_EXT
-      ? [...process.env.RN_SRC_EXT.split(",").concat(defaultSourceExts), "cjs"] // <-- cjs added here
-      : [...defaultSourceExts, "cjs"], // <-- cjs added here
-  },
-};
+/**
+ * Metro configuration
+ * https://reactnative.dev/docs/metro
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {};
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);
