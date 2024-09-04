@@ -13,7 +13,7 @@ import {
   DISCOUNT_BOX,
 } from "../../constants/Colours";
 
-function LargeCard({ deal, handleDealNavigate }) {
+function LargeCard({ deal, handleDealNavigate = null }) {
   const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
@@ -28,6 +28,7 @@ function LargeCard({ deal, handleDealNavigate }) {
         <HeaderImage
           steamAppID={deal.steamAppID}
           iconImage={store?.images.logo}
+          title={deal.title}
         />
       </View>
       <View style={styles.contentContainer}>
@@ -35,15 +36,15 @@ function LargeCard({ deal, handleDealNavigate }) {
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
             {deal.title}
           </Text>
-          <Text>
+          <Text style={styles.rating}>
             {deal.steamRatingText} ({deal.steamRatingPercent}%)
           </Text>
         </View>
         <View style={styles.priceContainer}>
-          <View
-            style={[styles.savingsContainer, { backgroundColor: DISCOUNT_BOX }]}
-          >
-            <Text>-{deal.savings.split(".")[0]}%</Text>
+          <View style={styles.savingsContainer}>
+            <Text style={styles.percentDiscount}>
+              -{deal.savings.split(".")[0]}%
+            </Text>
           </View>
           <View style={styles.priceValues}>
             <Text style={styles.normalPrice}>${deal.normalPrice}</Text>
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
   headerImageContainer: {
     width: "100%",
     height: 160,
+    backgroundColor: INFO_BACKGROUND,
   },
   contentContainer: {
     flexDirection: "row",
@@ -72,6 +74,9 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 7,
+  },
+  rating: {
+    color: TEXT_COLOUR_WHITE,
   },
   title: {
     fontWeight: "bold",
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
     flex: 3,
     justifyContent: "flex-end",
     flexDirection: "row",
+    paddingLeft: 10,
   },
   savingsContainer: {
     height: 21,
@@ -90,6 +96,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     alignItems: "flex-end",
     marginTop: 23,
+    backgroundColor: DISCOUNT_BOX,
+    color: TEXT_COLOUR_WHITE,
+  },
+  percentDiscount: {
+    color: TEXT_COLOUR_WHITE,
   },
   priceValues: {
     flexDirection: "column",
@@ -100,6 +111,7 @@ const styles = StyleSheet.create({
     color: TEXT_INACTIVE,
     fontSize: 15,
     paddingBottom: 2,
+    textDecorationLine: "line-through",
   },
   salePrice: {
     fontWeight: "700",
@@ -111,10 +123,6 @@ const styles = StyleSheet.create({
 LargeCard.propTypes = {
   deal: dealListType.isRequired,
   handleDealNavigate: PropTypes.func,
-};
-
-LargeCard.defaultProps = {
-  handleDealNavigate: null,
 };
 
 export default LargeCard;

@@ -18,36 +18,47 @@ function ListItem({ item, handleOnPress }) {
   );
 
   return (
-    <Pressable onPress={handlePress} style={styles.container}>
-      <View
-        style={[
-          styles.innerContainer,
-          { backgroundColor: theme.colors.searchBg },
-        ]}
-      >
-        <View style={styles.imageRowContainer}>
-          <View style={styles.imageContainer}>
-            <CapsuleImage
-              steamAppID={item.steamAppID}
-              title={item.external}
-              url={item.thumb}
-            />
+    <View style={styles.wrapper}>
+      <Pressable onPress={handlePress} style={styles.container}>
+        <View
+          style={[
+            styles.innerContainer,
+            { backgroundColor: theme.colors.searchBg },
+          ]}
+        >
+          <View style={styles.imageRowContainer}>
+            <View style={styles.imageContainer}>
+              <CapsuleImage
+                steamAppID={item.steamAppID}
+                title={item.external}
+                url={item.thumb}
+              />
+            </View>
+            <View style={styles.dealTextContainer}>
+              <Text>Cheapest Deal</Text>
+              <Text style={styles.dealTextStyle}>${item.cheapest}</Text>
+            </View>
           </View>
-          <View style={styles.dealTextContainer}>
-            <Text>Cheapest Deal</Text>
-            <Text style={styles.dealTextStyle}>${item.cheapest}</Text>
-          </View>
-        </View>
 
-        <View style={styles.gameTitleContainer}>
-          <Text style={styles.gameTitleText}>{item.external}</Text>
+          <View style={styles.gameTitleContainer}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.gameTitleText}
+            >
+              {item.external}
+            </Text>
+          </View>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    marginHorizontal: 10,
+  },
   container: {
     width: "100%",
     alignItems: "center",

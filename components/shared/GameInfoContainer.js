@@ -10,6 +10,7 @@ import {
 } from "../../constants/Colours";
 
 function GameInfoContainer({ gameData, data }) {
+  console.log(gameData);
   const { cheapestPriceEver } = data;
   const { gameInfo } = gameData;
 
@@ -62,8 +63,12 @@ function GameInfoContainer({ gameData, data }) {
     <View style={styles.infoContainer}>
       <View style={styles.gameInfo}>
         <View style={styles.titleContainer}>
-          <Text style={styles.dealTitle}>{gameInfo.name}</Text>
-          {gameInfo.publisher && <Text>{gameInfo.publisher}</Text>}
+          <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dealTitle}>
+            {gameInfo.name}
+          </Text>
+          {gameInfo.publisher && (
+            <Text style={styles.textWhite}>{gameInfo.publisher}</Text>
+          )}
         </View>
 
         <View style={styles.info}>
@@ -96,9 +101,11 @@ function GameInfoContainer({ gameData, data }) {
         </View>
       </View>
       <View style={styles.alignEnd}>
-        <Text style={styles.bold}>Lowest Ever</Text>
-        <Text style={styles.bold}>{`$${cheapestPriceEver.price}`}</Text>
-        <Text style={styles.bold}>{secondsToDate}</Text>
+        <Text style={[styles.bold, styles.textWhite]}>Lowest Ever</Text>
+        <Text
+          style={[styles.bold, styles.textWhite]}
+        >{`$${cheapestPriceEver.price}`}</Text>
+        <Text style={[styles.bold, styles.textWhite]}>{secondsToDate}</Text>
       </View>
     </View>
   );
@@ -118,6 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: INFO_BACKGROUND,
+    minHeight: 130,
   },
   gameInfo: {
     flex: 7,
@@ -129,9 +137,13 @@ const styles = StyleSheet.create({
   },
   alignEnd: {
     alignItems: "flex-end",
+    paddingLeft: 10,
   },
   bold: {
     fontWeight: "700",
+  },
+  textWhite: {
+    color: TEXT_COLOUR_WHITE,
   },
 });
 

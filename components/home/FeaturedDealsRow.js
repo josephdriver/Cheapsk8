@@ -6,9 +6,15 @@ import LargeCard from "./LargeCard";
 import { dealListType } from "../../propTypes/props";
 import SmallCard from "./SmallCard";
 
-function FeaturedDealsRow({ item, handleDealNavigate }) {
+function FeaturedDealsRow({
+  item = {
+    header: null,
+    row: [],
+  },
+  handleDealNavigate,
+}) {
   return (
-    <View style={{ marginHorizontal: 10 }}>
+    <View style={styles.container}>
       <View>
         {item.header ? (
           <LargeCard
@@ -32,19 +38,15 @@ function FeaturedDealsRow({ item, handleDealNavigate }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 10,
+  },
   smallCard: {
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
   },
 });
-
-FeaturedDealsRow.defaultProps = {
-  item: {
-    header: null,
-    row: [],
-  },
-};
 
 FeaturedDealsRow.propTypes = {
   item: PropTypes.shape({

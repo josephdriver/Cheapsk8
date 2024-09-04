@@ -13,7 +13,7 @@ import { DEALS, GAMES } from "../constants/Urls";
 import HeaderImage from "../components/shared/HeaderImage";
 import StoreOffer from "../components/shared/StoreOffer";
 import Loading from "../components/shared/Loading";
-import { dealListType, gameListType } from "../propTypes/props";
+import { dealListType, gameListType, dealType } from "../propTypes/props";
 import GameInfoContainer from "../components/shared/GameInfoContainer";
 import GameNotificationsSettings from "../components/shared/GameNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
@@ -21,7 +21,7 @@ import { ALERT_LEVELS } from "../constants/Defaults";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
-  console.log(deal);
+
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
@@ -158,6 +158,7 @@ function Game({ route, navigation }) {
               steamAppID={gameData.gameInfo.steamAppID}
               isCap
               fallback={gameData.gameInfo.thumb}
+              title={gameData.gameInfo.name}
             />
           </View>
           <GameInfoContainer gameData={gameData} data={data} />

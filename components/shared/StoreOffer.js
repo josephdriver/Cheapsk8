@@ -5,6 +5,7 @@ import { useTheme, Text, Divider } from "@rneui/themed";
 
 import IconImage from "./IconImage";
 import { dealPropTypes, storeType } from "../../propTypes/props";
+import { DISCOUNT_BOX, TEXT_COLOUR_WHITE } from "../../constants/Colours";
 
 function StoreOffer({ deal, store, handlePress }) {
   const { theme } = useTheme();
@@ -16,8 +17,7 @@ function StoreOffer({ deal, store, handlePress }) {
           <View style={{ flex: 1 }}>
             <IconImage url={store.images.logo} width={24} height={24} />
           </View>
-          <View style={[styles.titleContainer]}>
-            {/* [styles.title, { color: theme.colors.black }] */}
+          <View style={styles.titleContainer}>
             <Text style={styles.dealTitle}>{store.storeName}</Text>
           </View>
           <View
@@ -30,14 +30,7 @@ function StoreOffer({ deal, store, handlePress }) {
             ]}
           >
             {parseInt(deal.savings, 10) > 0 && (
-              <View
-                style={[
-                  styles.discountPercent,
-                  {
-                    backgroundColor: theme.colors.secondary,
-                  },
-                ]}
-              >
+              <View style={styles.discountPercent}>
                 <Text>-{deal.savings.split(".")[0]}%</Text>
               </View>
             )}
@@ -81,6 +74,7 @@ const styles = StyleSheet.create({
     height: 21,
     paddingHorizontal: 5,
     marginHorizontal: 2,
+    backgroundColor: DISCOUNT_BOX,
   },
   price: {
     fontWeight: "700",

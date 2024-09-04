@@ -96,7 +96,7 @@ export const cheaperStoreType = shape({
 }).isRequired;
 
 export const cheapestPriceType = shape({
-  price: string.isRequired,
+  price: string,
   date: number.isRequired,
 }).isRequired;
 

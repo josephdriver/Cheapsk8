@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
@@ -28,7 +28,6 @@ function AlertSlider({ value, onValueChange }) {
 function GameNotificationsSettings({ gameData }) {
   const dispatch = useDispatch();
   const { favourites } = useSelector((state) => state.favourites);
-  const [alertLevel, setAlertLevel] = useState(1);
 
   const favourite = useMemo(
     () => favourites.find((f) => f.gameID === gameData.gameInfo.gameID),
@@ -51,7 +50,6 @@ function GameNotificationsSettings({ gameData }) {
           },
         ])
       );
-      setAlertLevel(value);
     },
     [dispatch, favourite, favourites, gameData]
   );
@@ -61,7 +59,11 @@ function GameNotificationsSettings({ gameData }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Get notified when:</Text>
-      <Text style={styles.label}>{ALERT_LEVELS[alertLevel].label}</Text>
+
+      <Text style={styles.label}>
+        {ALERT_LEVELS[favourite.alertLevel.id].label}
+      </Text>
+
       <View style={styles.settingsContainer}>
         <View style={styles.sliderContainer}>
           <AlertSlider

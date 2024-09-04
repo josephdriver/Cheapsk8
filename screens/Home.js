@@ -39,9 +39,6 @@ function Home({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (fetchTime + DEALS_CACHE_OFFSET < new Date().getTime()) {
-        console.log("expired");
-      }
       if (
         deals.length === 0 ||
         fetchTime + DEALS_CACHE_OFFSET < new Date().getTime()
@@ -53,7 +50,6 @@ function Home({ navigation }) {
 
   const handleDealNavigate = useCallback(
     (deal) => {
-      console.log(deal);
       navigation.navigate("Deal", {
         deal,
       });
@@ -107,10 +103,6 @@ function Home({ navigation }) {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
-  },
-  image: {
-    flex: 1,
-    alignSelf: "center",
   },
 });
 
