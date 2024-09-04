@@ -133,7 +133,6 @@ function Search({ navigation }) {
 }
 const styles = StyleSheet.create({
   view: {
-    border: "none",
     height: "100%",
   },
 });

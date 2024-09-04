@@ -14,13 +14,13 @@ import { favouriteType, gameListType } from "../../propTypes/props";
 function SearchableFlatList({
   inputValue,
   handleInputChange,
-  data,
-  handlePaginate,
-  renderFooter,
-  loading,
+  data = [],
+  handlePaginate = null,
+  renderFooter = null,
+  loading = false,
   handleDealNavigate,
   ListItem,
-  autoFocus,
+  autoFocus = false,
 }) {
   const { theme } = useTheme();
 
@@ -64,14 +64,6 @@ function SearchableFlatList({
 const styles = StyleSheet.create({
   flatListContainer: { paddingBottom: 70 },
 });
-
-SearchableFlatList.defaultProps = {
-  loading: false,
-  data: [],
-  handlePaginate: null,
-  renderFooter: null,
-  autoFocus: false,
-};
 
 SearchableFlatList.propTypes = {
   inputValue: string.isRequired,

@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { Image, View, StyleSheet } from "react-native";
 import { Skeleton, useTheme } from "@rneui/themed";
 import { STEAM_S_HEADER, DELIM_ID, BASE } from "../../constants/Urls";
+import { INFO_BACKGROUND } from "../../constants/Colours";
+import { EXCLUDE_KEYWORDS } from "../../constants/Defaults";
 
-function CapsuleImage({ steamAppID, title, url, hasLogo }) {
+function CapsuleImage({ steamAppID = null, title, url = null, hasLogo = "" }) {
   const { theme } = useTheme();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   /**
    * Memoized image URL
@@ -15,10 +17,8 @@ function CapsuleImage({ steamAppID, title, url, hasLogo }) {
    */
   const imageURL = useMemo(() => {
     if (!steamAppID) return url;
-    const lowerTitle = title.toLowerCase();
-    const excludedKeywords = ["edition", "collection", "bundle", "pack"];
-    const containsExcludedKeyword = excludedKeywords.some((keyword) =>
-      lowerTitle.includes(keyword)
+    const containsExcludedKeyword = EXCLUDE_KEYWORDS.some((keyword) =>
+      title.toLowerCase().includes(keyword)
     );
     return containsExcludedKeyword
       ? url
@@ -38,23 +38,12 @@ function CapsuleImage({ steamAppID, title, url, hasLogo }) {
       )}
       {loading && (
         <View style={styles.loading}>
-          <Skeleton
-            animation="pulse"
-            style={[styles.skeleton, { backgroundColor: theme.colors.grey3 }]}
-            width={180}
-            height={70}
-          />
+          <Skeleton animation="pulse" style={styles.skeletonImage} />
         </View>
       )}
     </View>
   );
 }
-
-CapsuleImage.defaultProps = {
-  steamAppID: null,
-  url: null,
-  hasLogo: "",
-};
 
 CapsuleImage.propTypes = {
   steamAppID: PropTypes.string,
@@ -66,10 +55,16 @@ CapsuleImage.propTypes = {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
+    backgroundColor: INFO_BACKGROUND,
   },
   image: {
     width: "100%",
     height: 70,
+  },
+  skeletonImage: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: INFO_BACKGROUND,
   },
   logo: {
     opacity: 0.9,
@@ -80,11 +75,9 @@ const styles = StyleSheet.create({
     height: 23,
   },
   loading: {
+    width: "100%",
+    height: "100%",
     position: "absolute",
-    left: -1,
-  },
-  skeleton: {
-    borderRadius: 0,
   },
 });
 

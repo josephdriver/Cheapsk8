@@ -25,12 +25,12 @@ function Main() {
   }, [dispatch, stores]);
 
   // Set dark on app init
-  useEffect(() => {
-    if (mode === "light") {
-      setMode("dark");
-    }
-  }, [mode, setMode]);
-
+  // useEffect(() => {
+  //   if (mode !== "dark") {
+  //     setMode("dark");
+  //   }
+  // }, [mode]);
+  // console.log(mode);
   const HomeComponent = useCallback(() => <HomeWrapper />, []);
   const SettingsComponent = useCallback(
     () => <Settings stores={stores} />,

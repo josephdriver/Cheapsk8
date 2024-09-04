@@ -6,9 +6,13 @@ import { useSelector } from "react-redux";
 
 import CapsuleImage from "../shared/CapsuleImage";
 import { dealListType } from "../../propTypes/props";
-import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../../constants/Colours";
+import {
+  TEXT_COLOUR_WHITE,
+  INFO_BACKGROUND,
+  DISCOUNT_BOX,
+} from "../../constants/Colours";
 
-function SmallCard({ deal, handleDealNavigate }) {
+function SmallCard({ deal, handleDealNavigate = null }) {
   const { theme } = useTheme();
   const { stores } = useSelector((state) => state.stores);
   const store = stores.find((s) => s.storeID === deal.storeID);
@@ -26,19 +30,16 @@ function SmallCard({ deal, handleDealNavigate }) {
       />
 
       <View style={styles.infoContainer}>
-        <View style={{ flex: 7 }}>
+        <View style={styles.titleContainer}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={styles.title}>
             {deal.title}
           </Text>
         </View>
-        <View>
-          <View
-            style={[
-              styles.priceContainer,
-              { backgroundColor: theme.colors.grey3 },
-            ]}
-          >
-            <Text>-{deal.savings.split(".")[0]}%</Text>
+        <View style={styles.priceContainer}>
+          <View style={styles.discountContainer}>
+            <Text style={styles.percentDiscount}>
+              -{deal.savings.split(".")[0]}%
+            </Text>
           </View>
           <View>
             <Text style={styles.price}>${deal.salePrice}</Text>
@@ -62,19 +63,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     paddingBottom: 3,
   },
-  title: {
-    fontWeight: "700",
-    fontSize: 15,
-    paddingBottom: 1,
-    color: TEXT_COLOUR_WHITE,
+  titleContainer: {
+    flex: 7,
+    justifyContent: "flex-start",
+    paddingHorizontal: 3,
   },
   priceContainer: {
+    paddingLeft: 10,
+  },
+  title: {
+    fontSize: 14,
+    paddingVertical: 1,
+    color: TEXT_COLOUR_WHITE,
+  },
+  discountContainer: {
     height: 21,
     alignItems: "center",
+    backgroundColor: DISCOUNT_BOX,
+  },
+  percentDiscount: {
+    color: TEXT_COLOUR_WHITE,
   },
   price: {
     fontWeight: "700",
     fontSize: 15,
+    color: TEXT_COLOUR_WHITE,
   },
 });
 
@@ -83,5 +96,4 @@ SmallCard.propTypes = {
   handleDealNavigate: PropTypes.func,
 };
 
-SmallCard.defaultProps = { handleDealNavigate: null };
 export default SmallCard;
