@@ -1,12 +1,14 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import { View, Pressable, StyleSheet } from "react-native";
+import { View, Pressable, StyleSheet, Animated } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 
 import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../../constants/Colours";
 import CapsuleImage from "../shared/CapsuleImage";
+import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
 function ListItem({ item, handleOnPress }) {
+  const [width, setWidth] = useState(null);
   const { theme } = useTheme();
 
   /**
@@ -17,22 +19,65 @@ function ListItem({ item, handleOnPress }) {
     [item, handleOnPress]
   );
 
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View style={styles.wrapper}>
-      <Pressable onPress={handlePress} style={styles.container}>
-        <View
+      <Pressable
+        onPress={handlePress}
+        style={styles.container}
+        onPressIn={fadeIn}
+        onPressOut={fadeOut}
+      >
+        <Animated.View
           style={[
             styles.innerContainer,
-            { backgroundColor: theme.colors.searchBg },
+            {
+              backgroundColor: theme.colors.searchBg,
+              opacity: animated,
+              transform: [{ scale }],
+            },
           ]}
         >
           <View style={styles.imageRowContainer}>
-            <View style={styles.imageContainer}>
-              <CapsuleImage
-                steamAppID={item.steamAppID}
-                title={item.external}
-                url={item.thumb}
-              />
+            <View
+              style={styles.imageContainer}
+              onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+            >
+              {width && (
+                <CapsuleImage
+                  steamAppID={item.steamAppID}
+                  title={item.external}
+                  url={item.thumb}
+                  width={width}
+                />
+              )}
             </View>
             <View style={styles.dealTextContainer}>
               <Text>Cheapest Deal</Text>
@@ -49,7 +94,7 @@ function ListItem({ item, handleOnPress }) {
               {item.external}
             </Text>
           </View>
-        </View>
+        </Animated.View>
       </Pressable>
     </View>
   );

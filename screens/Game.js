@@ -1,6 +1,12 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Animated,
+} from "react-native";
 import { useTheme, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
@@ -11,22 +17,22 @@ import { setFavourites } from "../redux/favouritesSlice";
 import useAxiosFetch from "../utilities/useAxiosFetch";
 import { DEALS, GAMES } from "../constants/Urls";
 import HeaderImage from "../components/shared/HeaderImage";
-import StoreOffer from "../components/shared/StoreOffer";
+import StoreOffer from "../components/game/StoreOffer";
 import Loading from "../components/shared/Loading";
-import { dealListType, gameListType, dealType } from "../propTypes/props";
-import GameInfoContainer from "../components/shared/GameInfoContainer";
-import GameNotificationsSettings from "../components/shared/GameNotificationsSettings";
+import { dealListType, gameListType } from "../propTypes/props";
+import GameInfoContainer from "../components/game/GameInfoContainer";
+import GameNotificationsSettings from "../components/game/GameNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
-import { ALERT_LEVELS } from "../constants/Defaults";
+import { ALERT_LEVELS, ANIMATED_CONFIG } from "../constants/Defaults";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
-
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
+  const [width, setWidth] = useState(null);
   const [gameData, setGameData] = useState(deal);
   const [gameDataLoading, setGameDataLoading] = useState(false);
 
@@ -91,6 +97,34 @@ function Game({ route, navigation }) {
     }
   }, [data, stores]);
 
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
+
   /**
    * useMemo to determine if the game is a favourite
    */
@@ -145,21 +179,34 @@ function Game({ route, navigation }) {
           <Pressable
             onPress={() => handleToggleFavourite(gameData)}
             style={styles.iconContainer}
+            onPressIn={fadeIn}
+            onPressOut={fadeOut}
           >
-            <Icon
-              name="heart"
-              color={isFavourite ? FAVOURITE_YELLOW : WHITE}
-              size={35}
-              style={styles.icon}
-            />
+            <Animated.View
+              style={{ opacity: animated, transform: [{ scale }] }}
+            >
+              <Icon
+                name="heart"
+                color={isFavourite ? FAVOURITE_YELLOW : WHITE}
+                size={35}
+                style={styles.icon}
+              />
+            </Animated.View>
           </Pressable>
-          <View style={styles.imageContainer}>
-            <HeaderImage
-              steamAppID={gameData.gameInfo.steamAppID}
-              isCap
-              fallback={gameData.gameInfo.thumb}
-              title={gameData.gameInfo.name}
-            />
+          <View
+            style={styles.imageContainer}
+            onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+          >
+            {width && (
+              <HeaderImage
+                steamAppID={gameData.gameInfo.steamAppID}
+                isCap
+                fallback={gameData.gameInfo.thumb}
+                title={gameData.gameInfo.name}
+                width={width}
+                height={200}
+              />
+            )}
           </View>
           <GameInfoContainer gameData={gameData} data={data} />
           <Divider />

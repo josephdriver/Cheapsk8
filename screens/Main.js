@@ -1,8 +1,9 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useNetInfo } from "@react-native-community/netinfo";
 import React, { useCallback, useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useThemeMode } from "@rneui/themed";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchStores } from "../redux/storesSlice";
 
@@ -11,12 +12,16 @@ import Settings from "./Settings";
 import TabBar from "../components/TabBar";
 import FavouritesWrapper from "./FavouritesWrapper";
 import { OPTIONS } from "../constants/NavigatorConfig";
+import Offline from "./Offline";
 
 function Main() {
+  const { type, isConnected } = useNetInfo();
   const { stores } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
-  const { mode, setMode } = useThemeMode();
   const Tab = createBottomTabNavigator();
+
+  console.log("type", type);
+  console.log("isConnected", isConnected);
 
   useEffect(() => {
     if (stores.length === 0) {
@@ -24,13 +29,6 @@ function Main() {
     }
   }, [dispatch, stores]);
 
-  // Set dark on app init
-  // useEffect(() => {
-  //   if (mode !== "dark") {
-  //     setMode("dark");
-  //   }
-  // }, [mode]);
-  // console.log(mode);
   const HomeComponent = useCallback(() => <HomeWrapper />, []);
   const SettingsComponent = useCallback(
     () => <Settings stores={stores} />,
@@ -38,6 +36,10 @@ function Main() {
   );
 
   const WatchListComponent = useCallback(() => <FavouritesWrapper />, []);
+
+  if (isConnected === false) {
+    return <Offline />;
+  }
 
   return (
     <SafeAreaProvider>

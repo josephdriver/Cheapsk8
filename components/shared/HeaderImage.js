@@ -2,7 +2,8 @@ import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { Skeleton } from "@rneui/themed";
 import { Image, StyleSheet, View } from "react-native";
-import { INFO_BACKGROUND } from "../../constants/Colours";
+import BlastedImage from "react-native-blasted-image";
+
 import { EXCLUDE_KEYWORDS } from "../../constants/Defaults";
 
 import {
@@ -18,8 +19,10 @@ function HeaderImage({
   isCap = false,
   fallback = "",
   title = "",
+  height = 160,
+  width = 340,
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   /**
    * Memoized image URL
@@ -35,17 +38,16 @@ function HeaderImage({
     return fallback && !steamAppID
       ? fallback
       : `${isCap ? STEAM_XL_CAP : STEAM_HEADER}`.replace(DELIM_ID, steamAppID);
-  }, [steamAppID, isCap, fallback]);
+  }, [steamAppID, isCap, fallback, title]);
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.mainImage}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
-        source={{
-          uri: imageURL,
-        }}
+      <BlastedImage
+        onLoad={() => setLoading(false)}
+        source={{ uri: imageURL }}
+        height={height}
+        width={width}
+        resizeMode="stretch"
       />
       {iconImage && (
         <Image
@@ -69,21 +71,18 @@ HeaderImage.propTypes = {
   iconImage: PropTypes.string,
   isCap: PropTypes.bool,
   fallback: PropTypes.string,
+  title: PropTypes.string,
+  height: PropTypes.number,
+  width: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
-    backgroundColor: INFO_BACKGROUND,
-  },
-  mainImage: {
     width: "100%",
-    height: "100%",
   },
   skeletonImage: {
     width: "100%",
     height: "100%",
-    backgroundColor: INFO_BACKGROUND,
   },
   loading: {
     width: "100%",

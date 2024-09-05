@@ -1,13 +1,20 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Image, View, StyleSheet } from "react-native";
-import { Skeleton, useTheme } from "@rneui/themed";
+import { Skeleton } from "@rneui/themed";
+import BlastedImage from "react-native-blasted-image";
+
 import { STEAM_S_HEADER, DELIM_ID, BASE } from "../../constants/Urls";
 import { INFO_BACKGROUND } from "../../constants/Colours";
 import { EXCLUDE_KEYWORDS } from "../../constants/Defaults";
 
-function CapsuleImage({ steamAppID = null, title, url = null, hasLogo = "" }) {
-  const { theme } = useTheme();
+function CapsuleImage({
+  steamAppID = null,
+  title,
+  url = null,
+  hasLogo = "",
+  width = 340,
+}) {
   const [loading, setLoading] = useState(true);
 
   /**
@@ -27,11 +34,11 @@ function CapsuleImage({ steamAppID = null, title, url = null, hasLogo = "" }) {
 
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.image}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
+      <BlastedImage
+        onLoad={() => setLoading(false)}
         source={{ uri: imageURL }}
+        height={70}
+        width={width}
       />
       {hasLogo && (
         <Image style={styles.logo} source={{ uri: `${BASE}/${hasLogo}` }} />
@@ -50,16 +57,13 @@ CapsuleImage.propTypes = {
   title: PropTypes.string.isRequired,
   url: PropTypes.string,
   hasLogo: PropTypes.string,
+  width: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
   container: {
     position: "relative",
     backgroundColor: INFO_BACKGROUND,
-  },
-  image: {
-    width: "100%",
-    height: 70,
   },
   skeletonImage: {
     width: "100%",

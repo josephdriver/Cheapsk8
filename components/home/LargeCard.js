@@ -1,6 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Pressable, Text } from "react-native";
-import { useTheme } from "@rneui/themed";
+import React, { useMemo, useState } from "react";
+import { View, StyleSheet, Pressable, Text, Animated } from "react-native";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
@@ -12,46 +11,93 @@ import {
   TEXT_INACTIVE,
   DISCOUNT_BOX,
 } from "../../constants/Colours";
+import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
 function LargeCard({ deal, handleDealNavigate = null }) {
+  const [width, setWidth] = useState(null);
   const { stores } = useSelector((state) => state.stores);
-  const { theme } = useTheme();
 
-  const store = stores.find((s) => s.storeID === deal.storeID);
+  const store = useMemo(
+    () => stores.find((s) => s.storeID === deal.storeID),
+    [stores, deal.storeID]
+  );
+
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
 
   return (
     <Pressable
       onPress={() => handleDealNavigate(deal)}
-      style={[styles.cardWrapper, { backgroundColor: theme.colors.primary }]}
+      style={styles.cardWrapper}
+      onPressIn={fadeIn}
+      onPressOut={fadeOut}
     >
-      <View style={styles.headerImageContainer}>
-        <HeaderImage
-          steamAppID={deal.steamAppID}
-          iconImage={store?.images.logo}
-          title={deal.title}
-        />
-      </View>
-      <View style={styles.contentContainer}>
-        <View style={styles.titleContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
-            {deal.title}
-          </Text>
-          <Text style={styles.rating}>
-            {deal.steamRatingText} ({deal.steamRatingPercent}%)
-          </Text>
+      <Animated.View
+        style={{
+          transform: [{ scale }],
+          opacity: animated,
+        }}
+      >
+        <View
+          style={styles.headerImageContainer}
+          onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+        >
+          {width && (
+            <HeaderImage
+              steamAppID={deal.steamAppID}
+              iconImage={store?.images.logo}
+              title={deal.title}
+              width={width}
+            />
+          )}
         </View>
-        <View style={styles.priceContainer}>
-          <View style={styles.savingsContainer}>
-            <Text style={styles.percentDiscount}>
-              -{deal.savings.split(".")[0]}%
+        <View style={styles.contentContainer}>
+          <View style={styles.titleContainer}>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
+              {deal.title}
+            </Text>
+            <Text style={styles.rating}>
+              {deal.steamRatingText} ({deal.steamRatingPercent}%)
             </Text>
           </View>
-          <View style={styles.priceValues}>
-            <Text style={styles.normalPrice}>${deal.normalPrice}</Text>
-            <Text style={styles.salePrice}>${deal.salePrice}</Text>
+          <View style={styles.priceContainer}>
+            <View style={styles.savingsContainer}>
+              <Text style={styles.percentDiscount}>
+                -{deal.savings.split(".")[0]}%
+              </Text>
+            </View>
+            <View style={styles.priceValues}>
+              <Text style={styles.normalPrice}>${deal.normalPrice}</Text>
+              <Text style={styles.salePrice}>${deal.salePrice}</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }

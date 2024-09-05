@@ -10,7 +10,6 @@ import {
 } from "../../constants/Colours";
 
 function GameInfoContainer({ gameData, data }) {
-  console.log(gameData);
   const { cheapestPriceEver } = data;
   const { gameInfo } = gameData;
 

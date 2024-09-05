@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Pressable, StyleSheet } from "react-native";
+import { View, Pressable, StyleSheet, Animated } from "react-native";
 import { useTheme } from "@rneui/themed";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 
 import { INACTIVE_NAV_ICON } from "../constants/Colours";
+import { ANIMATED_CONFIG } from "../constants/Defaults";
 
 function TabBar({ state, descriptors, navigation }) {
   const { theme } = useTheme();
@@ -25,11 +26,32 @@ function TabBar({ state, descriptors, navigation }) {
           }
         };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
+        const animation = new Animated.Value(0);
+        const animated = new Animated.Value(1);
+        const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+        const fadeIn = () => {
+          Animated.spring(animation, {
+            toValue: 1,
+            duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+            useNativeDriver: true,
+          }).start();
+          Animated.timing(animated, {
+            toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+            duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+            useNativeDriver: true,
+          }).start();
+        };
+        const fadeOut = () => {
+          Animated.spring(animation, {
+            toValue: 0,
+            duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+            useNativeDriver: true,
+          }).start();
+          Animated.timing(animated, {
+            toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+            duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+            useNativeDriver: true,
+          }).start();
         };
 
         return (
@@ -38,21 +60,29 @@ function TabBar({ state, descriptors, navigation }) {
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
+            onPressIn={fadeIn}
+            onPressOut={fadeOut}
             onPress={onPress}
-            onLongPress={onLongPress}
+            // onLongPress={onLongPress}
             style={[
               styles.tabBtn,
               { backgroundColor: theme.colors.background },
             ]}
           >
-            <View styles={{ flexDirection: "row", flexWrap: "wrap" }}>
+            <Animated.View
+              styles={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                opacity: animated,
+                transform: [{ scale }],
+              }}
+            >
               <Icon
                 name={route.name}
                 color={isFocused ? theme.colors.primary : INACTIVE_NAV_ICON}
                 size={24}
               />
-            </View>
+            </Animated.View>
           </Pressable>
         );
       })}

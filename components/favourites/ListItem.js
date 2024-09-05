@@ -1,8 +1,17 @@
-import React, { useMemo, useCallback } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import React, { useMemo, useCallback, useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Animated,
+  Image,
+} from "react-native";
 import { func } from "prop-types";
 import { useTheme } from "@rneui/themed";
+import { useSelector } from "react-redux";
 
+import { BASE } from "../../constants/Urls";
 import { favouriteType } from "../../propTypes/props";
 import CapsuleImage from "../shared/CapsuleImage";
 import {
@@ -11,8 +20,11 @@ import {
   FAVOURITE_YELLOW,
   DISCOUNT_BOX,
 } from "../../constants/Colours";
+import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
 function ListItem({ item, handleOnPress }) {
+  const [width, setWidth] = useState(null);
+  const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
   const alerts = useMemo(() => {
@@ -34,15 +46,21 @@ function ListItem({ item, handleOnPress }) {
   }, [item]);
 
   const currentLow = useMemo(() => {
-    let currentLow = item.deals[0];
+    let lowestDeal = item.deals[0];
+    let dealCount = 0;
     item.deals.forEach((d) => {
       if (parseFloat(d.price) < parseFloat(currentLow)) {
-        currentLow = d;
+        lowestDeal = d;
+      }
+      if (d.savings > 0) {
+        dealCount += 1;
       }
     });
-    return currentLow;
-  }, [item]);
 
+    const store = stores.find((s) => s.storeID === lowestDeal.storeID);
+
+    return { deal: lowestDeal, store, dealCount };
+  }, [item, stores]);
   /**
    * Handle navigation to the deal screen
    */
@@ -51,15 +69,49 @@ function ListItem({ item, handleOnPress }) {
     [item, handleOnPress]
   );
 
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
     <View style={styles.wrapper}>
-      <Pressable onPress={handlePress} style={styles.container}>
-        <View
+      <Pressable
+        onPress={handlePress}
+        style={styles.container}
+        onPressIn={fadeIn}
+        onPressOut={fadeOut}
+      >
+        <Animated.View
           style={[
             styles.innerContainer,
             {
               backgroundColor: theme.colors.searchBg,
-
+              opacity: animated,
+              transform: [{ scale }],
               borderRightColor: alerts.isAlert
                 ? FAVOURITE_YELLOW
                 : "transparent",
@@ -68,49 +120,78 @@ function ListItem({ item, handleOnPress }) {
           ]}
         >
           <View style={styles.imageRowContainer}>
-            <View style={styles.imageContainer}>
-              <CapsuleImage
-                steamAppID={item.info.steamAppID}
-                title={item.info.title}
-                url={item.info.thumb}
-              />
+            <View
+              style={styles.imageContainer}
+              onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+            >
+              {width && (
+                <CapsuleImage
+                  steamAppID={item.info.steamAppID}
+                  title={item.info.title}
+                  url={item.info.thumb}
+                  width={width}
+                />
+              )}
             </View>
 
             <View>
-              <View style={{ paddingVertical: 5 }}>
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={[styles.gameTitleText, { color: FAVOURITE_YELLOW }]}
-                >
-                  {alerts.isLowest ? "Lowest Price Ever" : ""}
-                </Text>
-              </View>
               <View
                 style={[
                   styles.priceContainer,
                   {
-                    justifyContent: "flex-end",
                     paddingRight: alerts.isAlert ? 5 : 10,
                   },
                 ]}
               >
-                {parseInt(currentLow.savings, 10) > 0 && (
+                {parseInt(currentLow.deal.savings, 10) > 0 && (
                   <View style={styles.discountPercent}>
-                    <Text>-{currentLow.savings.split(".")[0]}%</Text>
+                    <Text>-{currentLow.deal.savings.split(".")[0]}%</Text>
                   </View>
                 )}
-                <View>
-                  <Text>${currentLow.price}</Text>
+                <View style={{ height: 21 }}>
+                  <Text>${currentLow.deal.price}</Text>
                 </View>
+              </View>
+              <View
+                style={{
+                  paddingRight: alerts.isAlert ? 5 : 10,
+                  paddingBottom: 5,
+                }}
+              >
+                {currentLow.dealCount > 1 && (
+                  <Text>+{currentLow.dealCount} more offers</Text>
+                )}
               </View>
             </View>
           </View>
 
           <View style={styles.gameTitleContainer}>
-            <Text style={styles.gameTitleText}>{item.info.title}</Text>
+            <View style={{ flexGrow: 1 }}>
+              <Text style={styles.gameTitleText}>{item.info.title}</Text>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                paddingRight: alerts.isAlert ? 5 : 10,
+                alignItems: "flex-end",
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                {alerts.isLowest && (
+                  <Text style={styles.alertText}>Lowest Ever</Text>
+                )}
+                {currentLow.store && (
+                  <Image
+                    style={styles.iconImage}
+                    source={{
+                      uri: `${BASE}/${currentLow.store.images.logo}`,
+                    }}
+                  />
+                )}
+              </View>
+            </View>
           </View>
-        </View>
+        </Animated.View>
       </Pressable>
     </View>
   );
@@ -131,6 +212,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     flexDirection: "row",
     alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
   discountPercent: {
     height: 21,
@@ -160,12 +242,23 @@ const styles = StyleSheet.create({
   gameTitleContainer: {
     height: "100%",
     flex: 1,
-    justifyContent: "space-around",
+    flexDirection: "row",
     backgroundColor: INFO_BACKGROUND,
+    alignItems: "center",
   },
   gameTitleText: {
     color: TEXT_COLOUR_WHITE,
     paddingHorizontal: 5,
+    fontWeight: "700",
+  },
+  iconImage: {
+    opacity: 0.9,
+    marginLeft: 5,
+    width: 24,
+    height: 24,
+  },
+  alertText: {
+    color: FAVOURITE_YELLOW,
     fontWeight: "700",
   },
 });

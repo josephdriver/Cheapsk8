@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { GAMES } from "../constants/Urls";
 import ListItem from "../components/search/ListItem";
 import { LARGE_SPINNER } from "../constants/Defaults";
 import SearchableFlatList from "../components/shared/SearchableFlatList";
+import EmptyList from "../components/shared/EmptyList";
 
 function Search({ navigation }) {
   const { theme } = useTheme();
@@ -115,6 +116,13 @@ function Search({ navigation }) {
     [loading, theme.colors.primary]
   );
 
+  const emptyMessage = useMemo(() => {
+    if (loading) return "";
+    return query
+      ? "No results... Search for another Title?"
+      : "Search for a Title";
+  }, [query, loading]);
+
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <SearchableFlatList
@@ -126,6 +134,7 @@ function Search({ navigation }) {
         loading={loading}
         handleDealNavigate={handleDealNavigate}
         ListItem={ListItem}
+        ListEmptyComponent={<EmptyList message={emptyMessage} />}
         autoFocus
       />
     </View>

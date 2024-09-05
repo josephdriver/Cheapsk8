@@ -57,19 +57,21 @@ function GameNotificationsSettings({ gameData }) {
   if (!favourite) return null;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Get notified when:</Text>
+    <View>
+      <View style={styles.container}>
+        <Text style={styles.title}>Get notified when:</Text>
 
-      <Text style={styles.label}>
-        {ALERT_LEVELS[favourite.alertLevel.id].label}
-      </Text>
+        <Text style={styles.label}>
+          {ALERT_LEVELS[favourite.alertLevel.id].label}
+        </Text>
 
-      <View style={styles.settingsContainer}>
-        <View style={styles.sliderContainer}>
-          <AlertSlider
-            value={favourite.alertLevel.id}
-            onValueChange={handleValueChange}
-          />
+        <View style={styles.settingsContainer}>
+          <View style={styles.sliderContainer}>
+            <AlertSlider
+              value={favourite.alertLevel.id}
+              onValueChange={handleValueChange}
+            />
+          </View>
         </View>
       </View>
       <Divider />
@@ -79,7 +81,7 @@ function GameNotificationsSettings({ gameData }) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    paddingVertical: 10,
   },
   title: {
     alignSelf: "center",

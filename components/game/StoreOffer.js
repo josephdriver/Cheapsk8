@@ -1,19 +1,56 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { View, StyleSheet, Pressable } from "react-native";
-import { useTheme, Text, Divider } from "@rneui/themed";
+import { View, StyleSheet, Pressable, Animated } from "react-native";
+import { Text, Divider } from "@rneui/themed";
 
-import IconImage from "./IconImage";
+import IconImage from "../shared/IconImage";
 import { dealPropTypes, storeType } from "../../propTypes/props";
-import { DISCOUNT_BOX, TEXT_COLOUR_WHITE } from "../../constants/Colours";
+import { DISCOUNT_BOX } from "../../constants/Colours";
+import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
 function StoreOffer({ deal, store, handlePress }) {
-  const { theme } = useTheme();
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
 
   return (
     <View key={deal.storeID}>
-      <Pressable onPress={() => handlePress(deal.dealID)}>
-        <View style={styles.dealContainer} key={deal.storeID}>
+      <Pressable
+        onPress={() => handlePress(deal.dealID)}
+        onPressIn={fadeIn}
+        onPressOut={fadeOut}
+      >
+        <Animated.View
+          style={[
+            styles.dealContainer,
+            { opacity: animated, transform: [{ scale }] },
+          ]}
+          key={deal.storeID}
+        >
           <View style={{ flex: 1 }}>
             <IconImage url={store.images.logo} width={24} height={24} />
           </View>
@@ -38,7 +75,7 @@ function StoreOffer({ deal, store, handlePress }) {
               <Text style={styles.price}>${deal.price || deal.salePrice}</Text>
             </View>
           </View>
-        </View>
+        </Animated.View>
         <Divider />
       </Pressable>
     </View>

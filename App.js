@@ -1,22 +1,35 @@
 import "react-native-gesture-handler";
 import React from "react";
+import ErrorBoundary from "react-native-error-boundary";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+
 import Main from "./screens/Main";
 import { persistor, store } from "./store";
+import ErrorFallback from "./screens/ErrorFallback";
 
 function App() {
   const theme = createTheme({
     mode: "dark",
   });
+
+  const handleJSErrorForErrorBoundary = (error, stackTrace) => {
+    console.log("ErrorBoundary", error, stackTrace);
+  };
+
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <Main />
-        </ThemeProvider>
-      </PersistGate>
+      <ThemeProvider theme={theme}>
+        <ErrorBoundary
+          onError={handleJSErrorForErrorBoundary}
+          FallbackComponent={ErrorFallback}
+        >
+          <PersistGate loading={null} persistor={persistor}>
+            <Main />
+          </PersistGate>
+        </ErrorBoundary>
+      </ThemeProvider>
     </Provider>
   );
 }

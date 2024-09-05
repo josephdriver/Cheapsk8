@@ -1,13 +1,19 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import ListItem from "../components/favourites/ListItem";
+import EmptyList from "../components/shared/EmptyList";
 
 function WatchList({ navigation }) {
   const { favourites } = useSelector((state) => state.favourites);
+  const message = useMemo(
+    () =>
+      "You have not watch listed any games yet. Search for Titles on the Home screen and add them to your watch list.",
+    []
+  );
   const { theme } = useTheme();
 
   const [inputValue, setInputValue] = useState("");
@@ -36,6 +42,8 @@ function WatchList({ navigation }) {
         handleDealNavigate={handleDealNavigate}
         handleInputChange={setInputValue}
         ListItem={ListItem}
+        ListEmptyComponent={<EmptyList message={message} />}
+        isSearchable={false}
       />
     </View>
   );
