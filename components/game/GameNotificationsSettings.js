@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TEXT_COLOUR_WHITE, FAVOURITE_YELLOW } from "../../constants/Colours";
 import { ALERT_LEVELS } from "../../constants/Defaults";
 import { setFavourites } from "../../redux/favouritesSlice";
-import { dealType, dealListType } from "../../propTypes/props";
+import { dealType, dealListType, favouriteType } from "../../propTypes/props";
 
 function AlertSlider({ value, onValueChange }) {
   return (
@@ -25,14 +25,9 @@ function AlertSlider({ value, onValueChange }) {
   );
 }
 
-function GameNotificationsSettings({ gameData }) {
+function GameNotificationsSettings({ gameData, favourite }) {
   const dispatch = useDispatch();
   const { favourites } = useSelector((state) => state.favourites);
-
-  const favourite = useMemo(
-    () => favourites.find((f) => f.gameID === gameData.gameInfo.gameID),
-    [favourites, gameData]
-  );
 
   const handleValueChange = useCallback(
     (value) => {
@@ -121,6 +116,7 @@ AlertSlider.propTypes = {
 
 GameNotificationsSettings.propTypes = {
   gameData: PropTypes.oneOfType([dealType, dealListType]).isRequired,
+  favourite: favouriteType.isRequired,
 };
 
 export default GameNotificationsSettings;

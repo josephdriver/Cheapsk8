@@ -1,6 +1,13 @@
+/* eslint-disable import/first */
+if (__DEV__) {
+  // eslint-disable-next-line global-require
+  require("./ReactotronConfig");
+}
+
 /**
  * @format
  */
+
 import {
   setJSExceptionHandler,
   setNativeExceptionHandler,

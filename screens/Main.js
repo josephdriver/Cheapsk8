@@ -15,13 +15,10 @@ import { OPTIONS } from "../constants/NavigatorConfig";
 import Offline from "./Offline";
 
 function Main() {
-  const { type, isConnected } = useNetInfo();
+  const { isConnected } = useNetInfo();
   const { stores } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
   const Tab = createBottomTabNavigator();
-
-  console.log("type", type);
-  console.log("isConnected", isConnected);
 
   useEffect(() => {
     if (stores.length === 0) {

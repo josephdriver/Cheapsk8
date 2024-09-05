@@ -128,29 +128,28 @@ function Game({ route, navigation }) {
   /**
    * useMemo to determine if the game is a favourite
    */
-  const isFavourite = useMemo(
+  const favourite = useMemo(
     () =>
-      gameData && gameData.gameInfo && gameData.gameInfo.gameID
-        ? favourites.some((f) => f.gameID === gameData.gameInfo.gameID)
-        : false,
+      gameData &&
+      gameData.gameInfo &&
+      gameData.gameInfo.gameID &&
+      favourites.find((f) => f.gameID === gameData.gameInfo.gameID),
     [gameData, favourites]
   );
 
   const handleToggleFavourite = useCallback(() => {
-    const newFavourites = isFavourite
-      ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
-      : [
-          ...favourites,
-          {
-            ...data,
-            gameID: gameData.gameInfo.gameID,
-            alertLevel: ALERT_LEVELS[1],
-            activeAlert: false,
-            lastSeen: new Date().getTime(),
-          },
-        ];
+    const newFavourites = favourite || [
+      ...favourites,
+      {
+        ...data,
+        gameID: gameData.gameInfo.gameID,
+        alertLevel: ALERT_LEVELS[1],
+        activeAlert: false,
+        lastSeen: new Date().getTime(),
+      },
+    ];
     dispatch(setFavourites(newFavourites));
-  }, [gameData, dispatch, favourites, isFavourite, data]);
+  }, [gameData, dispatch, favourites, favourite, data]);
 
   /**
    * useMemo to determine the stores to display
@@ -187,7 +186,7 @@ function Game({ route, navigation }) {
             >
               <Icon
                 name="heart"
-                color={isFavourite ? FAVOURITE_YELLOW : WHITE}
+                color={favourite ? FAVOURITE_YELLOW : WHITE}
                 size={35}
                 style={styles.icon}
               />
@@ -210,7 +209,12 @@ function Game({ route, navigation }) {
           </View>
           <GameInfoContainer gameData={gameData} data={data} />
           <Divider />
-          {isFavourite && <GameNotificationsSettings gameData={gameData} />}
+          {favourite && (
+            <GameNotificationsSettings
+              gameData={gameData}
+              favourite={favourite}
+            />
+          )}
           <ScrollView>
             {data.deals
               .filter((d) =>
@@ -226,6 +230,7 @@ function Game({ route, navigation }) {
                     deal={d}
                     store={st}
                     handlePress={handlePress}
+                    favourite={favourite}
                   />
                 );
               })}

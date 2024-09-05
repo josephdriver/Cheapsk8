@@ -4,6 +4,7 @@ export const FavouritesSlice = createSlice({
   name: "favourites",
   initialState: {
     favourites: [],
+    fetchTime: null,
     lastVisited: null,
     loading: false,
     error: false,

@@ -21,29 +21,14 @@ import {
   DISCOUNT_BOX,
 } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
+import { thresholdAlerts } from "../../utilities/dealAlerts";
 
 function ListItem({ item, handleOnPress }) {
   const [width, setWidth] = useState(null);
   const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
-  const alerts = useMemo(() => {
-    let isLowest = false;
-    let isAlert = false;
-    item.deals.forEach((d) => {
-      if (parseFloat(d.price) <= parseFloat(item.cheapestPriceEver.price)) {
-        isLowest = true;
-      }
-      if (
-        parseFloat(100 - d.savings) >= parseFloat(item.alertLevel.threshold) ||
-        (item.alertLevel.threshold === "anyDiscount" &&
-          parseFloat(d.savings) > 0)
-      ) {
-        isAlert = true;
-      }
-    });
-    return { isLowest, isAlert };
-  }, [item]);
+  const { isLowest, isAlert } = useMemo(() => thresholdAlerts(item), [item]);
 
   const currentLow = useMemo(() => {
     let lowestDeal = item.deals[0];
@@ -112,10 +97,8 @@ function ListItem({ item, handleOnPress }) {
               backgroundColor: theme.colors.searchBg,
               opacity: animated,
               transform: [{ scale }],
-              borderRightColor: alerts.isAlert
-                ? FAVOURITE_YELLOW
-                : "transparent",
-              borderRightWidth: alerts.isAlert ? 7 : 0,
+              borderRightColor: isAlert ? FAVOURITE_YELLOW : "transparent",
+              borderRightWidth: isAlert ? 7 : 0,
             },
           ]}
         >
@@ -139,7 +122,7 @@ function ListItem({ item, handleOnPress }) {
                 style={[
                   styles.priceContainer,
                   {
-                    paddingRight: alerts.isAlert ? 5 : 10,
+                    paddingRight: isAlert ? 5 : 10,
                   },
                 ]}
               >
@@ -154,7 +137,7 @@ function ListItem({ item, handleOnPress }) {
               </View>
               <View
                 style={{
-                  paddingRight: alerts.isAlert ? 5 : 10,
+                  paddingRight: isAlert ? 5 : 10,
                   paddingBottom: 5,
                 }}
               >
@@ -166,20 +149,24 @@ function ListItem({ item, handleOnPress }) {
           </View>
 
           <View style={styles.gameTitleContainer}>
-            <View style={{ flexGrow: 1 }}>
-              <Text style={styles.gameTitleText}>{item.info.title}</Text>
+            <View style={{ flexShrink: 1 }}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.gameTitleText}
+              >
+                {item.info.title}
+              </Text>
             </View>
             <View
               style={{
-                flex: 1,
-                paddingRight: alerts.isAlert ? 5 : 10,
+                flexGrow: 1,
+                paddingRight: isAlert ? 5 : 10,
                 alignItems: "flex-end",
               }}
             >
               <View style={{ flexDirection: "row" }}>
-                {alerts.isLowest && (
-                  <Text style={styles.alertText}>Lowest Ever</Text>
-                )}
+                {isLowest && <Text style={styles.alertText}>Lowest Ever</Text>}
                 {currentLow.store && (
                   <Image
                     style={styles.iconImage}

@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { View, StyleSheet, Pressable, Animated } from "react-native";
 import { Text, Divider } from "@rneui/themed";
 
 import IconImage from "../shared/IconImage";
-import { dealPropTypes, storeType } from "../../propTypes/props";
-import { DISCOUNT_BOX } from "../../constants/Colours";
+import { dealPropTypes, favouriteType, storeType } from "../../propTypes/props";
+import { DISCOUNT_BOX, FAVOURITE_YELLOW } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
-function StoreOffer({ deal, store, handlePress }) {
+function StoreOffer({ deal, store, handlePress, favourite = null }) {
+  // Check if the deal is an alert
+  const isAlert = useMemo(() => {
+    if (!favourite) return false;
+    if (
+      parseInt(100 - Math.round(deal.savings), 10) <=
+        parseInt(favourite.alertLevel.threshold, 10) ||
+      (favourite.alertLevel.threshold === "anyDiscount" &&
+        parseFloat(deal.savings) > 0)
+    ) {
+      return true;
+    }
+    return false;
+  }, [deal, favourite]);
+
+  // Animation for the pressable
   const animation = new Animated.Value(0);
   const animated = new Animated.Value(1);
   const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
@@ -47,11 +62,16 @@ function StoreOffer({ deal, store, handlePress }) {
         <Animated.View
           style={[
             styles.dealContainer,
-            { opacity: animated, transform: [{ scale }] },
+            {
+              opacity: animated,
+              transform: [{ scale }],
+              borderRightColor: isAlert ? FAVOURITE_YELLOW : "transparent",
+              borderRightWidth: isAlert ? 7 : 0,
+            },
           ]}
           key={deal.storeID}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, paddingLeft: 7 }}>
             <IconImage url={store.images.logo} width={24} height={24} />
           </View>
           <View style={styles.titleContainer}>
@@ -63,6 +83,7 @@ function StoreOffer({ deal, store, handlePress }) {
               {
                 justifyContent:
                   parseInt(deal.savings, 10) > 0 ? "space-between" : "flex-end",
+                paddingRight: isAlert ? 7 : 14,
               },
             ]}
           >
@@ -86,13 +107,13 @@ StoreOffer.propTypes = {
   deal: dealPropTypes.isRequired,
   store: storeType.isRequired,
   handlePress: PropTypes.func.isRequired,
+  favourite: favouriteType,
 };
 
 const styles = StyleSheet.create({
   dealContainer: {
     flexDirection: "row",
     paddingVertical: 10,
-    marginHorizontal: 10,
   },
   titleContainer: {
     flex: 7,
