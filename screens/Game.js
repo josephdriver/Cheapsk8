@@ -24,6 +24,7 @@ import GameInfoContainer from "../components/game/GameInfoContainer";
 import GameNotificationsSettings from "../components/game/GameNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
 import { ALERT_LEVELS, ANIMATED_CONFIG } from "../constants/Defaults";
+import { logEvent } from "../utilities/analytics";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
@@ -51,12 +52,21 @@ function Game({ route, navigation }) {
    * @param {string} val - URL to navigate to
    */
   const handlePress = useCallback(
-    (val) => {
+    (offer) => {
       navigation.navigate("WebView", {
-        url: val,
+        url: offer.dealID,
+      });
+      logEvent("redirect", {
+        deal_id: offer.dealID,
+        game_id: deal.gameID,
+        steam_id: deal.steamAppID,
+        store_id: offer.storeID,
+        game_title: deal.external,
+        price: offer.price,
+        savings: offer.savings,
       });
     },
-    [navigation]
+    [navigation, deal]
   );
 
   /**
@@ -129,7 +139,6 @@ function Game({ route, navigation }) {
    * useMemo to determine if the game is a favourite
    */
   const favourite = useMemo(() => {
-    console.log(favourites);
     if (!favourites) return null;
     return (
       gameData &&
@@ -140,18 +149,34 @@ function Game({ route, navigation }) {
   }, [gameData, favourites]);
 
   const handleToggleFavourite = useCallback(() => {
+    const newFavourite = {
+      ...data,
+      gameID: gameData.gameInfo.gameID,
+      alertLevel: ALERT_LEVELS[1],
+      activeAlert: false,
+      lastSeen: new Date().getTime(),
+    };
+
     const newFavourites = favourite
       ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
-      : [
-          ...favourites,
-          {
-            ...data,
-            gameID: gameData.gameInfo.gameID,
-            alertLevel: ALERT_LEVELS[1],
-            activeAlert: false,
-            lastSeen: new Date().getTime(),
-          },
-        ];
+      : [...favourites, newFavourite];
+
+    if (favourite) {
+      logEvent("remove_favourite", {
+        game_id: favourite.gameID,
+        steam_id: favourite.info.steamAppID,
+        store_id: null,
+        game_title: favourite.title,
+      });
+    } else {
+      logEvent("add_favourite", {
+        game_id: newFavourite.gameID,
+        steam_id: newFavourite.info.steamAppID,
+        store_id: null,
+        game_title: newFavourite.title,
+      });
+    }
+
     dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, favourite, data]);
 

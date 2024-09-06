@@ -22,6 +22,11 @@ import {
 } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 import { thresholdAlerts } from "../../utilities/dealAlerts";
+import {
+  logScreenView,
+  logEvent,
+  SCREEN_CLASSES,
+} from "../../utilities/analytics";
 
 function ListItem({ item, handleOnPress }) {
   const [width, setWidth] = useState(null);
@@ -49,10 +54,19 @@ function ListItem({ item, handleOnPress }) {
   /**
    * Handle navigation to the deal screen
    */
-  const handlePress = useCallback(
-    () => handleOnPress(item),
-    [item, handleOnPress]
-  );
+  const handlePress = useCallback(() => {
+    handleOnPress(item);
+    logScreenView({
+      screen_name: item.info.title,
+      screen_class: SCREEN_CLASSES.GAME,
+    });
+    logEvent("view_game", {
+      game_id: item.gameID,
+      steam_id: item.info.steamAppID,
+      store_id: null,
+      game_title: item.title,
+    });
+  }, [item, handleOnPress]);
 
   const animation = new Animated.Value(0);
   const animated = new Animated.Value(1);

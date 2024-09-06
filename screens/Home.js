@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useMemo } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, StyleSheet, Pressable } from "react-native";
@@ -9,6 +8,11 @@ import { fetchDeals } from "../redux/dealsSlice";
 import { DEALS_CACHE_OFFSET } from "../constants/Defaults";
 import FeaturedDeals from "../components/home/FeaturedDeals";
 import Loading from "../components/shared/Loading";
+import {
+  logScreenView,
+  logEvent,
+  SCREEN_CLASSES,
+} from "../utilities/analytics";
 
 function Home({ navigation }) {
   const { theme } = useTheme();
@@ -53,6 +57,16 @@ function Home({ navigation }) {
       navigation.navigate("Deal", {
         deal,
       });
+      logScreenView({
+        screen_name: deal.title,
+        screen_class: SCREEN_CLASSES.GAME,
+      });
+      logEvent("view_deal", {
+        game_id: deal.gameID,
+        steam_id: deal.steamAppID,
+        store_id: deal.storeID,
+        game_title: deal.title,
+      });
     },
     [navigation]
   );
@@ -74,7 +88,12 @@ function Home({ navigation }) {
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
-      <Pressable onPress={() => handleSearchNavigate()}>
+      <Pressable
+        onPress={() => {
+          handleSearchNavigate();
+          logScreenView({ screen_name: "Search", screen_class: "Search" });
+        }}
+      >
         <SearchBar
           placeholder="Find a game"
           round={2}

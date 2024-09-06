@@ -9,6 +9,7 @@ import ListItem from "../components/search/ListItem";
 import { LARGE_SPINNER } from "../constants/Defaults";
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import EmptyList from "../components/shared/EmptyList";
+import { logSearch, logEvent } from "../utilities/analytics";
 
 function Search({ navigation }) {
   const { theme } = useTheme();
@@ -66,6 +67,7 @@ function Search({ navigation }) {
   useEffect(() => {
     if (params.title) {
       setLoading(true);
+      logSearch({ search_term: params.title });
       const api = axios.create({
         baseURL: GAMES,
         withCredentials: false,
@@ -86,7 +88,8 @@ function Search({ navigation }) {
           }
           setLoading(false);
         })
-        .catch(() => {
+        .catch((err) => {
+          logEvent("search_error", { error: err });
           setLoading(false);
         });
     }

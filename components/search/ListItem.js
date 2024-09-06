@@ -6,6 +6,11 @@ import { Text, useTheme } from "@rneui/themed";
 import { TEXT_COLOUR_WHITE, INFO_BACKGROUND } from "../../constants/Colours";
 import CapsuleImage from "../shared/CapsuleImage";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
+import {
+  logScreenView,
+  logEvent,
+  SCREEN_CLASSES,
+} from "../../utilities/analytics";
 
 function ListItem({ item, handleOnPress }) {
   const [width, setWidth] = useState(null);
@@ -14,10 +19,19 @@ function ListItem({ item, handleOnPress }) {
   /**
    * Handle navigation to the deal screen
    */
-  const handlePress = useCallback(
-    () => handleOnPress(item),
-    [item, handleOnPress]
-  );
+  const handlePress = useCallback(() => {
+    handleOnPress(item);
+    logScreenView({
+      screen_name: item.external,
+      screen_class: SCREEN_CLASSES.GAME,
+    });
+    logEvent("view_game", {
+      game_id: item.gameID,
+      steam_id: item.steamAppID,
+      store_id: null,
+      game_title: item.external,
+    });
+  }, [item, handleOnPress]);
 
   const animation = new Animated.Value(0);
   const animated = new Animated.Value(1);

@@ -55,7 +55,7 @@ function StoreOffer({ deal, store, handlePress, favourite = null }) {
   return (
     <View key={deal.storeID}>
       <Pressable
-        onPress={() => handlePress(deal.dealID)}
+        onPress={() => handlePress(deal)}
         onPressIn={fadeIn}
         onPressOut={fadeOut}
       >
