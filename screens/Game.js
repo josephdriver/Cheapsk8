@@ -128,26 +128,30 @@ function Game({ route, navigation }) {
   /**
    * useMemo to determine if the game is a favourite
    */
-  const favourite = useMemo(
-    () =>
+  const favourite = useMemo(() => {
+    console.log(favourites);
+    if (!favourites) return null;
+    return (
       gameData &&
       gameData.gameInfo &&
       gameData.gameInfo.gameID &&
-      favourites.find((f) => f.gameID === gameData.gameInfo.gameID),
-    [gameData, favourites]
-  );
+      favourites.find((f) => f.gameID === gameData.gameInfo.gameID)
+    );
+  }, [gameData, favourites]);
 
   const handleToggleFavourite = useCallback(() => {
-    const newFavourites = favourite || [
-      ...favourites,
-      {
-        ...data,
-        gameID: gameData.gameInfo.gameID,
-        alertLevel: ALERT_LEVELS[1],
-        activeAlert: false,
-        lastSeen: new Date().getTime(),
-      },
-    ];
+    const newFavourites = favourite
+      ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
+      : [
+          ...favourites,
+          {
+            ...data,
+            gameID: gameData.gameInfo.gameID,
+            alertLevel: ALERT_LEVELS[1],
+            activeAlert: false,
+            lastSeen: new Date().getTime(),
+          },
+        ];
     dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, favourite, data]);
 
