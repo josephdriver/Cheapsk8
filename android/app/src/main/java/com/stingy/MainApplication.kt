@@ -1,4 +1,4 @@
-package com.stingy
+package com.cheapsk8te
 
 import android.app.Application
 import com.facebook.react.PackageList

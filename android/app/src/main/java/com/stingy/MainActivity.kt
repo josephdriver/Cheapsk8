@@ -1,4 +1,4 @@
- package com.stingy
+ package com.cheapsk8te
  
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
