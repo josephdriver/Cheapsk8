@@ -1,7 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useCallback, useMemo } from "react";
+import analytics from "@react-native-firebase/analytics";
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import ListItem from "../components/favourites/ListItem";
@@ -17,6 +20,15 @@ function WatchList({ navigation }) {
   const { theme } = useTheme();
 
   const [inputValue, setInputValue] = useState("");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      analytics().logScreenView({
+        screen_name: "Watchlist",
+        screen_class: "Watchlist",
+      });
+    }, [])
+  );
 
   const handleDealNavigate = useCallback(
     (item) => {

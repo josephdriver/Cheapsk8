@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1042550224698",
+    "project_id": "cheapsk8te-597a2",
+    "storage_bucket": "cheapsk8te-597a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042550224698:android:c74bdc762d59148fd34203",
+        "android_client_info": {
+          "package_name": "com.cheapsk8te"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042550224698-bdb7n99uri2uvrv2pbvnocpcdoossorh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhvRoKlLuK5zNWVKgRHaOyQy4bZC7bOsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042550224698-bdb7n99uri2uvrv2pbvnocpcdoossorh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1042550224698-blesnropo4mm1v4983tut35lr13oefr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.cheapsk8te"
+              }
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-4455691519224934~6491423246"
+    }
+  ],
+  "configuration_version": "1"
+}

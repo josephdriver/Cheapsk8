@@ -1,5 +1,6 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useCallback, useMemo } from "react";
+import analytics from "@react-native-firebase/analytics";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -36,6 +37,15 @@ function Home({ navigation }) {
   const triggerDealFetch = useCallback(() => {
     dispatch(fetchDeals(getParams));
   }, [dispatch, getParams]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      analytics().logScreenView({
+        screen_name: "Home",
+        screen_class: "Home",
+      });
+    }, [])
+  );
 
   useFocusEffect(
     React.useCallback(() => {

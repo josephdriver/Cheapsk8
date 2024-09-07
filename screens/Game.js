@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useMemo, useEffect, useState, useCallback } from "react";
+import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
 import {
   View,
@@ -7,6 +9,7 @@ import {
   Pressable,
   Animated,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { useTheme, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
@@ -27,6 +30,7 @@ import { ALERT_LEVELS, ANIMATED_CONFIG } from "../constants/Defaults";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
+
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
@@ -44,6 +48,15 @@ function Game({ route, navigation }) {
     true,
     getParams,
     null
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      analytics().logScreenView({
+        screen_name: deal.title,
+        screen_class: "Game",
+      });
+    }, [deal.title])
   );
 
   /**
@@ -129,7 +142,6 @@ function Game({ route, navigation }) {
    * useMemo to determine if the game is a favourite
    */
   const favourite = useMemo(() => {
-    console.log(favourites);
     if (!favourites) return null;
     return (
       gameData &&
@@ -140,18 +152,28 @@ function Game({ route, navigation }) {
   }, [gameData, favourites]);
 
   const handleToggleFavourite = useCallback(() => {
+    const newFavourite = {
+      ...data,
+      gameID: gameData.gameInfo.gameID,
+      alertLevel: ALERT_LEVELS[1],
+      activeAlert: false,
+      lastSeen: new Date().getTime(),
+    };
     const newFavourites = favourite
       ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
-      : [
-          ...favourites,
-          {
-            ...data,
-            gameID: gameData.gameInfo.gameID,
-            alertLevel: ALERT_LEVELS[1],
-            activeAlert: false,
-            lastSeen: new Date().getTime(),
-          },
-        ];
+      : [...favourites, newFavourite];
+
+    analytics().logEvent(
+      favourite ? "remove_from_favourites" : "add_to_favourites",
+      {
+        title: favourite ? favourite.info.title : newFavourite.info.title,
+        game_id: favourite ? favourite.gameID : newFavourite.gameID,
+        steam_id: favourite
+          ? favourite.info.steamAppID
+          : newFavourite.info.steamAppID,
+      }
+    );
+
     dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, favourite, data]);
 

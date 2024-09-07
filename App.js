@@ -1,4 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import "react-native-gesture-handler";
+import * as firebase from "@react-native-firebase/app";
+import analytics from "@react-native-firebase/analytics";
 import React from "react";
 import ErrorBoundary from "react-native-error-boundary";
 import { ThemeProvider, createTheme } from "@rneui/themed";
@@ -13,6 +16,9 @@ function App() {
   const theme = createTheme({
     mode: "dark",
   });
+
+  firebase.initializeApp({});
+  analytics().setAnalyticsCollectionEnabled(true);
 
   const handleJSErrorForErrorBoundary = (error, stackTrace) => {
     console.log("ErrorBoundary", error, stackTrace);
