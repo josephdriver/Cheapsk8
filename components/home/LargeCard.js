@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import HeaderImage from "../shared/HeaderImage";
 import { dealListType } from "../../propTypes/props";
 import {
-  TEXT_COLOUR_WHITE,
+  WHITE,
   INFO_BACKGROUND,
   TEXT_INACTIVE,
   DISCOUNT_BOX,
@@ -122,13 +122,13 @@ const styles = StyleSheet.create({
     flex: 7,
   },
   rating: {
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   title: {
     fontWeight: "bold",
     fontSize: 18,
     paddingBottom: 1,
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   priceContainer: {
     flex: 3,
@@ -143,15 +143,15 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginTop: 23,
     backgroundColor: DISCOUNT_BOX,
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   percentDiscount: {
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   priceValues: {
     flexDirection: "column",
     alignItems: "flex-end",
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   normalPrice: {
     color: TEXT_INACTIVE,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   salePrice: {
     fontWeight: "700",
     fontSize: 15,
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
 });
 

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useTheme } from "@rneui/themed";
-import { TEXT_COLOUR_WHITE } from "../../constants/Colours";
+import { WHITE } from "../../constants/Colours";
 
 function Loading({ message }) {
   const { theme } = useTheme();
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   message: {
     alignSelf: "center",
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
 });
 

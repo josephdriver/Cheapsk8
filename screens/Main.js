@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useNetInfo } from "@react-native-community/netinfo";
-import React, { useCallback, useEffect } from "react";
+import auth from "@react-native-firebase/auth";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,10 +13,16 @@ import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
 import TabBar from "../components/TabBar";
 import FavouritesWrapper from "./FavouritesWrapper";
-import { OPTIONS } from "../constants/NavigatorConfig";
 import Offline from "./Offline";
+import { OPTIONS, NAVIGATOR_OPTIONS } from "../constants/NavigatorConfig";
+import Login from "./Login";
+import ResetPassword from "./PasswordReset";
+import RegisterAccount from "./RegisterAccount";
 
 function Main() {
+  const Stack = createStackNavigator();
+  const [user, setUser] = useState(null);
+  const [initializing, setInitializing] = useState(true);
   const { isConnected } = useNetInfo();
   const { stores } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
@@ -33,6 +41,49 @@ function Main() {
   );
 
   const WatchListComponent = useCallback(() => <FavouritesWrapper />, []);
+  const LoginScreenComponent = useCallback(() => <Login />, []);
+  const RegisterScreenComponent = useCallback(() => <RegisterAccount />, []);
+  const PasswordResetScreenComponent = useCallback(() => <ResetPassword />, []);
+
+  // Handle user state changes
+  const onAuthStateChanged = useCallback(
+    (u) => {
+      setUser(u);
+      if (initializing) setInitializing(false);
+    },
+    [initializing]
+  );
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, [onAuthStateChanged]);
+
+  if (!user) {
+    return (
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={NAVIGATOR_OPTIONS}>
+            <Stack.Screen
+              name="Login"
+              component={LoginScreenComponent}
+              options={OPTIONS}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreenComponent}
+              options={OPTIONS}
+            />
+            <Stack.Screen
+              name="PasswordReset"
+              component={PasswordResetScreenComponent}
+              options={OPTIONS}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    );
+  }
 
   if (isConnected === false) {
     return <Offline />;

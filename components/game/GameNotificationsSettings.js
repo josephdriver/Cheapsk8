@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 
-import { TEXT_COLOUR_WHITE, FAVOURITE_YELLOW } from "../../constants/Colours";
+import { WHITE, FAVOURITE_YELLOW } from "../../constants/Colours";
 import { ALERT_LEVELS } from "../../constants/Defaults";
 import { setFavourites } from "../../redux/favouritesSlice";
 import { dealType, dealListType, favouriteType } from "../../propTypes/props";
@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     fontWeight: "700",
     fontSize: 18,
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   label: {
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
     alignSelf: "center",
     fontSize: 15,
     fontWeight: "700",
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     width: 30,
     backgroundColor: FAVOURITE_YELLOW,
   },
-  trackStyle: { height: 5, backgroundColor: TEXT_COLOUR_WHITE },
+  trackStyle: { height: 5, backgroundColor: WHITE },
 });
 
 AlertSlider.propTypes = {

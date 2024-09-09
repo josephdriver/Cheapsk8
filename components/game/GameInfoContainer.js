@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { dealType, gameType, dealListType } from "../../propTypes/props";
 import {
-  TEXT_COLOUR_WHITE,
+  WHITE,
   METACRITIC_SCORES,
   INFO_BACKGROUND,
 } from "../../constants/Colours";
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   dealTitle: {
     fontWeight: "700",
     fontSize: 20,
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
   infoContainer: {
     flexDirection: "row",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   textWhite: {
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
   },
 });
 
