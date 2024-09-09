@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 40,
     fontWeight: "bold",
-    paddingVertical: 35,
     color: WHITE,
     textAlign: "center",
   },
@@ -161,6 +160,7 @@ const styles = StyleSheet.create({
     borderColor: WHITE,
     borderRadius: 30,
     width: "80%",
+    height: 50,
   },
   buttonTitle: {
     fontWeight: "bold",
