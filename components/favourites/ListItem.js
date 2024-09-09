@@ -15,7 +15,7 @@ import { BASE } from "../../constants/Urls";
 import { favouriteType } from "../../propTypes/props";
 import CapsuleImage from "../shared/CapsuleImage";
 import {
-  TEXT_COLOUR_WHITE,
+  WHITE,
   INFO_BACKGROUND,
   FAVOURITE_YELLOW,
   DISCOUNT_BOX,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   gameTitleText: {
-    color: TEXT_COLOUR_WHITE,
+    color: WHITE,
     paddingHorizontal: 5,
     fontWeight: "700",
   },

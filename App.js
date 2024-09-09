@@ -17,7 +17,14 @@ function App() {
     mode: "dark",
   });
 
-  firebase.initializeApp({});
+  const firebaseConfig = {
+    apiKey: "AIzaSyBuQYH6uo8km0JpSVF4IBz7L7wHTvkqvYU",
+    authDomain: "cheapsk8te-597a2.firebaseapp.com",
+    projectId: "cheapsk8te-597a2",
+    appId: "1:1042550224698:android:943b70ea55e51e8cd34203",
+  };
+
+  firebase.initializeApp(firebaseConfig);
   analytics().setAnalyticsCollectionEnabled(true);
 
   const handleJSErrorForErrorBoundary = (error, stackTrace) => {

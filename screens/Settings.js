@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from "react";
+import React, { useCallback, useState } from "react";
 import analytics from "@react-native-firebase/analytics";
-import { View, StyleSheet, ScrollView } from "react-native";
+import auth from "@react-native-firebase/auth";
+import { View, StyleSheet, ScrollView, Button } from "react-native";
 import { useTheme, Text, Switch, Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { clone } from "lodash";
@@ -11,6 +12,7 @@ import { setSavedStores } from "../redux/storesSlice";
 import IconImage from "../components/shared/IconImage";
 
 function Settings() {
+  const [pending, setPending] = useState(false);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
   const dispatch = useDispatch();
@@ -23,6 +25,15 @@ function Settings() {
       });
     }, [])
   );
+
+  const onSignOutPressed = useCallback(() => {
+    setPending(true);
+    auth()
+      .signOut()
+      .then(() => {
+        setPending(false);
+      });
+  }, []);
 
   const handleSwitch = (storeID, value) => {
     if (!value) {
@@ -80,6 +91,11 @@ function Settings() {
             ) : null
           )}
         </View>
+        <Button
+          disabled={pending}
+          title="Sign Out"
+          onPress={onSignOutPressed}
+        />
       </ScrollView>
     </View>
   );
