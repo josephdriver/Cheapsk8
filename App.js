@@ -7,6 +7,7 @@ import ErrorBoundary from "react-native-error-boundary";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import Toast from "react-native-toast-message";
 
 import Main from "./screens/Main";
 import { persistor, store } from "./store";
@@ -40,6 +41,7 @@ function App() {
         >
           <PersistGate loading={null} persistor={persistor}>
             <Main />
+            <Toast />
           </PersistGate>
         </ErrorBoundary>
       </ThemeProvider>

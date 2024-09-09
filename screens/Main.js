@@ -42,8 +42,8 @@ function Main() {
 
   const WatchListComponent = useCallback(() => <FavouritesWrapper />, []);
   const LoginScreenComponent = useCallback(() => <Login />, []);
+  const RegisterScreenComponent = useCallback(() => <RegisterAccount />, []);
   const PasswordResetScreenComponent = useCallback(() => <ResetPassword />, []);
-  const RedisterScreenComponent = useCallback(() => <RegisterAccount />, []);
 
   // Handle user state changes
   const onAuthStateChanged = useCallback(
@@ -53,7 +53,7 @@ function Main() {
     },
     [initializing]
   );
-  console.log(user);
+
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
@@ -70,13 +70,13 @@ function Main() {
               options={OPTIONS}
             />
             <Stack.Screen
-              name="PasswordReset"
-              component={PasswordResetScreenComponent}
+              name="Register"
+              component={RegisterScreenComponent}
               options={OPTIONS}
             />
             <Stack.Screen
-              name="Register"
-              component={RedisterScreenComponent}
+              name="PasswordReset"
+              component={PasswordResetScreenComponent}
               options={OPTIONS}
             />
           </Stack.Navigator>

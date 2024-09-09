@@ -1,8 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from "react";
 import auth from "@react-native-firebase/auth";
 import { StyleSheet, View, Text } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 import { emailValidator } from "../utilities/validators";
 import {
@@ -28,10 +30,16 @@ export default function ResetPassword() {
     auth()
       .sendPasswordResetEmail(email.value)
       .then(() => {
-        // alert("Please check your email...");
+        Toast.show({
+          type: "success",
+          text1: "Reset Email Sent",
+        });
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
+        Toast.show({
+          type: "error",
+          text1: "Encountered a problem sending reset instructions.",
+        });
       });
 
     navigation.navigate("Login");

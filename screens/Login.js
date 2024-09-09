@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import { Input, Button /* Divider */ } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,12 @@ export default function Login() {
   const { loading, error } = useSelector((state) => state.user);
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(setError(false));
+    }, [dispatch])
+  );
 
   const onLoginPressed = () => {
     if (loading) return;

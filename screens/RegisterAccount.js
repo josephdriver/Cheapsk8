@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,12 +18,18 @@ import {
 } from "../constants/Colours";
 
 export default function RegisterAccount() {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { loading } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
   const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(setError(false));
+    }, [dispatch])
+  );
 
   const onSignUpPressed = () => {
     if (loading) return;
@@ -49,10 +55,19 @@ export default function RegisterAccount() {
       });
   };
 
+  const errorMessage = useMemo(() => {
+    if (error) {
+      return error.replace(" ", "$").split("$", 2)[1];
+    }
+    return "";
+  }, [error]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Create Account.</Text>
-
+      <View style={styles.row}>
+        <Text style={styles.rowText}>{errorMessage}</Text>
+      </View>
       <Input
         placeholder="Name"
         errorStyle={styles.error}
