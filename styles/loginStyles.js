@@ -1,17 +1,17 @@
 import { StyleSheet } from "react-native";
 
 import {
-  INFO_BACKGROUND,
-  SPLASH_BACKGROUND,
+  SECONDARY,
+  PRIMARY,
   WHITE,
-  INPUT_LIGHT_THEME,
-  ERROR_TEXT,
+  TEXT_DARK,
+  DANGER,
 } from "../constants/Colours";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: SPLASH_BACKGROUND,
+    backgroundColor: PRIMARY,
     height: "100%",
     justifyContent: "center",
   },
@@ -32,10 +32,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   input: {
-    borderRadius: 100,
+    borderRadius: 10,
     paddingHorizontal: 20,
     backgroundColor: WHITE,
-    color: INPUT_LIGHT_THEME,
+    color: TEXT_DARK,
     fontSize: 15,
     height: 35,
     paddingVertical: 0,
@@ -47,10 +47,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: SPLASH_BACKGROUND,
+    backgroundColor: PRIMARY,
     borderWidth: 2,
     borderColor: WHITE,
-    borderRadius: 30,
+    borderRadius: 10,
     width: "80%",
     height: 40,
     paddingVertical: 0,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   error: {
-    color: ERROR_TEXT,
+    color: DANGER,
     fontSize: 15,
     fontWeight: "bold",
     alignSelf: "center",
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   link: {
     fontSize: 16,
     fontWeight: "bold",
-    color: INFO_BACKGROUND,
+    color: SECONDARY,
   },
 });
 

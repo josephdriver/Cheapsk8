@@ -5,7 +5,7 @@ import { Skeleton } from "@rneui/themed";
 import BlastedImage from "react-native-blasted-image";
 
 import { STEAM_S_HEADER, DELIM_ID, BASE } from "../../constants/Urls";
-import { INFO_BACKGROUND } from "../../constants/Colours";
+import { SECONDARY } from "../../constants/Colours";
 import { EXCLUDE_KEYWORDS } from "../../constants/Defaults";
 
 function CapsuleImage({
@@ -63,12 +63,12 @@ CapsuleImage.propTypes = {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   skeletonImage: {
     width: "100%",
     height: "100%",
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   logo: {
     opacity: 0.9,

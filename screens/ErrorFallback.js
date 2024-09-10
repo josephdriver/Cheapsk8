@@ -1,16 +1,12 @@
 import React from "react";
 import { SafeAreaView, Text, Pressable, View, StyleSheet } from "react-native";
 import { func, shape, string } from "prop-types";
-import { useTheme } from "@rneui/themed";
 
-import { INFO_BACKGROUND } from "../constants/Colours";
+import { BACKGROUND_PRIMARY, SECONDARY } from "../constants/Colours";
 
 function ErrorFallback({ error, resetError }) {
-  const { theme } = useTheme();
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.grey5 }]}
-    >
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Oops!</Text>
         <Text style={styles.subtitle}>
@@ -30,6 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
   content: {
     alignItems: "center",
@@ -44,7 +41,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
     padding: 10,
     paddingHorizontal: 40,
     borderRadius: 8,

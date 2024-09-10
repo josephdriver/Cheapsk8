@@ -2,13 +2,13 @@
 import React, { useState, useCallback, useMemo } from "react";
 import analytics from "@react-native-firebase/analytics";
 import { View, StyleSheet } from "react-native";
-import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import ListItem from "../components/favourites/ListItem";
 import EmptyList from "../components/shared/EmptyList";
+import { BACKGROUND_PRIMARY } from "../constants/Colours";
 
 function WatchList({ navigation }) {
   const { favourites } = useSelector((state) => state.favourites);
@@ -17,7 +17,6 @@ function WatchList({ navigation }) {
       "You have not watch listed any games yet. Search for Titles on the Home screen and add them to your watch list.",
     []
   );
-  const { theme } = useTheme();
 
   const [inputValue, setInputValue] = useState("");
 
@@ -46,7 +45,7 @@ function WatchList({ navigation }) {
   );
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View style={styles.view}>
       <SearchableFlatList
         autoFocus={false}
         inputValue={inputValue}
@@ -65,6 +64,7 @@ const styles = StyleSheet.create({
   view: {
     border: "none",
     height: "100%",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
 });
 export default WatchList;

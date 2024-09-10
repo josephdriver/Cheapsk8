@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { View, Pressable, StyleSheet, Animated } from "react-native";
 import { Text, useTheme } from "@rneui/themed";
 
-import { WHITE, INFO_BACKGROUND } from "../../constants/Colours";
+import { WHITE, SECONDARY } from "../../constants/Colours";
 import CapsuleImage from "../shared/CapsuleImage";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     justifyContent: "space-around",
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   gameTitleText: {
     color: WHITE,

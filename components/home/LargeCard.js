@@ -7,9 +7,9 @@ import HeaderImage from "../shared/HeaderImage";
 import { dealListType } from "../../propTypes/props";
 import {
   WHITE,
-  INFO_BACKGROUND,
+  SECONDARY,
   TEXT_INACTIVE,
-  DISCOUNT_BOX,
+  DISCOUNT,
 } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
   headerImageContainer: {
     width: "100%",
     height: 160,
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   contentContainer: {
     flexDirection: "row",
     padding: 8,
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   titleContainer: {
     flex: 7,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     alignItems: "flex-end",
     marginTop: 23,
-    backgroundColor: DISCOUNT_BOX,
+    backgroundColor: DISCOUNT,
     color: WHITE,
   },
   percentDiscount: {

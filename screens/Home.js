@@ -4,15 +4,15 @@ import analytics from "@react-native-firebase/analytics";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { useTheme, SearchBar } from "@rneui/themed";
+import { SearchBar } from "@rneui/themed";
 
 import { fetchDeals, setLoading } from "../redux/dealsSlice";
 import { DEALS_CACHE_OFFSET } from "../constants/Defaults";
 import FeaturedDeals from "../components/home/FeaturedDeals";
 import Loading from "../components/shared/Loading";
+import { BACKGROUND_PRIMARY } from "../constants/Colours";
 
 function Home({ navigation }) {
-  const { theme } = useTheme();
   const dispatch = useDispatch();
   const { deals, loading, offset, fetchTime } = useSelector(
     (state) => state.deals
@@ -84,14 +84,14 @@ function Home({ navigation }) {
   }
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View style={styles.view}>
       <Pressable onPress={() => handleSearchNavigate()}>
         <SearchBar
           placeholder="Find a game"
           round={2}
           editable={false}
           containerStyle={{
-            backgroundColor: theme.colors.grey5,
+            backgroundColor: BACKGROUND_PRIMARY,
             borderBottomColor: "transparent",
             borderTopColor: "transparent",
           }}
@@ -114,6 +114,7 @@ function Home({ navigation }) {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
 });
 
