@@ -26,12 +26,13 @@ import { dealListType, gameListType } from "../propTypes/props";
 import GameInfoContainer from "../components/game/GameInfoContainer";
 import GameNotificationsSettings from "../components/game/GameNotificationsSettings";
 import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
-import { ALERT_LEVELS, ANIMATED_CONFIG } from "../constants/Defaults";
+import { ALERT_LEVELS, ANIMATED_CONFIG, HEADERS } from "../constants/Defaults";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
 
   const { stores, savedStores } = useSelector((state) => state.stores);
+  const { user } = useSelector((state) => state.user);
   const { favourites } = useSelector((state) => state.favourites);
   const { theme } = useTheme();
   const dispatch = useDispatch();
@@ -65,11 +66,18 @@ function Game({ route, navigation }) {
    */
   const handlePress = useCallback(
     (val) => {
+      analytics().logEvent("redirect_to_store", {
+        ...val,
+        game_id: gameData.gameInfo.gameID,
+        game_name: gameData.gameInfo.name,
+        steam_id: gameData.gameInfo.steamAppID,
+        user_id: user.uid,
+      });
       navigation.navigate("WebView", {
-        url: val,
+        url: val.dealID,
       });
     },
-    [navigation]
+    [navigation, gameData.gameInfo, user]
   );
 
   /**
@@ -92,10 +100,7 @@ function Game({ route, navigation }) {
         withCredentials: false,
         params,
         paramsSerializer: (p) => qs.stringify(p, { encode: false }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+        headers: HEADERS,
       });
 
       api

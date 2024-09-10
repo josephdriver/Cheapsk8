@@ -7,8 +7,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchStores } from "../redux/storesSlice";
 
+import { fetchStores } from "../redux/storesSlice";
+import { setUser } from "../redux/userSlice";
 import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
 import TabBar from "../components/TabBar";
@@ -21,10 +22,10 @@ import RegisterAccount from "./RegisterAccount";
 
 function Main() {
   const Stack = createStackNavigator();
-  const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
   const { isConnected } = useNetInfo();
   const { stores } = useSelector((state) => state.stores);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const Tab = createBottomTabNavigator();
 
@@ -48,10 +49,10 @@ function Main() {
   // Handle user state changes
   const onAuthStateChanged = useCallback(
     (u) => {
-      setUser(u);
+      dispatch(setUser(u));
       if (initializing) setInitializing(false);
     },
-    [initializing]
+    [initializing, dispatch]
   );
 
   useEffect(() => {

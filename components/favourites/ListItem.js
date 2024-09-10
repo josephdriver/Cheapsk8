@@ -21,14 +21,17 @@ import {
   DISCOUNT_BOX,
 } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
-import { thresholdAlerts } from "../../utilities/dealAlerts";
+import { favouriteCollectionAlerts } from "../../utilities/dealAlerts";
 
 function ListItem({ item, handleOnPress }) {
   const [width, setWidth] = useState(null);
   const { stores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
 
-  const { isLowest, isAlert } = useMemo(() => thresholdAlerts(item), [item]);
+  const { isLowest, isAlert } = useMemo(
+    () => favouriteCollectionAlerts(item),
+    [item]
+  );
 
   const currentLow = useMemo(() => {
     let lowestDeal = item.deals[0];

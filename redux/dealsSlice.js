@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { DEALS } from "../constants/Urls";
 import { parseDeals } from "../utilities/dealsHelpers";
+import { HEADERS } from "../constants/Defaults";
 
 export const DealsSlice = createSlice({
   name: "deals",
@@ -68,14 +69,10 @@ export function fetchDeals(params, append = false) {
     baseURL: DEALS,
     withCredentials: false,
     params,
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+    headers: HEADERS,
   });
 
   return async (dispatch) => {
-    dispatch(setLoading(true));
     if (append) {
       dispatch(setOffset(params.pageNumber));
     } else {

@@ -6,7 +6,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, SearchBar } from "@rneui/themed";
 
-import { fetchDeals } from "../redux/dealsSlice";
+import { fetchDeals, setLoading } from "../redux/dealsSlice";
 import { DEALS_CACHE_OFFSET } from "../constants/Defaults";
 import FeaturedDeals from "../components/home/FeaturedDeals";
 import Loading from "../components/shared/Loading";
@@ -53,9 +53,10 @@ function Home({ navigation }) {
         deals.length === 0 ||
         fetchTime + DEALS_CACHE_OFFSET < new Date().getTime()
       ) {
+        dispatch(setLoading(true));
         triggerDealFetch();
       }
-    }, [triggerDealFetch, deals, fetchTime])
+    }, [triggerDealFetch, deals, fetchTime, dispatch])
   );
 
   const handleDealNavigate = useCallback(

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { useTheme, SearchBar } from "@rneui/themed";
 import {
   oneOfType,
@@ -10,6 +10,7 @@ import {
   elementType,
 } from "prop-types";
 import { favouriteType, gameListType } from "../../propTypes/props";
+import { WHITE } from "../../constants/Colours";
 
 function SearchableFlatList({
   inputValue,
@@ -36,11 +37,13 @@ function SearchableFlatList({
           value={inputValue}
           round={2}
           showLoading={loading}
-          containerStyle={{
-            backgroundColor: theme.colors.grey5,
-            borderBottomColor: "transparent",
-            borderTopColor: "transparent",
-          }}
+          containerStyle={[
+            styles.containerStyle,
+            {
+              backgroundColor: theme.colors.grey5,
+            },
+          ]}
+          inputStyle={styles.input}
         />
       )}
 
@@ -86,3 +89,14 @@ SearchableFlatList.propTypes = {
 };
 
 export default SearchableFlatList;
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
+  },
+  input: {
+    fontSize: 15,
+    color: WHITE,
+  },
+});

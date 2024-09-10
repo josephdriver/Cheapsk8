@@ -1,17 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import auth from "@react-native-firebase/auth";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
-import { Input, Button /* Divider */ } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity, View, Text } from "react-native";
+import { Input, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
+import Toast from "react-native-toast-message";
 
 import { emailValidator, passwordValidator } from "../utilities/validators";
-import { setUser, setLoading, setError } from "../redux/userSlice";
-import {
-  INFO_BACKGROUND,
-  SPLASH_BACKGROUND,
-  WHITE,
-} from "../constants/Colours";
+import { setLoading, setError } from "../redux/userSlice";
+import styles from "../styles/loginStyles";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -20,11 +17,17 @@ export default function Login() {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(setError(false));
-    }, [dispatch])
-  );
+  const handleToast = useCallback((message, type) => {
+    let text = "Unable to Log In at this time";
+    const errorCode = message.replace(" ", "$").split("$", 2)[0];
+    if (errorCode === "[auth/invalid-credential]") {
+      text = "Invalid email or password";
+    }
+    Toast.show({
+      type,
+      text1: text,
+    });
+  }, []);
 
   const onLoginPressed = () => {
     if (loading) return;
@@ -40,20 +43,25 @@ export default function Login() {
 
     auth()
       .signInWithEmailAndPassword(email.value, password.value)
-      .then(async (user) => {
-        dispatch(setUser(user));
+      .then(async () => {
         dispatch(setLoading(false));
       })
       .catch((err) => {
         const { message } = err;
         dispatch(setLoading(false));
         dispatch(setError(message));
+        handleToast(message, "error");
       });
   };
 
   const errorMessage = useMemo(() => {
     if (error) {
-      return error.replace(" ", "$").split("$", 2)[1];
+      let message = "Unable to Log In at this time";
+      const errorCode = error.replace(" ", "$").split("$", 2)[0];
+      if (errorCode === "[auth/invalid-credential]") {
+        message = "Invalid email or password";
+      }
+      return message;
     }
     return "";
   }, [error]);
@@ -62,10 +70,8 @@ export default function Login() {
     <View style={styles.container}>
       <Text style={styles.header}>Cheapsk8te.</Text>
       <View>
-        <View style={styles.row}>
-          <Text style={styles.rowText}>{errorMessage}</Text>
-        </View>
         <Input
+          autoCapitalize="none"
           placeholder="Email"
           errorStyle={styles.error}
           errorMessage={email.error || ""}
@@ -77,12 +83,13 @@ export default function Login() {
           inputStyle={styles.input}
         />
         <Input
+          autoCapitalize="none"
           placeholder="Password"
           secureTextEntry
           errorStyle={styles.error}
-          errorMessage={password.error || ""}
-          inputContainerStyle={styles.inputContainer}
+          errorMessage={password.error || errorMessage || ""}
           containerStyle={styles.formContainer}
+          inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
           value={password.value}
           onChangeText={(text) => setPassword({ value: text, error: "" })}
@@ -96,26 +103,6 @@ export default function Login() {
         loading={loading}
         onPress={onLoginPressed}
       />
-      {/*  Below is for more sign in options */}
-      {/* <View>
-      <Divider style={styles.divider} />
-      </View>
-      <Button
-        title="Log In With Email"
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-        titleStyle={styles.buttonTitle}
-        disabled={loading}
-        onPress={onLoginPressed}
-      />
-      <Button
-        title="Log In With Email"
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-        titleStyle={styles.buttonTitle}
-        disabled={loading}
-        onPress={onLoginPressed}
-      /> */}
       <View style={styles.row}>
         <View style={styles.rowText}>
           <Text style={styles.text}>Don’t have an account? </Text>
@@ -132,86 +119,3 @@ export default function Login() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: SPLASH_BACKGROUND,
-    height: "100%",
-    justifyContent: "center",
-  },
-  header: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: WHITE,
-    textAlign: "center",
-  },
-  formContainer: {
-    alignSelf: "center",
-    width: "80%",
-    paddingHorizontal: 0,
-    marginVertical: 0,
-  },
-  inputContainer: {
-    borderBottomWidth: 0,
-  },
-  input: {
-    borderRadius: 100,
-    paddingHorizontal: 20,
-    backgroundColor: WHITE,
-    color: "black",
-    textDecoration: "none",
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 50,
-  },
-  button: {
-    backgroundColor: SPLASH_BACKGROUND,
-    borderWidth: 2,
-    borderColor: WHITE,
-    borderRadius: 30,
-    width: "80%",
-    height: 50,
-  },
-  buttonTitle: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: WHITE,
-    fontSize: 14,
-    alignSelf: "flex-start",
-  },
-  text: {
-    color: WHITE,
-    fontSize: 16,
-    alignSelf: "center",
-  },
-
-  divider: {
-    marginVertical: 20,
-    borderWidth: 3,
-    borderColor: WHITE,
-    width: "80%",
-    alignSelf: "center",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "80%",
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-  rowText: {
-    flexDirection: "row",
-    alignContent: "center",
-    color: WHITE,
-    textAlign: "center",
-  },
-  link: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: INFO_BACKGROUND,
-  },
-});
