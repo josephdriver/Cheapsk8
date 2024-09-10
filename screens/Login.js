@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { TouchableOpacity, View, Text } from "react-native";
 import { Input, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import Toast from "react-native-toast-message";
 import { emailValidator, passwordValidator } from "../utilities/validators";
 import { setLoading, setError } from "../redux/userSlice";
 import styles from "../styles/loginStyles";
+import errorMessage from "../utilities/firebaseErrorParsing";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -18,16 +19,18 @@ export default function Login() {
   const [password, setPassword] = useState({ value: "", error: "" });
 
   const handleToast = useCallback((message, type) => {
-    let text = "Unable to Log In at this time";
-    const errorCode = message.replace(" ", "$").split("$", 2)[0];
-    if (errorCode === "[auth/invalid-credential]") {
-      text = "Invalid email or password";
-    }
+    const text = errorMessage(message) || "Unable to Log In at this time";
     Toast.show({
       type,
       text1: text,
     });
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(setError(null));
+    }, [dispatch])
+  );
 
   const onLoginPressed = () => {
     if (loading) return;
@@ -54,17 +57,7 @@ export default function Login() {
       });
   };
 
-  const errorMessage = useMemo(() => {
-    if (error) {
-      let message = "Unable to Log In at this time";
-      const errorCode = error.replace(" ", "$").split("$", 2)[0];
-      if (errorCode === "[auth/invalid-credential]") {
-        message = "Invalid email or password";
-      }
-      return message;
-    }
-    return "";
-  }, [error]);
+  const errMessage = useMemo(() => errorMessage(error), [error]);
 
   return (
     <View style={styles.container}>
@@ -87,7 +80,7 @@ export default function Login() {
           placeholder="Password"
           secureTextEntry
           errorStyle={styles.error}
-          errorMessage={password.error || errorMessage || ""}
+          errorMessage={password.error || errMessage || ""}
           containerStyle={styles.formContainer}
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
