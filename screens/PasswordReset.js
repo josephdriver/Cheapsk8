@@ -50,25 +50,26 @@ export default function ResetPassword() {
           reset link.
         </Text>
       </View>
-      <Input
-        placeholder="Email"
-        style={{ marginBottom: 10, backgroundColor: "white", width: "100%" }}
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: "" })}
-        errorStyle={styles.error}
-        errorMessage={email.error || ""}
-        inputContainerStyle={styles.inputContainer}
-        containerStyle={styles.formContainer}
-        inputStyle={styles.input}
-      />
-      <Button
-        title="Request Reset Email"
-        buttonStyle={styles.button}
-        containerStyle={styles.buttonContainer}
-        titleStyle={styles.buttonTitle}
-        loading={loading}
-        onPress={sendResetPasswordEmail}
-      />
+      <View>
+        <Input
+          placeholder="Email"
+          value={email.value}
+          onChangeText={(text) => setEmail({ value: text, error: "" })}
+          errorStyle={styles.error}
+          errorMessage={email.error || ""}
+          inputContainerStyle={styles.inputContainer}
+          containerStyle={styles.formContainer}
+          inputStyle={styles.input}
+        />
+        <Button
+          title="Request Reset Email"
+          buttonStyle={styles.button}
+          containerStyle={styles.buttonContainer}
+          titleStyle={styles.buttonTitle}
+          loading={loading}
+          onPress={sendResetPasswordEmail}
+        />
+      </View>
     </View>
   );
 }

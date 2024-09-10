@@ -1,34 +1,34 @@
 import React, { useState, useMemo } from "react";
 import auth from "@react-native-firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { View, Pressable, Text } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setUser, setLoading, setError } from "../redux/userSlice";
-import {
-  emailValidator,
-  passwordValidator,
-  nameValidator,
-} from "../utilities/validators";
+import { emailValidator, passwordValidator } from "../utilities/validators";
 import styles from "../styles/loginStyles";
+import errorMessage from "../utilities/firebaseErrorParsing";
 
 export default function RegisterAccount() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.user);
-  const [name, setName] = useState({ value: "", error: "" });
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(setError(null));
+    }, [dispatch])
+  );
 
   const onSignUpPressed = () => {
     if (loading) return;
     dispatch(setLoading(true));
-    const nameError = nameValidator(name.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError || nameError) {
-      setName({ ...name, error: nameError });
+    if (emailError || passwordError) {
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       return;
@@ -36,7 +36,7 @@ export default function RegisterAccount() {
     auth()
       .createUserWithEmailAndPassword(email.value, password.value)
       .then(async (user) => {
-        dispatch(setUser({ ...user, name: name.value }));
+        dispatch(setUser(user));
         dispatch(setLoading(false));
       })
       .catch((err) => {
@@ -45,29 +45,11 @@ export default function RegisterAccount() {
       });
   };
 
-  const errorMessage = useMemo(() => {
-    if (error) {
-      return error.replace(" ", "$").split("$", 2)[1];
-    }
-    return "";
-  }, [error]);
+  const errMessage = useMemo(() => errorMessage(error), [error]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Create Account.</Text>
-      <View style={styles.row}>
-        <Text style={styles.rowText}>{errorMessage}</Text>
-      </View>
-      <Input
-        placeholder="Name"
-        errorStyle={styles.error}
-        errorMessage={name.error || ""}
-        inputContainerStyle={styles.inputContainer}
-        containerStyle={styles.formContainer}
-        inputStyle={styles.input}
-        value={name.value}
-        onChangeText={(text) => setName({ value: text, error: "" })}
-      />
       <Input
         errorStyle={styles.error}
         errorMessage={email.error || ""}
@@ -82,7 +64,7 @@ export default function RegisterAccount() {
         placeholder="Password"
         secureTextEntry
         errorStyle={styles.error}
-        errorMessage={password.error || ""}
+        errorMessage={password.error || errMessage || ""}
         inputContainerStyle={styles.inputContainer}
         containerStyle={styles.formContainer}
         inputStyle={styles.input}
