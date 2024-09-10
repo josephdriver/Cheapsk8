@@ -1,22 +1,24 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React, { useCallback, useState } from "react";
 import analytics from "@react-native-firebase/analytics";
 import auth from "@react-native-firebase/auth";
-import { View, StyleSheet, ScrollView, Button } from "react-native";
-import { useTheme, Text, Switch, Divider } from "@rneui/themed";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { useTheme, Switch, Divider, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { clone } from "lodash";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { setSavedStores } from "../redux/storesSlice";
 import IconImage from "../components/shared/IconImage";
+import { SPLASH_BACKGROUND } from "../constants/Colours";
 
 function Settings() {
   const [pending, setPending] = useState(false);
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  // Log the screen view
   useFocusEffect(
     React.useCallback(() => {
       analytics().logScreenView({
@@ -26,15 +28,22 @@ function Settings() {
     }, [])
   );
 
+  // Sign out the user and reset the navigation stack
   const onSignOutPressed = useCallback(() => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "home" }],
+    });
+
     setPending(true);
     auth()
       .signOut()
       .then(() => {
         setPending(false);
       });
-  }, []);
+  }, [navigation]);
 
+  // Handle the switch state change
   const handleSwitch = (storeID, value) => {
     if (!value) {
       const clonedStores = clone(savedStores);
@@ -50,22 +59,51 @@ function Settings() {
     }
   };
 
-  const getSwitchState = (storeID) => {
-    const store = savedStores.find((item) => item.storeID === storeID);
-    return !!store;
+  // Handle the notification switch
+  const handleNotificationSwitch = (value) => {
+    console.log(value);
   };
+
+  // Get the switch state
+  const getSwitchState = useCallback(
+    (storeID) => {
+      const store = savedStores.find((item) => item.storeID === storeID);
+      return !!store;
+    },
+    [savedStores]
+  );
 
   return (
     <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
       <ScrollView>
         <View>
-          <Text
-            h3
-            style={[styles.sectionHeading, { color: theme.colors.primary }]}
-          >
-            Available Stores
+          <Text style={styles.heading}>Enable Notifications</Text>
+          <Text style={styles.paragraph}>
+            Enable notifications to receive alerts when a deal available for a
+            game in your favourites.
           </Text>
+          <View>
+            <View style={styles.storeWrapper}>
+              <View style={[styles.title, { color: theme.colors.black }]}>
+                <Text style={{ fontSize: 15 }}>Enable push notifications</Text>
+              </View>
+
+              <View style={{ flex: 2 }}>
+                <Switch
+                  value
+                  onValueChange={(value) => handleNotificationSwitch(value)}
+                />
+              </View>
+            </View>
+            <Divider />
+          </View>
           <Divider />
+          <Text style={styles.heading}>Favourite Stores</Text>
+          <Text style={styles.paragraph}>
+            Select your favourite stores to customize your the Home screen and
+            hide unwanted deals on a Game page. If no stores are selected,
+            everything will be displayed.
+          </Text>
           {stores.map((store) =>
             store.isActive ? (
               <View key={store.storeID}>
@@ -74,7 +112,7 @@ function Settings() {
                     <IconImage url={store.images.logo} width={24} height={24} />
                   </View>
                   <View style={[styles.title, { color: theme.colors.black }]}>
-                    <Text style={{ fontSize: 18 }}>{store.storeName}</Text>
+                    <Text style={{ fontSize: 15 }}>{store.storeName}</Text>
                   </View>
 
                   <View style={{ flex: 2 }}>
@@ -90,12 +128,15 @@ function Settings() {
               </View>
             ) : null
           )}
+          <Button
+            titleStyle={styles.buttonTitle}
+            buttonContainerStyle={styles.buttonContainer}
+            buttonStyle={styles.button}
+            disabled={pending}
+            title="Sign Out"
+            onPress={onSignOutPressed}
+          />
         </View>
-        <Button
-          disabled={pending}
-          title="Sign Out"
-          onPress={onSignOutPressed}
-        />
       </ScrollView>
     </View>
   );
@@ -104,20 +145,46 @@ function Settings() {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
   },
-  sectionHeading: {
-    paddingVertical: 10,
+  heading: {
+    fontSize: 22,
+    fontWeight: "bold",
+    paddingTop: 20,
+    paddingBottom: 5,
+    paddingHorizontal: 15,
+  },
+  paragraph: {
+    fontSize: 15,
+    paddingHorizontal: 15,
+    paddingBottom: 10,
   },
   storeWrapper: {
     flexDirection: "row",
     paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   title: {
     flex: 7,
   },
   image: {
     flex: 1,
+  },
+  buttonContainer: {
+    marginVertical: 50,
+    paddingVertical: 50,
+  },
+  button: {
+    alignSelf: "center",
+    width: "80%",
+    backgroundColor: SPLASH_BACKGROUND,
+    borderWidth: 2,
+    borderColor: SPLASH_BACKGROUND,
+    borderRadius: 30,
+    margin: 30,
+  },
+  buttonTitle: {
+    fontWeight: "bold",
   },
 });
 

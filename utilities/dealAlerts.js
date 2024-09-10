@@ -1,18 +1,40 @@
 export const PLACE_HOLDER = "place holder";
-export const thresholdAlerts = (item) => {
+
+export const gameAlerts = (deal, game) => {
   let isLowest = false;
   let isAlert = false;
 
-  item.deals.forEach((d) => {
-    if (parseFloat(d.price) <= parseFloat(item.cheapestPriceEver.price)) {
+  const savings = parseFloat(deal.savings);
+  const price = parseFloat(deal.price);
+  const cheapestPriceEver = parseFloat(game.cheapestPriceEver.price);
+  const { threshold } = game.alertLevel;
+
+  if (parseFloat(deal.price) <= parseFloat(game.cheapestPriceEver.price)) {
+    isLowest = true;
+  }
+
+  if (
+    savings >= parseInt(threshold, 10) ||
+    (threshold === "anyDiscount" && savings > 0) ||
+    (threshold === "lowest" && price <= cheapestPriceEver)
+  ) {
+    isAlert = true;
+  }
+  return { isLowest, isAlert };
+};
+
+export const favouriteCollectionAlerts = (game) => {
+  let isLowest = false;
+  let isAlert = false;
+
+  game.deals.forEach((deal) => {
+    const alerts = gameAlerts(deal, game);
+
+    if (alerts.isLowest) {
       isLowest = true;
     }
 
-    if (
-      parseInt(100 - Math.round(d.savings), 10) <=
-        parseInt(item.alertLevel.threshold, 10) ||
-      (item.alertLevel.threshold === "anyDiscount" && parseFloat(d.savings) > 0)
-    ) {
+    if (alerts.isAlert) {
       isAlert = true;
     }
   });

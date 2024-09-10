@@ -1,17 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from "react";
 import auth from "@react-native-firebase/auth";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 import { emailValidator } from "../utilities/validators";
-import {
-  WHITE,
-  SPLASH_BACKGROUND,
-  INFO_BACKGROUND,
-} from "../constants/Colours";
+import styles from "../styles/loginStyles";
 
 export default function ResetPassword() {
   const navigation = useNavigation();
@@ -48,7 +44,14 @@ export default function ResetPassword() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Reset Password.</Text>
+      <View style={styles.row}>
+        <Text style={styles.rowText}>
+          Enter your account email address to be sent an email containing a
+          reset link.
+        </Text>
+      </View>
       <Input
+        placeholder="Email"
         style={{ marginBottom: 10, backgroundColor: "white", width: "100%" }}
         value={email.value}
         onChangeText={(text) => setEmail({ value: text, error: "" })}
@@ -69,86 +72,3 @@ export default function ResetPassword() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: SPLASH_BACKGROUND,
-    height: "100%",
-    justifyContent: "center",
-  },
-  header: {
-    fontSize: 40,
-    fontWeight: "bold",
-    color: WHITE,
-    textAlign: "center",
-  },
-  formContainer: {
-    alignSelf: "center",
-    width: "80%",
-    paddingHorizontal: 0,
-    marginVertical: 0,
-  },
-  inputContainer: {
-    borderBottomWidth: 0,
-  },
-  input: {
-    borderRadius: 100,
-    paddingHorizontal: 20,
-    backgroundColor: WHITE,
-    color: "black",
-    textDecoration: "none",
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 50,
-  },
-  button: {
-    backgroundColor: SPLASH_BACKGROUND,
-    borderWidth: 2,
-    borderColor: WHITE,
-    borderRadius: 30,
-    width: "80%",
-    height: 50,
-  },
-  buttonTitle: {
-    fontWeight: "bold",
-  },
-  error: {
-    color: WHITE,
-    fontSize: 14,
-    alignSelf: "flex-start",
-  },
-  text: {
-    color: WHITE,
-    fontSize: 16,
-    alignSelf: "center",
-  },
-
-  divider: {
-    marginVertical: 20,
-    borderWidth: 3,
-    borderColor: WHITE,
-    width: "80%",
-    alignSelf: "center",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "80%",
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-  rowText: {
-    flexDirection: "row",
-    alignContent: "center",
-    color: WHITE,
-    textAlign: "center",
-  },
-  link: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: INFO_BACKGROUND,
-  },
-});

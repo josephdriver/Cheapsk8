@@ -7,20 +7,14 @@ import IconImage from "../shared/IconImage";
 import { dealPropTypes, favouriteType, storeType } from "../../propTypes/props";
 import { DISCOUNT_BOX, FAVOURITE_YELLOW } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
+import { gameAlerts } from "../../utilities/dealAlerts";
 
 function StoreOffer({ deal, store, handlePress, favourite = null }) {
   // Check if the deal is an alert
   const isAlert = useMemo(() => {
     if (!favourite) return false;
-    if (
-      parseInt(100 - Math.round(deal.savings), 10) <=
-        parseInt(favourite.alertLevel.threshold, 10) ||
-      (favourite.alertLevel.threshold === "anyDiscount" &&
-        parseFloat(deal.savings) > 0)
-    ) {
-      return true;
-    }
-    return false;
+    const { isAlert: alert } = gameAlerts(deal, favourite);
+    return alert;
   }, [deal, favourite]);
 
   // Animation for the pressable
@@ -55,7 +49,7 @@ function StoreOffer({ deal, store, handlePress, favourite = null }) {
   return (
     <View key={deal.storeID}>
       <Pressable
-        onPress={() => handlePress(deal.dealID)}
+        onPress={() => handlePress(deal)}
         onPressIn={fadeIn}
         onPressOut={fadeOut}
       >
