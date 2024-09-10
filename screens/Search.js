@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
-import { useTheme } from "@rneui/themed";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -9,9 +8,9 @@ import ListItem from "../components/search/ListItem";
 import { LARGE_SPINNER } from "../constants/Defaults";
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import EmptyList from "../components/shared/EmptyList";
+import { BACKGROUND_PRIMARY, PRIMARY } from "../constants/Colours";
 
 function Search({ navigation }) {
-  const { theme } = useTheme();
   const { stores, savedStores } = useSelector((state) => state.stores);
 
   const [loading, setLoading] = useState(false);
@@ -108,12 +107,12 @@ function Search({ navigation }) {
           <ActivityIndicator
             style={styles.activityIndicator}
             size={LARGE_SPINNER}
-            color={theme.colors.primary}
+            color={PRIMARY}
           />
         )}
       </View>
     ),
-    [loading, theme.colors.primary]
+    [loading]
   );
 
   const emptyMessage = useMemo(() => {
@@ -124,7 +123,7 @@ function Search({ navigation }) {
   }, [query, loading]);
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View style={styles.view}>
       <SearchableFlatList
         inputValue={query}
         handleInputChange={handleInputChange}
@@ -143,6 +142,7 @@ function Search({ navigation }) {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
 });
 export default Search;

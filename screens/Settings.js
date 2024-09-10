@@ -2,19 +2,18 @@ import React, { useCallback, useState } from "react";
 import analytics from "@react-native-firebase/analytics";
 import auth from "@react-native-firebase/auth";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
-import { useTheme, Switch, Divider, Button } from "@rneui/themed";
+import { Switch, Divider, Button } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { clone } from "lodash";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { setSavedStores } from "../redux/storesSlice";
 import IconImage from "../components/shared/IconImage";
-import { SPLASH_BACKGROUND } from "../constants/Colours";
+import { BACKGROUND_PRIMARY, PRIMARY, WHITE } from "../constants/Colours";
 
 function Settings() {
   const [pending, setPending] = useState(false);
   const { stores, savedStores } = useSelector((state) => state.stores);
-  const { theme } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -74,7 +73,7 @@ function Settings() {
   );
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View style={styles.view}>
       <ScrollView>
         <View>
           <Text style={styles.heading}>Enable Notifications</Text>
@@ -84,12 +83,13 @@ function Settings() {
           </Text>
           <View>
             <View style={styles.storeWrapper}>
-              <View style={[styles.title, { color: theme.colors.black }]}>
-                <Text style={{ fontSize: 15 }}>Enable push notifications</Text>
+              <View style={styles.title}>
+                <Text style={styles.titleText}>Enable push notifications</Text>
               </View>
 
               <View style={{ flex: 2 }}>
                 <Switch
+                  color={PRIMARY}
                   value
                   onValueChange={(value) => handleNotificationSwitch(value)}
                 />
@@ -111,12 +111,13 @@ function Settings() {
                   <View style={styles.image}>
                     <IconImage url={store.images.logo} width={24} height={24} />
                   </View>
-                  <View style={[styles.title, { color: theme.colors.black }]}>
-                    <Text style={{ fontSize: 15 }}>{store.storeName}</Text>
+                  <View style={styles.title}>
+                    <Text style={styles.titleText}>{store.storeName}</Text>
                   </View>
 
                   <View style={{ flex: 2 }}>
                     <Switch
+                      color={PRIMARY}
                       value={getSwitchState(store.storeID)}
                       onValueChange={(value) =>
                         handleSwitch(store.storeID, value)
@@ -145,6 +146,7 @@ function Settings() {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
+    backgroundColor: BACKGROUND_PRIMARY,
     // paddingHorizontal: 20,
   },
   heading: {
@@ -153,8 +155,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 5,
     paddingHorizontal: 15,
+    color: WHITE,
   },
   paragraph: {
+    color: WHITE,
     fontSize: 15,
     paddingHorizontal: 15,
     paddingBottom: 10,
@@ -167,6 +171,11 @@ const styles = StyleSheet.create({
   title: {
     flex: 7,
   },
+  titleText: {
+    fontSize: 15,
+    color: WHITE,
+    fontWeight: "bold",
+  },
   image: {
     flex: 1,
   },
@@ -177,9 +186,9 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: "center",
     width: "80%",
-    backgroundColor: SPLASH_BACKGROUND,
+    backgroundColor: PRIMARY,
     borderWidth: 2,
-    borderColor: SPLASH_BACKGROUND,
+    borderColor: PRIMARY,
     borderRadius: 30,
     margin: 30,
   },

@@ -14,12 +14,7 @@ import { useSelector } from "react-redux";
 import { BASE } from "../../constants/Urls";
 import { favouriteType } from "../../propTypes/props";
 import CapsuleImage from "../shared/CapsuleImage";
-import {
-  WHITE,
-  INFO_BACKGROUND,
-  FAVOURITE_YELLOW,
-  DISCOUNT_BOX,
-} from "../../constants/Colours";
+import { WHITE, SECONDARY, FAVOURITE, DISCOUNT } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 import { favouriteCollectionAlerts } from "../../utilities/dealAlerts";
 
@@ -100,7 +95,7 @@ function ListItem({ item, handleOnPress }) {
               backgroundColor: theme.colors.searchBg,
               opacity: animated,
               transform: [{ scale }],
-              borderRightColor: isAlert ? FAVOURITE_YELLOW : "transparent",
+              borderRightColor: isAlert ? FAVOURITE : "transparent",
               borderRightWidth: isAlert ? 7 : 0,
             },
           ]}
@@ -208,7 +203,7 @@ const styles = StyleSheet.create({
     height: 21,
     paddingHorizontal: 5,
     marginHorizontal: 2,
-    backgroundColor: DISCOUNT_BOX,
+    backgroundColor: DISCOUNT,
   },
   innerContainer: {
     width: "100%",
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flex: 1,
     flexDirection: "row",
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
     alignItems: "center",
   },
   gameTitleText: {
@@ -248,7 +243,7 @@ const styles = StyleSheet.create({
     height: 24,
   },
   alertText: {
-    color: FAVOURITE_YELLOW,
+    color: FAVOURITE,
     fontWeight: "700",
   },
 });

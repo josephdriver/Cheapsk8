@@ -10,7 +10,7 @@ import {
   Animated,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useTheme, Divider } from "@rneui/themed";
+import { Divider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 import axios from "axios";
@@ -25,7 +25,7 @@ import Loading from "../components/shared/Loading";
 import { dealListType, gameListType } from "../propTypes/props";
 import GameInfoContainer from "../components/game/GameInfoContainer";
 import GameNotificationsSettings from "../components/game/GameNotificationsSettings";
-import { WHITE, FAVOURITE_YELLOW } from "../constants/Colours";
+import { WHITE, FAVOURITE, BACKGROUND_PRIMARY } from "../constants/Colours";
 import { ALERT_LEVELS, ANIMATED_CONFIG, HEADERS } from "../constants/Defaults";
 
 function Game({ route, navigation }) {
@@ -34,7 +34,7 @@ function Game({ route, navigation }) {
   const { stores, savedStores } = useSelector((state) => state.stores);
   const { user } = useSelector((state) => state.user);
   const { favourites } = useSelector((state) => state.favourites);
-  const { theme } = useTheme();
+
   const dispatch = useDispatch();
 
   const [width, setWidth] = useState(null);
@@ -203,7 +203,7 @@ function Game({ route, navigation }) {
   }
 
   return (
-    <View style={[styles.view, { backgroundColor: theme.colors.grey5 }]}>
+    <View style={styles.view}>
       {data && gameData && (
         <>
           <Pressable
@@ -217,7 +217,7 @@ function Game({ route, navigation }) {
             >
               <Icon
                 name="heart"
-                color={favourite ? FAVOURITE_YELLOW : WHITE}
+                color={favourite ? FAVOURITE : WHITE}
                 size={35}
                 style={styles.icon}
               />
@@ -286,6 +286,7 @@ Game.propTypes = {
 const styles = StyleSheet.create({
   view: {
     height: "100%",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
   iconContainer: {
     zIndex: 1,

@@ -5,7 +5,7 @@ import { Text, Divider } from "@rneui/themed";
 
 import IconImage from "../shared/IconImage";
 import { dealPropTypes, favouriteType, storeType } from "../../propTypes/props";
-import { DISCOUNT_BOX, FAVOURITE_YELLOW } from "../../constants/Colours";
+import { DISCOUNT, FAVOURITE } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 import { gameAlerts } from "../../utilities/dealAlerts";
 
@@ -59,7 +59,7 @@ function StoreOffer({ deal, store, handlePress, favourite = null }) {
             {
               opacity: animated,
               transform: [{ scale }],
-              borderRightColor: isAlert ? FAVOURITE_YELLOW : "transparent",
+              borderRightColor: isAlert ? FAVOURITE : "transparent",
               borderRightWidth: isAlert ? 7 : 0,
             },
           ]}
@@ -108,13 +108,14 @@ const styles = StyleSheet.create({
   dealContainer: {
     flexDirection: "row",
     paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   titleContainer: {
     flex: 7,
   },
   dealTitle: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 15,
     paddingBottom: 1,
   },
   priceContainer: {
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     height: 21,
     paddingHorizontal: 5,
     marginHorizontal: 2,
-    backgroundColor: DISCOUNT_BOX,
+    backgroundColor: DISCOUNT,
   },
   price: {
     fontWeight: "700",

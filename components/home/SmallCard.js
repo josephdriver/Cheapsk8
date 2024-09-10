@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 import CapsuleImage from "../shared/CapsuleImage";
 import { dealListType } from "../../propTypes/props";
-import { WHITE, INFO_BACKGROUND, DISCOUNT_BOX } from "../../constants/Colours";
+import { WHITE, SECONDARY, DISCOUNT } from "../../constants/Colours";
 import { ANIMATED_CONFIG } from "../../constants/Defaults";
 
 function SmallCard({ deal, handleDealNavigate = null }) {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 3,
     paddingBottom: 3,
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
   },
   titleContainer: {
     flex: 7,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   discountContainer: {
     height: 21,
     alignItems: "center",
-    backgroundColor: DISCOUNT_BOX,
+    backgroundColor: DISCOUNT,
   },
   percentDiscount: {
     color: WHITE,

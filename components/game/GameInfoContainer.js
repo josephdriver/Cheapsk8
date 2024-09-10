@@ -3,11 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
 import { dealType, gameType, dealListType } from "../../propTypes/props";
-import {
-  WHITE,
-  METACRITIC_SCORES,
-  INFO_BACKGROUND,
-} from "../../constants/Colours";
+import { WHITE, METACRITIC_SCORES, SECONDARY } from "../../constants/Colours";
 
 function GameInfoContainer({ gameData, data }) {
   const { cheapestPriceEver } = data;
@@ -123,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: INFO_BACKGROUND,
+    backgroundColor: SECONDARY,
     minHeight: 130,
   },
   gameInfo: {

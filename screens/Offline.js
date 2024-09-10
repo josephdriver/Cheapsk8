@@ -1,13 +1,11 @@
 import React from "react";
 import { SafeAreaView, Text, View, StyleSheet } from "react-native";
-import { useTheme } from "@rneui/themed";
+
+import { BACKGROUND_PRIMARY } from "../constants/Colours";
 
 function Offline() {
-  const { theme } = useTheme();
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.grey5 }]}
-    >
+    <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>No Internet</Text>
         <Text style={styles.subtitle}>
@@ -23,6 +21,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: BACKGROUND_PRIMARY,
   },
   content: {
     alignItems: "center",

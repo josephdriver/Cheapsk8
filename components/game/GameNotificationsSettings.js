@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 
-import { WHITE, FAVOURITE_YELLOW } from "../../constants/Colours";
+import { WHITE, FAVOURITE } from "../../constants/Colours";
 import { ALERT_LEVELS } from "../../constants/Defaults";
 import { setFavourites } from "../../redux/favouritesSlice";
 import { dealType, dealListType, favouriteType } from "../../propTypes/props";
@@ -18,7 +18,7 @@ function AlertSlider({ value, onValueChange }) {
       minimumValue={1}
       step={1}
       allowTouchTrack
-      minimumTrackTintColor={FAVOURITE_YELLOW}
+      minimumTrackTintColor={FAVOURITE}
       trackStyle={styles.trackStyle}
       thumbStyle={styles.thumbStyle}
     />
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   thumbStyle: {
     height: 30,
     width: 30,
-    backgroundColor: FAVOURITE_YELLOW,
+    backgroundColor: FAVOURITE,
   },
   trackStyle: { height: 5, backgroundColor: WHITE },
 });

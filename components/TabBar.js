@@ -3,11 +3,39 @@ import { View, Pressable, StyleSheet, Animated } from "react-native";
 import { useTheme } from "@rneui/themed";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 
-import { INACTIVE_NAV_ICON } from "../constants/Colours";
+import { INACTIVE, PRIMARY } from "../constants/Colours";
 import { ANIMATED_CONFIG } from "../constants/Defaults";
 
 function TabBar({ state, descriptors, navigation }) {
   const { theme } = useTheme();
+
+  const animation = new Animated.Value(0);
+  const animated = new Animated.Value(1);
+  const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
+  const fadeIn = () => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.spring(animation, {
+      toValue: 0,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animated, {
+      toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
+      duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
+      useNativeDriver: true,
+    }).start();
+  };
 
   return (
     <View style={{ flexDirection: "row" }}>
@@ -25,35 +53,6 @@ function TabBar({ state, descriptors, navigation }) {
             navigation.navigate(route.name);
           }
         };
-
-        const animation = new Animated.Value(0);
-        const animated = new Animated.Value(1);
-        const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
-        const fadeIn = () => {
-          Animated.spring(animation, {
-            toValue: 1,
-            duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
-            useNativeDriver: true,
-          }).start();
-          Animated.timing(animated, {
-            toValue: ANIMATED_CONFIG.PRESS_OPACITY.IN,
-            duration: ANIMATED_CONFIG.PRESS_DURATION.IN,
-            useNativeDriver: true,
-          }).start();
-        };
-        const fadeOut = () => {
-          Animated.spring(animation, {
-            toValue: 0,
-            duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
-            useNativeDriver: true,
-          }).start();
-          Animated.timing(animated, {
-            toValue: ANIMATED_CONFIG.PRESS_OPACITY.OUT,
-            duration: ANIMATED_CONFIG.PRESS_DURATION.OUT,
-            useNativeDriver: true,
-          }).start();
-        };
-
         return (
           <Pressable
             key={route.key}
@@ -79,7 +78,7 @@ function TabBar({ state, descriptors, navigation }) {
             >
               <Icon
                 name={route.name}
-                color={isFocused ? theme.colors.primary : INACTIVE_NAV_ICON}
+                color={isFocused ? PRIMARY : INACTIVE}
                 size={24}
               />
             </Animated.View>
