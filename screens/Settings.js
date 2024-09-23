@@ -147,7 +147,6 @@ const styles = StyleSheet.create({
   view: {
     height: "100%",
     backgroundColor: BACKGROUND_PRIMARY,
-    // paddingHorizontal: 20,
   },
   heading: {
     fontSize: 22,
