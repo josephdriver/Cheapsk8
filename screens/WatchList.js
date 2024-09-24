@@ -2,16 +2,20 @@
 import React, { useState, useCallback, useMemo } from "react";
 import analytics from "@react-native-firebase/analytics";
 import { View, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
 import SearchableFlatList from "../components/shared/SearchableFlatList";
 import ListItem from "../components/favourites/ListItem";
 import EmptyList from "../components/shared/EmptyList";
 import { BACKGROUND_PRIMARY } from "../constants/Colours";
+import { getGamesToUpdate } from "../utilities/dealAlerts";
+import { fetchWatchList } from "../redux/favouritesSlice";
 
 function WatchList({ navigation }) {
+  const dispatch = useDispatch();
   const { favourites } = useSelector((state) => state.favourites);
+  const { user } = useSelector((state) => state.user);
   const message = useMemo(
     () =>
       "You have not watch listed any games yet. Search for Titles on the Home screen and add them to your watch list.",
@@ -26,17 +30,22 @@ function WatchList({ navigation }) {
         screen_name: "Watchlist",
         screen_class: "Watchlist",
       });
-    }, [])
+
+      const watchListIds = getGamesToUpdate(favourites);
+      if (watchListIds && watchListIds.length <= 25) {
+        dispatch(fetchWatchList(watchListIds, favourites, user));
+      }
+    }, [dispatch, favourites, user])
   );
 
   const handleDealNavigate = useCallback(
     (item) => {
       const deal = {
-        gameID: item.gameID,
-        steamAppID: item.info.steamAppID,
-        external: item.info.title,
-        thumb: item.info.thumb,
-        cheapest: item.deals[0].price,
+        gameID: item.gameId,
+        steamAppID: item.steamAppID,
+        external: item.title,
+        thumb: item.thumb,
+        cheapest: item.lowestPrice,
       };
 
       navigation.navigate("Deal", { deal });
@@ -44,12 +53,30 @@ function WatchList({ navigation }) {
     [navigation]
   );
 
+  const sortedFavourites = useMemo(
+    () =>
+      favourites.slice().sort((a, b) => {
+        const nameA = a.title.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.title.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // names must be equal
+        return 0;
+      }),
+    [favourites]
+  );
+
   return (
     <View style={styles.view}>
       <SearchableFlatList
         autoFocus={false}
         inputValue={inputValue}
-        data={favourites}
+        data={sortedFavourites}
         handleDealNavigate={handleDealNavigate}
         handleInputChange={setInputValue}
         ListItem={ListItem}

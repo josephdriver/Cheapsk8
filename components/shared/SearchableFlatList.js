@@ -8,6 +8,7 @@ import {
   func,
   bool,
   elementType,
+  shape,
 } from "prop-types";
 import { favouriteType, gameListType } from "../../propTypes/props";
 import { WHITE } from "../../constants/Colours";
@@ -83,7 +84,7 @@ SearchableFlatList.propTypes = {
   loading: bool,
   handleDealNavigate: func.isRequired,
   ListItem: elementType.isRequired,
-  ListEmptyComponent: elementType.isRequired,
+  ListEmptyComponent: oneOfType([shape({}), elementType]).isRequired,
   autoFocus: bool,
   isSearchable: bool,
 };

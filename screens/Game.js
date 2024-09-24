@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useMemo, useEffect, useState, useCallback } from "react";
+import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
 import {
@@ -27,6 +29,7 @@ import GameInfoContainer from "../components/game/GameInfoContainer";
 import GameNotificationsSettings from "../components/game/GameNotificationsSettings";
 import { WHITE, FAVOURITE, BACKGROUND_PRIMARY } from "../constants/Colours";
 import { ALERT_LEVELS, ANIMATED_CONFIG, HEADERS } from "../constants/Defaults";
+import { getGameReferenceValues, getAlertTime } from "../utilities/dealAlerts";
 
 function Game({ route, navigation }) {
   const { deal } = route.params;
@@ -147,40 +150,63 @@ function Game({ route, navigation }) {
    * useMemo to determine if the game is a favourite
    */
   const favourite = useMemo(() => {
-    if (!favourites) return null;
+    if (!favourites || favourites.length === 0) return null;
     return (
       gameData &&
       gameData.gameInfo &&
       gameData.gameInfo.gameID &&
-      favourites.find((f) => f.gameID === gameData.gameInfo.gameID)
+      favourites.find((f) => f.gameId === gameData.gameInfo.gameID)
     );
   }, [gameData, favourites]);
 
   const handleToggleFavourite = useCallback(() => {
+    const fetchTime = new Date().getTime();
+    const { highestPercent, lowestPrice, lowestStoreId } =
+      getGameReferenceValues(data.deals);
+
     const newFavourite = {
-      ...data,
-      gameID: gameData.gameInfo.gameID,
+      gameId: gameData.gameInfo.gameID,
+      title: gameData.gameInfo.name,
+      thumb: data.info.thumb,
+      steamId: gameData.gameInfo.steamAppID,
       alertLevel: ALERT_LEVELS[1],
-      activeAlert: false,
-      lastSeen: new Date().getTime(),
+      dealCount: data.deals.length,
+      lowestStoreId,
+      highestPercent,
+      lowestPrice,
+      lowestPriceEver: data.cheapestPriceEver.price,
+      lowestPriceEverDate: data.cheapestPriceEver.date,
+      fetchTime,
+      lastSeen: fetchTime,
+      alertTime: getAlertTime(
+        lowestPrice,
+        data.cheapestPriceEver.price,
+        highestPercent,
+        null,
+        ALERT_LEVELS[1]
+      ),
     };
+
     const newFavourites = favourite
-      ? favourites.filter((f) => f.gameID !== gameData.gameInfo.gameID)
+      ? favourites.filter((f) => f.gameId !== gameData.gameInfo.gameID)
       : [...favourites, newFavourite];
 
     analytics().logEvent(
       favourite ? "remove_from_favourites" : "add_to_favourites",
       {
-        title: favourite ? favourite.info.title : newFavourite.info.title,
-        game_id: favourite ? favourite.gameID : newFavourite.gameID,
-        steam_id: favourite
-          ? favourite.info.steamAppID
-          : newFavourite.info.steamAppID,
+        title: favourite ? favourite.title : newFavourite.title,
+        gameId: favourite ? favourite.gameId : newFavourite.gameId,
+        steamId: favourite ? favourite.steamAppID : newFavourite.steamAppID,
       }
     );
 
+    firestore().collection("watchLists").doc(user.uid).set({
+      favourites: newFavourites,
+      refetch: false,
+    });
+
     dispatch(setFavourites(newFavourites));
-  }, [gameData, dispatch, favourites, favourite, data]);
+  }, [gameData, dispatch, favourites, favourite, data, user.uid]);
 
   /**
    * useMemo to determine the stores to display

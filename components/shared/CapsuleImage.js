@@ -22,6 +22,7 @@ function CapsuleImage({
    * If a steamAppID is provided, use the steam header image
    * If the title contains an excluded keyword, use the provided URL
    */
+
   const imageURL = useMemo(() => {
     if (!steamAppID) return url;
     const containsExcludedKeyword = EXCLUDE_KEYWORDS.some((keyword) =>

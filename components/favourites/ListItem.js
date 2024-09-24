@@ -28,21 +28,9 @@ function ListItem({ item, handleOnPress }) {
     [item]
   );
 
-  const currentLow = useMemo(() => {
-    let lowestDeal = item.deals[0];
-    let dealCount = 0;
-    item.deals.forEach((d) => {
-      if (parseFloat(d.price) < parseFloat(currentLow)) {
-        lowestDeal = d;
-      }
-      if (d.savings > 0) {
-        dealCount += 1;
-      }
-    });
-
-    const store = stores.find((s) => s.storeID === lowestDeal.storeID);
-
-    return { deal: lowestDeal, store, dealCount };
+  const lowestStore = useMemo(() => {
+    const store = stores.find((s) => s.storeID === item.lowestStoreId);
+    return store;
   }, [item, stores]);
   /**
    * Handle navigation to the deal screen
@@ -107,9 +95,9 @@ function ListItem({ item, handleOnPress }) {
             >
               {width && (
                 <CapsuleImage
-                  steamAppID={item.info.steamAppID}
-                  title={item.info.title}
-                  url={item.info.thumb}
+                  steamAppID={item.steamId}
+                  title={item.title}
+                  url={item.thumb}
                   width={width}
                 />
               )}
@@ -124,13 +112,13 @@ function ListItem({ item, handleOnPress }) {
                   },
                 ]}
               >
-                {parseInt(currentLow.deal.savings, 10) > 0 && (
+                {parseInt(item.highestPercentage, 10) > 0 && (
                   <View style={styles.discountPercent}>
-                    <Text>-{currentLow.deal.savings.split(".")[0]}%</Text>
+                    <Text>-{item.highestPercentage.split(".")[0]}%</Text>
                   </View>
                 )}
                 <View style={{ height: 21 }}>
-                  <Text>${currentLow.deal.price}</Text>
+                  <Text>${item.lowestPrice}</Text>
                 </View>
               </View>
               <View
@@ -139,8 +127,8 @@ function ListItem({ item, handleOnPress }) {
                   paddingBottom: 5,
                 }}
               >
-                {currentLow.dealCount > 1 && (
-                  <Text>+{currentLow.dealCount} more offers</Text>
+                {item.dealCount > 1 && (
+                  <Text>+{item.dealCount} more offers</Text>
                 )}
               </View>
             </View>
@@ -153,7 +141,7 @@ function ListItem({ item, handleOnPress }) {
                 ellipsizeMode="tail"
                 style={styles.gameTitleText}
               >
-                {item.info.title}
+                {item.title}
               </Text>
             </View>
             <View
@@ -165,11 +153,11 @@ function ListItem({ item, handleOnPress }) {
             >
               <View style={{ flexDirection: "row" }}>
                 {isLowest && <Text style={styles.alertText}>Lowest Ever</Text>}
-                {currentLow.store && (
+                {lowestStore && (
                   <Image
                     style={styles.iconImage}
                     source={{
-                      uri: `${BASE}/${currentLow.store.images.logo}`,
+                      uri: `${BASE}/${lowestStore.images.logo}`,
                     }}
                   />
                 )}

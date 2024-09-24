@@ -85,10 +85,12 @@ function Settings() {
             <View style={styles.storeWrapper}>
               <View style={styles.title}>
                 <Text style={styles.titleText}>Enable push notifications</Text>
+                <Text style={styles.accentText}>(Coming Soon)</Text>
               </View>
 
               <View style={{ flex: 2 }}>
                 <Switch
+                  disabled
                   color={PRIMARY}
                   value
                   onValueChange={(value) => handleNotificationSwitch(value)}
@@ -173,6 +175,10 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 15,
     color: WHITE,
+    fontWeight: "bold",
+  },
+  accentText: {
+    color: PRIMARY,
     fontWeight: "bold",
   },
   image: {
