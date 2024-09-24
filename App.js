@@ -3,6 +3,7 @@ import "react-native-gesture-handler";
 import * as firebase from "@react-native-firebase/app";
 import analytics from "@react-native-firebase/analytics";
 import React, { useEffect } from "react";
+import { LogBox } from "react-native";
 import ErrorBoundary from "react-native-error-boundary";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { Provider } from "react-redux";
@@ -14,6 +15,10 @@ import { persistor, store } from "./store";
 import ErrorFallback from "./screens/ErrorFallback";
 
 function App() {
+  // Ignore warning for defaultProps for the slider component
+  LogBox.ignoreLogs([
+    "Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+  ]);
   const theme = createTheme({
     mode: "dark",
   });
