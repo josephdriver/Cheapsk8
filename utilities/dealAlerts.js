@@ -1,3 +1,5 @@
+import { FAVOURITES_CACHE_OFFSET } from "../constants/Defaults";
+
 export const PLACE_HOLDER = "place holder";
 
 export const gameAlerts = (deal, game) => {
@@ -6,17 +8,16 @@ export const gameAlerts = (deal, game) => {
 
   const savings = parseFloat(deal.savings);
   const price = parseFloat(deal.price);
-  const cheapestPriceEver = parseFloat(game.cheapestPriceEver.price);
+  const cheapestPriceEver = parseFloat(game.lowestPriceEver);
   const { threshold } = game.alertLevel;
 
-  if (parseFloat(deal.price) <= parseFloat(game.cheapestPriceEver.price)) {
+  if (parseFloat(deal.price) <= cheapestPriceEver) {
     isLowest = true;
   }
 
   if (
     savings >= parseInt(threshold, 10) ||
-    (threshold === "anyDiscount" && savings > 0) ||
-    (threshold === "lowest" && price <= cheapestPriceEver)
+    (threshold === "cheapest" && price <= cheapestPriceEver)
   ) {
     isAlert = true;
   }
@@ -27,16 +28,91 @@ export const favouriteCollectionAlerts = (game) => {
   let isLowest = false;
   let isAlert = false;
 
-  game.deals.forEach((deal) => {
-    const alerts = gameAlerts(deal, game);
+  if (parseFloat(game.lowestPrice) <= parseFloat(game.lowestPriceEver)) {
+    isLowest = true;
+  }
 
-    if (alerts.isLowest) {
-      isLowest = true;
-    }
-
-    if (alerts.isAlert) {
+  if (game.alertLevel.threshold !== "never") {
+    if (
+      parseFloat(game.highestPercent) >=
+        parseInt(game.alertLevel.threshold, 10) ||
+      (game.alertLevel.threshold === "cheapest" &&
+        parseFloat(game.lowestPrice) <= parseFloat(game.lowestPriceEver))
+    ) {
       isAlert = true;
     }
-  });
+  }
+
   return { isLowest, isAlert };
+};
+
+export const getGamesToUpdate = (favourites) => {
+  const updateIds = [];
+  favourites.forEach((f) => {
+    if (f.fetchTime + FAVOURITES_CACHE_OFFSET < new Date().getTime()) {
+      updateIds.push(f.gameId);
+    }
+  });
+  return updateIds.length > 0 ? updateIds : null;
+};
+
+export const getAlertTime = (
+  lowestPrice,
+  lowestPriceEver,
+  highestPercent,
+  alertTime,
+  alertLevel
+) => {
+  switch (alertLevel.threshold) {
+    case "never":
+      return null;
+    case "cheapest":
+      if (
+        parseFloat(lowestPrice) <= parseFloat(lowestPriceEver) &&
+        !alertTime
+      ) {
+        return new Date().getTime();
+      }
+      if (parseFloat(lowestPrice) > parseFloat(lowestPriceEver) && alertTime) {
+        return null;
+      }
+      console.log("alertTime", alertTime);
+      return alertTime;
+    default:
+      if (
+        parseFloat(highestPercent) >= parseInt(alertLevel.threshold, 10) &&
+        !alertTime
+      ) {
+        return new Date().getTime();
+      }
+      if (
+        parseFloat(highestPercent) < parseInt(alertLevel.threshold, 10) &&
+        alertTime
+      ) {
+        return null;
+      }
+      return alertTime;
+  }
+};
+
+export const getGameReferenceValues = (deals) => {
+  let highestPercent = null;
+  let lowestPrice = null;
+  let lowestStoreId = null;
+
+  deals.forEach((d) => {
+    if (!highestPercent || d.savings > highestPercent) {
+      highestPercent = d.savings;
+    }
+    if (!lowestPrice || d.price < lowestPrice) {
+      lowestPrice = d.price;
+      lowestStoreId = d.storeID;
+    }
+  });
+
+  return {
+    highestPercent,
+    lowestPrice,
+    lowestStoreId,
+  };
 };

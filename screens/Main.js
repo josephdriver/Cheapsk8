@@ -1,9 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useNetInfo } from "@react-native-community/netinfo";
 import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AppState } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,11 +22,14 @@ import { OPTIONS, NAVIGATOR_OPTIONS } from "../constants/NavigatorConfig";
 import Login from "./Login";
 import ResetPassword from "./PasswordReset";
 import RegisterAccount from "./RegisterAccount";
+import { getGamesToUpdate } from "../utilities/dealAlerts";
+import { fetchWatchList } from "../redux/favouritesSlice";
 
 function Main() {
   const Stack = createStackNavigator();
   const [initializing, setInitializing] = useState(true);
   const { isConnected } = useNetInfo();
+  const { favourites } = useSelector((state) => state.favourites);
   const { stores } = useSelector((state) => state.stores);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -49,11 +55,35 @@ function Main() {
   // Handle user state changes
   const onAuthStateChanged = useCallback(
     (u) => {
+      if (u) {
+        firestore().collection("users").doc(u.uid).set({
+          id: u.uid,
+          displayName: u.displayName,
+          email: u.email,
+          emailVerified: u.emailVerified,
+          lastSignInTime: u.metadata.lastSignInTime,
+        });
+      }
       dispatch(setUser(u));
       if (initializing) setInitializing(false);
     },
     [initializing, dispatch]
   );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        const watchListIds = getGamesToUpdate(favourites);
+        if (watchListIds && watchListIds.length <= 25) {
+          dispatch(fetchWatchList(watchListIds, favourites, user));
+        }
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [dispatch, favourites, user]);
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);

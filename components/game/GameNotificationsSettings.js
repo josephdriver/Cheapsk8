@@ -1,5 +1,7 @@
-import React, { useCallback } from "react";
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import firestore from "@react-native-firebase/firestore";
 import { View, Text, StyleSheet } from "react-native";
 import { Divider, Slider } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +10,7 @@ import { WHITE, FAVOURITE } from "../../constants/Colours";
 import { ALERT_LEVELS } from "../../constants/Defaults";
 import { setFavourites } from "../../redux/favouritesSlice";
 import { dealType, dealListType, favouriteType } from "../../propTypes/props";
+import { getAlertTime } from "../../utilities/dealAlerts";
 
 function AlertSlider({ value, onValueChange }) {
   return (
@@ -27,26 +30,56 @@ function AlertSlider({ value, onValueChange }) {
 
 function GameNotificationsSettings({ gameData, favourite }) {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
   const { favourites } = useSelector((state) => state.favourites);
+  const [notify, setNotify] = useState(null);
+  const [debouncedNotify, setDebouncedNotify] = useState(null);
+
+  useEffect(() => {
+    const delayedInputTimeoutId = setTimeout(() => {
+      setDebouncedNotify(notify);
+    }, 1000);
+    return () => clearTimeout(delayedInputTimeoutId);
+  }, [notify]);
+
+  useEffect(() => {
+    if (debouncedNotify) {
+      firestore().collection("watchLists").doc(user.uid).set({
+        favourites: debouncedNotify,
+        refetch: false,
+      });
+    }
+  }, [debouncedNotify, user.uid]);
+
+  const handleNotificationChange = useCallback((event) => {
+    setNotify(event);
+  }, []);
 
   const handleValueChange = useCallback(
     (value) => {
       const filteredFavourites = favourites.filter(
-        (f) => f.gameID !== gameData.gameInfo.gameID
+        (f) => f.gameId !== gameData.gameInfo.gameID
       );
-      dispatch(
-        setFavourites([
-          ...filteredFavourites,
-          {
-            ...favourite,
-            alertLevel: ALERT_LEVELS[value],
-            activeAlert: false,
-            lastSeen: new Date().getTime(),
-          },
-        ])
-      );
+
+      const newFavourites = [
+        ...filteredFavourites,
+        {
+          ...favourite,
+          alertLevel: ALERT_LEVELS[value],
+          alertTime: getAlertTime(
+            favourite.lowestPrice,
+            favourite.lowestPriceEver,
+            favourite.highestPercent,
+            favourite.alertTime,
+            ALERT_LEVELS[value]
+          ),
+          lastSeen: new Date().getTime(),
+        },
+      ];
+      dispatch(setFavourites(newFavourites));
+      handleNotificationChange(newFavourites);
     },
-    [dispatch, favourite, favourites, gameData]
+    [dispatch, favourite, favourites, gameData, handleNotificationChange]
   );
 
   if (!favourite) return null;

@@ -1,17 +1,20 @@
 export const ALERT_LEVELS = {
   1: { id: 1, label: "Do not notify me", threshold: "never" },
-  2: { id: 2, label: "Any Discount", threshold: "anyDiscount" },
+  2: { id: 2, label: "Any Discount", threshold: 0 },
   3: { id: 3, label: "10% Off", threshold: 10 },
   4: { id: 4, label: "25% Off", threshold: 25 },
   5: { id: 5, label: "50% Off", threshold: 50 },
   6: { id: 6, label: "75% Off", threshold: 75 },
   7: { id: 7, label: "90% Off", threshold: 90 },
-  8: { id: 8, label: "Lowest Ever", threshold: "lowest" },
+  8: { id: 8, label: "Lowest Ever", threshold: "cheapest" },
 };
 
 export const LARGE_SPINNER = "large";
 
-export const DEALS_CACHE_OFFSET = 1200000;
+// 20 minutes
+export const DEALS_CACHE_OFFSET = 1000 * 60 * 20;
+// 6 hours
+export const FAVOURITES_CACHE_OFFSET = 1000 * 60 * 60 * 6;
 
 export const EXCLUDE_KEYWORDS = ["edition", "collection", "bundle", "pack"];
 

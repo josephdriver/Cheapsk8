@@ -2,7 +2,7 @@
 import "react-native-gesture-handler";
 import * as firebase from "@react-native-firebase/app";
 import analytics from "@react-native-firebase/analytics";
-import React from "react";
+import React, { useEffect } from "react";
 import ErrorBoundary from "react-native-error-boundary";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { Provider } from "react-redux";
@@ -18,15 +18,25 @@ function App() {
     mode: "dark",
   });
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBuQYH6uo8km0JpSVF4IBz7L7wHTvkqvYU",
-    authDomain: "cheapsk8te-597a2.firebaseapp.com",
-    projectId: "cheapsk8te-597a2",
-    appId: "1:1042550224698:android:943b70ea55e51e8cd34203",
-  };
+  useEffect(() => {
+    const register = async () => {
+      const firebaseConfig = {
+        apiKey: "AIzaSyBuQYH6uo8km0JpSVF4IBz7L7wHTvkqvYU",
+        authDomain: "cheapsk8te-597a2.firebaseapp.com",
+        projectId: "cheapsk8te-597a2",
+        appId: "1:1042550224698:android:943b70ea55e51e8cd34203",
+        databaseURL: "https://cheapsk8te-597a2.firebaseio.com",
+      };
 
-  firebase.initializeApp(firebaseConfig);
-  analytics().setAnalyticsCollectionEnabled(true);
+      firebase.initializeApp(firebaseConfig);
+    };
+
+    if (!firebase.getApps().length) {
+      register();
+    } else {
+      analytics().setAnalyticsCollectionEnabled(true);
+    }
+  }, []);
 
   const handleJSErrorForErrorBoundary = (error, stackTrace) => {
     console.log("ErrorBoundary", error, stackTrace);
