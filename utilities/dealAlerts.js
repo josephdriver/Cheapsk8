@@ -15,12 +15,15 @@ export const gameAlerts = (deal, game) => {
     isLowest = true;
   }
 
-  if (
-    savings >= parseInt(threshold, 10) ||
-    (threshold === "cheapest" && price <= cheapestPriceEver)
-  ) {
-    isAlert = true;
+  if (threshold !== "never") {
+    if (
+      (savings >= parseInt(threshold, 10) && savings > 0) ||
+      (threshold === "cheapest" && price <= cheapestPriceEver)
+    ) {
+      isAlert = true;
+    }
   }
+
   return { isLowest, isAlert };
 };
 
@@ -28,14 +31,18 @@ export const favouriteCollectionAlerts = (game) => {
   let isLowest = false;
   let isAlert = false;
 
+  console.log(game.highestPercent);
+  console.log(game.alertLevel.threshold);
+
   if (parseFloat(game.lowestPrice) <= parseFloat(game.lowestPriceEver)) {
     isLowest = true;
   }
 
   if (game.alertLevel.threshold !== "never") {
     if (
-      parseFloat(game.highestPercent) >=
-        parseInt(game.alertLevel.threshold, 10) ||
+      (parseFloat(game.highestPercent) >=
+        parseInt(game.alertLevel.threshold, 10) &&
+        parseFloat(game.highestPercent) > 0) ||
       (game.alertLevel.threshold === "cheapest" &&
         parseFloat(game.lowestPrice) <= parseFloat(game.lowestPriceEver))
     ) {
@@ -76,7 +83,6 @@ export const getAlertTime = (
       if (parseFloat(lowestPrice) > parseFloat(lowestPriceEver) && alertTime) {
         return null;
       }
-      console.log("alertTime", alertTime);
       return alertTime;
     default:
       if (

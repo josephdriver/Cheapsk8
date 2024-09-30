@@ -79,7 +79,7 @@ function TabBar({ state, descriptors, navigation }) {
               <Icon
                 name={route.name}
                 color={isFocused ? PRIMARY : INACTIVE}
-                size={24}
+                size={28}
               />
             </Animated.View>
           </Pressable>
@@ -91,7 +91,7 @@ function TabBar({ state, descriptors, navigation }) {
 
 const styles = StyleSheet.create({
   tabBtn: {
-    paddingVertical: 15,
+    paddingVertical: 21,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

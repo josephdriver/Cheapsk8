@@ -92,7 +92,7 @@ function Settings() {
                 <Switch
                   disabled
                   color={PRIMARY}
-                  value
+                  value={false}
                   onValueChange={(value) => handleNotificationSwitch(value)}
                 />
               </View>

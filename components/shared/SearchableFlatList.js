@@ -1,6 +1,6 @@
 import React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
-import { useTheme, SearchBar } from "@rneui/themed";
+import { SearchBar } from "@rneui/themed";
 import {
   oneOfType,
   arrayOf,
@@ -11,7 +11,7 @@ import {
   shape,
 } from "prop-types";
 import { favouriteType, gameListType } from "../../propTypes/props";
-import { WHITE } from "../../constants/Colours";
+import { BACKGROUND_PRIMARY, WHITE } from "../../constants/Colours";
 
 function SearchableFlatList({
   inputValue,
@@ -26,8 +26,6 @@ function SearchableFlatList({
   autoFocus = false,
   isSearchable = true,
 }) {
-  const { theme } = useTheme();
-
   return (
     <>
       {isSearchable && (
@@ -41,7 +39,7 @@ function SearchableFlatList({
           containerStyle={[
             styles.containerStyle,
             {
-              backgroundColor: theme.colors.grey5,
+              backgroundColor: BACKGROUND_PRIMARY,
             },
           ]}
           inputStyle={styles.input}

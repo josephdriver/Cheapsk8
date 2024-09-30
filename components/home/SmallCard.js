@@ -94,8 +94,8 @@ function SmallCard({ deal, handleDealNavigate = null }) {
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    marginTop: 9,
-    width: "48.75%",
+    marginTop: 15,
+    width: "48%",
     borderRadius: 2,
     overflow: "hidden",
   },
