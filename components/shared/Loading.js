@@ -25,6 +25,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   message: {
+    textAlign: "center",
+    marginHorizontal: 40,
     alignSelf: "center",
     color: WHITE,
   },

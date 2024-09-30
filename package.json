@@ -37,6 +37,7 @@
     "qs": "^6.12.3",
     "react": "18.3.1",
     "react-native": "0.75.2",
+    "react-native-awesome-alerts": "^2.0.0",
     "react-native-blasted-image": "^1.0.3",
     "react-native-error-boundary": "^1.2.4",
     "react-native-exception-handler": "^2.10.10",

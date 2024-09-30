@@ -43,3 +43,19 @@ export const HEADERS = {
   Accept: "application/json",
   "Content-Type": "application/json",
 };
+
+export const DELIMITER = "DELIMITER";
+export const LOADING_ARRAY = [
+  "Hacking the DELIMITER mainframe...",
+  "Praising our lord and saviour Gabe...",
+  "Personally contacting DELIMITER with your request...",
+  'Sacrificing "volunteer" Pokemon to the deal gods...',
+  "Almost there, I swear...",
+  "Super close now. For realsies... ",
+  "What are you going to buy with all the money you saved?",
+  "Entering hostile negotiations with DELIMITER...",
+  "Getting to the chopper...",
+  "Is this spinner broken?",
+  "Just ducking out for a quick coffee...",
+  "James wishes he makes Apps as good as this...",
+];

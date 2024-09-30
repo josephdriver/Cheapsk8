@@ -23,7 +23,6 @@ export const StoresSlice = createSlice({
       state.error = true;
     },
     setSavedStores: (state, { payload }) => {
-      console.log(payload);
       state.savedStores = payload;
     },
   },

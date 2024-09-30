@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/dist/FontAwesome";
 import axios from "axios";
 import qs from "qs";
+import Toast from "react-native-toast-message";
 
 import { setFavourites } from "../redux/favouritesSlice";
 import useAxiosFetch from "../utilities/useAxiosFetch";
@@ -76,8 +77,10 @@ function Game({ route, navigation }) {
         steam_id: gameData.gameInfo.steamAppID,
         user_id: user.uid,
       });
+
       navigation.navigate("WebView", {
         url: val.dealID,
+        storeId: val.storeID,
       });
     },
     [navigation, gameData.gameInfo, user]
@@ -118,6 +121,7 @@ function Game({ route, navigation }) {
     }
   }, [data, stores]);
 
+  // Animated values for the favourite icon
   const animation = new Animated.Value(0);
   const animated = new Animated.Value(1);
   const scale = animation.interpolate(ANIMATED_CONFIG.SPRING_RANGE);
@@ -160,6 +164,13 @@ function Game({ route, navigation }) {
   }, [gameData, favourites]);
 
   const handleToggleFavourite = useCallback(() => {
+    if (!favourite && favourites && favourites.length > 25) {
+      return Toast.show({
+        type: "error",
+        text1: "Maximum number of Titles have been added to your watch list.",
+      });
+    }
+
     const fetchTime = new Date().getTime();
     const { highestPercent, lowestPrice, lowestStoreId } =
       getGameReferenceValues(data.deals);
@@ -202,11 +213,45 @@ function Game({ route, navigation }) {
 
     firestore().collection("watchLists").doc(user.uid).set({
       favourites: newFavourites,
-      refetch: false,
     });
 
-    dispatch(setFavourites(newFavourites));
+    return dispatch(setFavourites(newFavourites));
   }, [gameData, dispatch, favourites, favourite, data, user.uid]);
+
+  // useEffect to update the favourite in the database
+  useEffect(() => {
+    if (favourite && data) {
+      const newFavourites = favourites.map((f) => {
+        if (f.gameId === favourite.gameId) {
+          const fetchTime = new Date().getTime();
+          const { highestPercent, lowestPrice, lowestStoreId } =
+            getGameReferenceValues(data.deals);
+          return {
+            ...f,
+            highestPercent,
+            lowestPrice,
+            lowestStoreId,
+            lowestPriceEver: data.cheapestPriceEver.price,
+            lowestPriceEverDate: data.cheapestPriceEver.date,
+            lastSeen: fetchTime,
+            fetchTime,
+            alertTime: getAlertTime(
+              lowestPrice,
+              f.lowestPriceEver,
+              highestPercent,
+              f.alertTime,
+              f.alertLevel
+            ),
+          };
+        }
+        return f;
+      });
+
+      firestore().collection("watchLists").doc(user.uid).set({
+        favourites: newFavourites,
+      });
+    }
+  }, [favourites, favourite, data, user.uid]);
 
   /**
    * useMemo to determine the stores to display

@@ -11,10 +11,11 @@ import EmptyList from "../components/shared/EmptyList";
 import { BACKGROUND_PRIMARY } from "../constants/Colours";
 import { getGamesToUpdate } from "../utilities/dealAlerts";
 import { fetchWatchList } from "../redux/favouritesSlice";
+import Loading from "../components/shared/Loading";
 
 function WatchList({ navigation }) {
   const dispatch = useDispatch();
-  const { favourites } = useSelector((state) => state.favourites);
+  const { favourites, loading } = useSelector((state) => state.favourites);
   const { user } = useSelector((state) => state.user);
   const message = useMemo(
     () =>
@@ -70,6 +71,10 @@ function WatchList({ navigation }) {
       }),
     [favourites]
   );
+
+  if (loading) {
+    return <Loading message="Getting the latest deals... Hold tight!" />;
+  }
 
   return (
     <View style={styles.view}>
