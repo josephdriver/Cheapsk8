@@ -27,7 +27,7 @@ function ListItem({ item, handleOnPress }) {
     () => favouriteCollectionAlerts(item),
     [item]
   );
-  console.log(item);
+
   const lowestStore = useMemo(() => {
     const store = stores.find((s) => s.storeID === item.lowestStoreId);
     return store;

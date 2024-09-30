@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useNetInfo } from "@react-native-community/netinfo";
 import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -24,6 +25,7 @@ function Main() {
   const Stack = createStackNavigator();
   const [initializing, setInitializing] = useState(true);
   const { isConnected } = useNetInfo();
+  const { favourites, alertState } = useSelector((state) => state.favourites);
   const { stores } = useSelector((state) => state.stores);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -51,8 +53,22 @@ function Main() {
     (u) => {
       dispatch(setUser(u));
       if (initializing) setInitializing(false);
+
+      if (u) {
+        console.log("User Logged In", u);
+        firestore().collection("users").doc(u.uid).set({
+          uid: u.uid,
+          email: u.email,
+          displayName: u.displayName,
+          emailVerified: u.emailVerified,
+        });
+        firestore().collection("watchLists").doc(u.uid).set({
+          favourites,
+          alertState,
+        });
+      }
     },
-    [initializing, dispatch]
+    [initializing, dispatch, favourites, alertState]
   );
 
   useEffect(() => {

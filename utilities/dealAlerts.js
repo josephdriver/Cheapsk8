@@ -31,9 +31,6 @@ export const favouriteCollectionAlerts = (game) => {
   let isLowest = false;
   let isAlert = false;
 
-  console.log(game.highestPercent);
-  console.log(game.alertLevel.threshold);
-
   if (parseFloat(game.lowestPrice) <= parseFloat(game.lowestPriceEver)) {
     isLowest = true;
   }
@@ -107,10 +104,10 @@ export const getGameReferenceValues = (deals) => {
   let lowestStoreId = null;
 
   deals.forEach((d) => {
-    if (!highestPercent || d.savings > highestPercent) {
+    if (!highestPercent || parseFloat(d.savings) > parseFloat(highestPercent)) {
       highestPercent = d.savings;
     }
-    if (!lowestPrice || d.price < lowestPrice) {
+    if (!lowestPrice || parseFloat(d.price) < parseFloat(lowestPrice)) {
       lowestPrice = d.price;
       lowestStoreId = d.storeID;
     }

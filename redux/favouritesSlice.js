@@ -69,7 +69,6 @@ export const FavouritesSlice = createSlice({
     },
     clearFavourites: (state) => {
       state.favourites = [];
-      state.lastVisited = null;
     },
     setAlertState: (state, { payload }) => {
       state.alertState = payload;
@@ -108,7 +107,6 @@ export function fetchWatchList(ids, favourites, user) {
         dispatch(setFavourites(updatedFavourites));
         firestore().collection("watchLists").doc(user.uid).set({
           favourites: updatedFavourites,
-          refetch: false,
         });
         dispatch(setLoading(false));
       })
