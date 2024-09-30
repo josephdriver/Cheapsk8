@@ -105,7 +105,7 @@ function LargeCard({ deal, handleDealNavigate = null }) {
 const styles = StyleSheet.create({
   cardWrapper: {
     borderRadius: 2,
-    marginTop: 9,
+    marginTop: 15,
     overflow: "hidden",
   },
   headerImageContainer: {

@@ -1,6 +1,6 @@
 export const PRIMARY = "#07BCC1";
 export const SECONDARY = "#306187";
-export const BACKGROUND_PRIMARY = "#2d2b2b";
+export const BACKGROUND_PRIMARY = "#0D1116";
 export const DANGER = "#FF0033";
 
 export const DISCOUNT = PRIMARY;
