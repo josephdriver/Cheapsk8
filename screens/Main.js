@@ -55,7 +55,6 @@ function Main() {
       if (initializing) setInitializing(false);
 
       if (u) {
-        console.log("User Logged In", u);
         firestore().collection("users").doc(u.uid).set({
           uid: u.uid,
           email: u.email,

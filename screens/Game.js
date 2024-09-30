@@ -318,24 +318,15 @@ function Game({ route, navigation }) {
             />
           )}
           <ScrollView>
-            {data.deals
-              .filter((d) =>
-                storesArray.some((s) => s.storeID.toString() === d.storeID)
-              )
-              .map((d) => {
-                const st = storesArray.find(
-                  (s) => s.storeID.toString() === d.storeID
-                );
-                return (
-                  <StoreOffer
-                    key={d.dealID}
-                    deal={d}
-                    store={st}
-                    handlePress={handlePress}
-                    favourite={favourite}
-                  />
-                );
-              })}
+            {data.deals.map((d) => (
+              <StoreOffer
+                key={d.dealID}
+                deal={d}
+                store={stores.find((s) => s.storeID.toString() === d.storeID)}
+                handlePress={handlePress}
+                favourite={favourite}
+              />
+            ))}
           </ScrollView>
         </>
       )}

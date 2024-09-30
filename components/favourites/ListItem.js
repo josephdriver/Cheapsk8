@@ -67,7 +67,7 @@ function ListItem({ item, handleOnPress }) {
       useNativeDriver: true,
     }).start();
   };
-
+  console.log(item);
   return (
     <View style={styles.wrapper}>
       <Pressable
@@ -112,13 +112,20 @@ function ListItem({ item, handleOnPress }) {
                   },
                 ]}
               >
-                {parseInt(item.highestPercentage, 10) > 0 && (
+                {parseFloat(item.highestPercent) > 0 && (
                   <View style={styles.discountPercent}>
-                    <Text>-{item.highestPercentage.split(".")[0]}%</Text>
+                    <Text>-{item.highestPercent.split(".")[0]}%</Text>
                   </View>
                 )}
-                <View style={{ height: 21 }}>
-                  <Text>${item.lowestPrice}</Text>
+                <View
+                  style={{
+                    height: 21,
+                    minWidth: 40,
+                  }}
+                >
+                  <Text style={{ fontWeight: "700", textAlign: "right" }}>
+                    ${item.lowestPrice}
+                  </Text>
                 </View>
               </View>
               <View
@@ -128,7 +135,9 @@ function ListItem({ item, handleOnPress }) {
                 }}
               >
                 {item.dealCount > 1 && (
-                  <Text>+{item.dealCount} more offers</Text>
+                  <Text style={styles.italic}>
+                    {item.dealCount - 1} more offers
+                  </Text>
                 )}
               </View>
             </View>
@@ -182,7 +191,7 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flex: 1,
-    paddingBottom: 5,
+    // paddingBottom: 5,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "flex-end",
@@ -234,6 +243,7 @@ const styles = StyleSheet.create({
     color: FAVOURITE,
     fontWeight: "700",
   },
+  italic: { fontStyle: "italic" },
 });
 
 ListItem.propTypes = {

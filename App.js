@@ -17,7 +17,7 @@ import ErrorFallback from "./screens/ErrorFallback";
 function App() {
   // Ignore warning for defaultProps for the slider component
   LogBox.ignoreLogs([
-    "Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+    "Warning: Slider: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
   ]);
   const theme = createTheme({
     mode: "dark",
