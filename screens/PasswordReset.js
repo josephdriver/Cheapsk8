@@ -46,7 +46,7 @@ export default function ResetPassword() {
 			<Image
 				// eslint-disable-next-line global-require
 				source={require("../assets/main-logo.png")}
-				style={{ maxWidth: "90%", alignSelf: "center" }}
+				style={{ maxWidth: "85%", alignSelf: "center" }}
 				resizeMode="contain"
 			/>
 

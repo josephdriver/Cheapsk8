@@ -1,9 +1,14 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
+#import "RNBootSplash.h"
 
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
+
+- (void)customizeRootView:(RCTRootView *)rootView {
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

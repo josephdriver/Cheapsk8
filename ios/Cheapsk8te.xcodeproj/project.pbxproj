@@ -12,9 +12,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		31554136AE0B4EDABAB6C3A4 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C6B25F47E30449E696092ECB /* BootSplash.storyboard */; };
 		4644BA87BC8844585486C6B0 /* Pods_Cheapsk8te_Cheapsk8teTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2589B4684E896B3144B7F308 /* Pods_Cheapsk8te_Cheapsk8teTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		91CD8BE582DD014A4570663C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 61EA3C4ED3CBEB8AE4E24C0C /* PrivacyInfo.xcprivacy */; };
+		AE6DC68706D2426DBB6D6376 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D1B4FCCFEBC48B1A3017EB9 /* Colors.xcassets */; };
 		C150BADFDF8566051DC0A93D /* Pods_Cheapsk8te.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B905F345950653879954F8A7 /* Pods_Cheapsk8te.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,12 +46,14 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Cheapsk8te/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2589B4684E896B3144B7F308 /* Pods_Cheapsk8te_Cheapsk8teTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cheapsk8te_Cheapsk8teTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-Cheapsk8te.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cheapsk8te.debug.xcconfig"; path = "Target Support Files/Pods-Cheapsk8te/Pods-Cheapsk8te.debug.xcconfig"; sourceTree = "<group>"; };
+		3D1B4FCCFEBC48B1A3017EB9 /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = Cheapsk8te/Colors.xcassets; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Cheapsk8te.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cheapsk8te.release.xcconfig"; path = "Target Support Files/Pods-Cheapsk8te/Pods-Cheapsk8te.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-Cheapsk8te-Cheapsk8teTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cheapsk8te-Cheapsk8teTests.debug.xcconfig"; path = "Target Support Files/Pods-Cheapsk8te-Cheapsk8teTests/Pods-Cheapsk8te-Cheapsk8teTests.debug.xcconfig"; sourceTree = "<group>"; };
 		61EA3C4ED3CBEB8AE4E24C0C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Cheapsk8te/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Cheapsk8te/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Cheapsk8te-Cheapsk8teTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cheapsk8te-Cheapsk8teTests.release.xcconfig"; path = "Target Support Files/Pods-Cheapsk8te-Cheapsk8teTests/Pods-Cheapsk8te-Cheapsk8teTests.release.xcconfig"; sourceTree = "<group>"; };
 		B905F345950653879954F8A7 /* Pods_Cheapsk8te.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cheapsk8te.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6B25F47E30449E696092ECB /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = Cheapsk8te/BootSplash.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -111,6 +115,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				61EA3C4ED3CBEB8AE4E24C0C /* PrivacyInfo.xcprivacy */,
+				C6B25F47E30449E696092ECB /* BootSplash.storyboard */,
+				3D1B4FCCFEBC48B1A3017EB9 /* Colors.xcassets */,
 			);
 			name = Cheapsk8te;
 			sourceTree = "<group>";
@@ -266,6 +272,8 @@
 				06E74BCB2C8C712C00417216 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				91CD8BE582DD014A4570663C /* PrivacyInfo.xcprivacy in Resources */,
+				31554136AE0B4EDABAB6C3A4 /* BootSplash.storyboard in Resources */,
+				AE6DC68706D2426DBB6D6376 /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,7 +643,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -719,7 +730,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
