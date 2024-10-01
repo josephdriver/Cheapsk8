@@ -248,8 +248,7 @@ function Settings() {
 									borderColor: PRIMARY_DISABLED,
 								}}
 								titleStyle={styles.buttonTitle}
-								buttonContainerStyle={styles.buttonContainer}
-								buttonStyle={[styles.button, { minHeight: 65 }]}
+								buttonStyle={styles.button}
 								title="Reset Favourites"
 								onPress={onResetFavouritesPressed}
 							/>
@@ -257,8 +256,7 @@ function Settings() {
 						<View style={{ flex: 1, marginBottom: 20 }}>
 							<Button
 								titleStyle={styles.buttonTitle}
-								buttonContainerStyle={styles.buttonContainer}
-								buttonStyle={[styles.button, { minHeight: 65 }]}
+								buttonStyle={styles.button}
 								disabled={pending}
 								title="Reset Settings"
 								onPress={onSignOutPressed}
@@ -276,7 +274,6 @@ function Settings() {
 							<Button
 								disabled={pending}
 								titleStyle={styles.buttonTitle}
-								buttonContainerStyle={styles.buttonContainer}
 								buttonStyle={[
 									styles.button,
 									styles.danger,
@@ -291,7 +288,6 @@ function Settings() {
 					<View style={{ marginVertical: 30 }}>
 						<Button
 							titleStyle={styles.buttonTitle}
-							buttonContainerStyle={styles.buttonContainer}
 							buttonStyle={[styles.button, styles.span]}
 							disabled={pending}
 							title="Sign Out"
