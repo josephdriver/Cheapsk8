@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import auth from "@react-native-firebase/auth";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, Image } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -49,6 +49,13 @@ export default function RegisterAccount() {
 
 	return (
 		<View style={styles.container}>
+			<Image
+				// eslint-disable-next-line global-require
+				source={require("../assets/main-logo.png")}
+				style={{ maxWidth: "90%", alignSelf: "center" }}
+				resizeMode="contain"
+			/>
+
 			<Text style={styles.header}>Create Account.</Text>
 			<Input
 				errorStyle={styles.error}

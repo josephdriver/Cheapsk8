@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from "react";
 import auth from "@react-native-firebase/auth";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { Button, Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -43,6 +43,13 @@ export default function ResetPassword() {
 
 	return (
 		<View style={styles.container}>
+			<Image
+				// eslint-disable-next-line global-require
+				source={require("../assets/main-logo.png")}
+				style={{ maxWidth: "90%", alignSelf: "center" }}
+				resizeMode="contain"
+			/>
+
 			<Text style={styles.header}>Reset Password.</Text>
 			<View style={styles.row}>
 				<Text style={styles.rowText}>
