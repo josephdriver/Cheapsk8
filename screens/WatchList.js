@@ -14,89 +14,89 @@ import { fetchWatchList } from "../redux/favouritesSlice";
 import Loading from "../components/shared/Loading";
 
 function WatchList({ navigation }) {
-  const dispatch = useDispatch();
-  const { favourites, loading } = useSelector((state) => state.favourites);
-  const { user } = useSelector((state) => state.user);
-  const message = useMemo(
-    () =>
-      "You have not watch listed any games yet. Search for Titles on the Home screen and add them to your watch list.",
-    []
-  );
+	const dispatch = useDispatch();
+	const { favourites, loading } = useSelector((state) => state.favourites);
+	const { user } = useSelector((state) => state.user);
+	const message = useMemo(
+		() =>
+			"You have not watch listed any games yet. Search for Titles on the Home screen and add them to your watch list.",
+		[]
+	);
 
-  const [inputValue, setInputValue] = useState("");
+	const [inputValue, setInputValue] = useState("");
 
-  useFocusEffect(
-    React.useCallback(() => {
-      analytics().logScreenView({
-        screen_name: "Watchlist",
-        screen_class: "Watchlist",
-      });
+	useFocusEffect(
+		React.useCallback(() => {
+			analytics().logScreenView({
+				screen_name: "Watchlist",
+				screen_class: "Watchlist",
+			});
 
-      const watchListIds = getGamesToUpdate(favourites);
-      if (watchListIds && watchListIds.length <= 25) {
-        dispatch(fetchWatchList(watchListIds, favourites, user));
-      }
-    }, [dispatch, favourites, user])
-  );
+			const watchListIds = getGamesToUpdate(favourites);
+			if (watchListIds && watchListIds.length <= 25) {
+				dispatch(fetchWatchList(watchListIds, favourites, user));
+			}
+		}, [dispatch, favourites, user])
+	);
 
-  const handleDealNavigate = useCallback(
-    (item) => {
-      const deal = {
-        gameID: item.gameId,
-        steamAppID: item.steamAppID,
-        external: item.title,
-        thumb: item.thumb,
-        cheapest: item.lowestPrice,
-      };
+	const handleDealNavigate = useCallback(
+		(item) => {
+			const deal = {
+				gameID: item.gameId,
+				steamAppID: item.steamAppID,
+				external: item.title,
+				thumb: item.thumb,
+				cheapest: item.lowestPrice,
+			};
 
-      navigation.navigate("Deal", { deal });
-    },
-    [navigation]
-  );
+			navigation.navigate("Deal", { deal });
+		},
+		[navigation]
+	);
 
-  const sortedFavourites = useMemo(
-    () =>
-      favourites.slice().sort((a, b) => {
-        const nameA = a.title.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.title.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
+	const sortedFavourites = useMemo(
+		() =>
+			favourites.slice().sort((a, b) => {
+				const nameA = a.title.toUpperCase();
+				const nameB = b.title.toUpperCase();
+				if (nameA < nameB) {
+					return -1;
+				}
+				if (nameA > nameB) {
+					return 1;
+				}
 
-        // names must be equal
-        return 0;
-      }),
-    [favourites]
-  );
+				// names must be equal
+				return 0;
+			}),
+		[favourites]
+	);
 
-  if (loading) {
-    return <Loading message="Getting the latest deals... Hold tight!" />;
-  }
+	if (loading) {
+		return <Loading message="Getting the latest deals... Hold tight!" />;
+	}
 
-  return (
-    <View style={styles.view}>
-      <SearchableFlatList
-        autoFocus={false}
-        inputValue={inputValue}
-        data={sortedFavourites}
-        handleDealNavigate={handleDealNavigate}
-        handleInputChange={setInputValue}
-        ListItem={ListItem}
-        ListEmptyComponent={<EmptyList message={message} />}
-        isSearchable={false}
-      />
-    </View>
-  );
+	return (
+		<View style={styles.view}>
+			<SearchableFlatList
+				autoFocus={false}
+				inputValue={inputValue}
+				data={sortedFavourites}
+				handleDealNavigate={handleDealNavigate}
+				handleInputChange={setInputValue}
+				ListItem={ListItem}
+				ListEmptyComponent={<EmptyList message={message} />}
+				isSearchable={false}
+			/>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  view: {
-    border: "none",
-    height: "100%",
-    backgroundColor: BACKGROUND_PRIMARY,
-  },
+	view: {
+		border: "none",
+		height: "100%",
+		backgroundColor: BACKGROUND_PRIMARY,
+	},
 });
 export default WatchList;
