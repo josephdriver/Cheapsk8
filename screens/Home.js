@@ -2,7 +2,7 @@
 import React, { useCallback, useMemo } from "react";
 import analytics from "@react-native-firebase/analytics";
 import { useFocusEffect } from "@react-navigation/native";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { SearchBar } from "@rneui/themed";
 
@@ -11,7 +11,7 @@ import { fetchWatchList } from "../redux/favouritesSlice";
 import { DEALS_CACHE_OFFSET } from "../constants/Defaults";
 import FeaturedDeals from "../components/home/FeaturedDeals";
 import Loading from "../components/shared/Loading";
-import { BACKGROUND_PRIMARY } from "../constants/Colours";
+import { BACKGROUND_PRIMARY, WHITE } from "../constants/Colours";
 import { getGamesToUpdate } from "../utilities/dealAlerts";
 
 function Home({ navigation }) {
@@ -97,16 +97,38 @@ function Home({ navigation }) {
 	return (
 		<View style={styles.view}>
 			<Pressable onPress={() => handleSearchNavigate()}>
-				<SearchBar
-					placeholder="Find a game"
-					round={2}
-					editable={false}
-					containerStyle={{
-						backgroundColor: BACKGROUND_PRIMARY,
-						borderBottomColor: "transparent",
-						borderTopColor: "transparent",
+				<View
+					style={{
+						flexDirection: "row",
+						height: 70,
 					}}
-				/>
+				>
+					<View style={{ flex: 10 }}>
+						<SearchBar
+							placeholder="Cheapsk8"
+							round={2}
+							editable={false}
+							containerStyle={{
+								backgroundColor: BACKGROUND_PRIMARY,
+								borderBottomColor: "transparent",
+								borderTopColor: "transparent",
+							}}
+							inputStyle={styles.input}
+						/>
+					</View>
+					<View style={{ flex: 2, paddingEnd: 10 }}>
+						<Image
+							// eslint-disable-next-line global-require
+							source={require("../assets/main-short-logo.png")}
+							style={{
+								maxWidth: "100%",
+								height: 66,
+								alignSelf: "center",
+							}}
+							resizeMode="contain"
+						/>
+					</View>
+				</View>
 			</Pressable>
 
 			<View style={{ paddingBottom: 80 }}>
@@ -126,6 +148,10 @@ const styles = StyleSheet.create({
 	view: {
 		height: "100%",
 		backgroundColor: BACKGROUND_PRIMARY,
+	},
+	input: {
+		fontSize: 18,
+		color: WHITE,
 	},
 });
 

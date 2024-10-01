@@ -25,11 +25,11 @@ const shadeColor = (color, percent) => {
 	return `#${RR}${GG}${BB}`;
 };
 
-export const PRIMARY = "#07BCC1";
+export const PRIMARY = "#F95738";
 export const PRIMARY_DISABLED = shadeColor(PRIMARY, -40);
-export const SECONDARY = "#306187";
-export const BACKGROUND_PRIMARY = "#0D1116";
-export const DANGER = "#FF0033";
+export const SECONDARY = "#003566";
+export const BACKGROUND_PRIMARY = "#000814";
+export const DANGER = "#1E441E";
 
 export const DISCOUNT = PRIMARY;
 export const FAVOURITE = "#F5E960";
