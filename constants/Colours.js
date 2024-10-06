@@ -28,7 +28,7 @@ const shadeColor = (color, percent) => {
 export const PRIMARY = "#F95738";
 export const PRIMARY_DISABLED = shadeColor(PRIMARY, -40);
 export const SECONDARY = "#003566";
-export const BACKGROUND_PRIMARY = "#000814";
+export const BACKGROUND_PRIMARY = "#000e1e";
 export const DANGER = "#1E441E";
 
 export const DISCOUNT = PRIMARY;
@@ -36,7 +36,7 @@ export const FAVOURITE = "#F5E960";
 
 export const TEXT_INACTIVE = "#babbbc";
 export const TEXT_DARK = "#3f3f3f";
-export const INACTIVE = "#262020";
+export const INACTIVE = "#8c6d67";
 
 export const WHITE = "white";
 
