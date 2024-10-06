@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+import BootSplash from "react-native-bootsplash";
 import "react-native-gesture-handler";
 import * as firebase from "@react-native-firebase/app";
 import analytics from "@react-native-firebase/analytics";
@@ -39,6 +40,7 @@ function App() {
 		if (!firebase.getApps().length) {
 			register();
 		} else {
+			BootSplash.hide({ fade: true });
 			analytics().setAnalyticsCollectionEnabled(true);
 		}
 	}, []);
