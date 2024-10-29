@@ -142,9 +142,9 @@ function ListItem({ item, handleOnPress }) {
 										{parseFloat(item.highestPercent) >
 											0 && (
 											<View
-												style={styles.discountPercent}
+												style={[styles.discountPercent]}
 											>
-												<Text>
+												<Text style={styles.white}>
 													-
 													{
 														item.highestPercent.split(
@@ -162,10 +162,13 @@ function ListItem({ item, handleOnPress }) {
 											}}
 										>
 											<Text
-												style={{
-													fontWeight: "700",
-													textAlign: "right",
-												}}
+												style={[
+													styles.white,
+													{
+														fontWeight: "700",
+														textAlign: "right",
+													},
+												]}
 											>
 												${item.lowestPrice}
 											</Text>
@@ -180,7 +183,13 @@ function ListItem({ item, handleOnPress }) {
 								}}
 							>
 								{item.dealCount > 1 && (
-									<Text style={styles.italic}>
+									<Text
+										style={[
+											styles.italic,
+											styles.white,
+											{ textAlign: "right" },
+										]}
+									>
 										{item.dealCount - 1} more offers
 									</Text>
 								)}
@@ -240,7 +249,6 @@ const styles = StyleSheet.create({
 	},
 	priceContainer: {
 		flex: 1,
-		// paddingBottom: 5,
 		flexDirection: "row",
 		alignItems: "flex-end",
 		justifyContent: "flex-end",
@@ -293,6 +301,7 @@ const styles = StyleSheet.create({
 		fontWeight: "700",
 	},
 	italic: { fontStyle: "italic" },
+	white: { color: WHITE },
 });
 
 ListItem.propTypes = {
