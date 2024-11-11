@@ -11,8 +11,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
 import errorMessage from "../utilities/firebaseErrorParsing";
-import { setDeals } from "../redux/dealsSlice";
-import { setLoading, setSavedStores } from "../redux/storesSlice";
+import { setDeals, setOffset, setLoading } from "../redux/dealsSlice";
+import { setSavedStores } from "../redux/storesSlice";
 import { setFavourites } from "../redux/favouritesSlice";
 import IconImage from "../components/shared/IconImage";
 import {
@@ -20,6 +20,7 @@ import {
 	DANGER,
 	PRIMARY,
 	PRIMARY_DISABLED,
+	DANGER_DISABLED,
 	WHITE,
 } from "../constants/Colours";
 
@@ -45,6 +46,7 @@ function Settings() {
 	// Sign out the user and reset the navigation stack
 	const onSignOutPressed = useCallback(() => {
 		setPending(true);
+
 		auth()
 			.signOut()
 			.then(() => {
@@ -70,6 +72,7 @@ function Settings() {
 
 		dispatch(setSavedStores(existingStores));
 		dispatch(setDeals([]));
+		dispatch(setOffset(null));
 		dispatch(setLoading(true));
 
 		firestore().collection("users").doc(user.uid).update({
@@ -273,9 +276,17 @@ function Settings() {
 						</View>
 						<View style={{ flex: 1, marginBottom: 20 }}>
 							<Button
+								disabled={
+									!savedStores ||
+									savedStores.length === 0 ||
+									pending
+								}
+								disabledStyle={{
+									backgroundColor: PRIMARY_DISABLED,
+									borderColor: PRIMARY_DISABLED,
+								}}
 								titleStyle={styles.buttonTitle}
 								buttonStyle={styles.button}
-								disabled={pending}
 								title="Reset Stores"
 								onPress={onResetSettingsPressed}
 							/>
@@ -292,6 +303,10 @@ function Settings() {
 							<Button
 								disabled={pending}
 								titleStyle={styles.buttonTitle}
+								disabledStyle={{
+									backgroundColor: DANGER_DISABLED,
+									borderColor: DANGER_DISABLED,
+								}}
 								buttonStyle={[
 									styles.button,
 									styles.danger,
@@ -305,6 +320,10 @@ function Settings() {
 					<Divider />
 					<View style={{ marginVertical: 30 }}>
 						<Button
+							disabledStyle={{
+								backgroundColor: PRIMARY_DISABLED,
+								borderColor: PRIMARY_DISABLED,
+							}}
 							titleStyle={styles.buttonTitle}
 							buttonStyle={[styles.button, styles.span]}
 							disabled={pending}

@@ -66,7 +66,8 @@ function Main() {
 				firestore()
 					.collection("users")
 					.doc(u.uid)
-					.onSnapshot((documentSnapshot) => {
+					.get()
+					.then((documentSnapshot) => {
 						// If the user does not have a document, create one
 						if (!documentSnapshot.data()) {
 							firestore().collection("users").doc(u.uid).set({
@@ -78,16 +79,20 @@ function Main() {
 								savedStores: [],
 							});
 							dispatch(setFavourites([]));
-							return dispatch(setSavedStores([]));
+							dispatch(setSavedStores([]));
+						} else {
+							// If the user has a document, set the favourites and saved stores
+							dispatch(
+								setSavedStores(
+									documentSnapshot.data().savedStores
+								)
+							);
+							dispatch(
+								setFavourites(
+									documentSnapshot.data().favourites
+								)
+							);
 						}
-
-						// If the user has a document, set the favourites and saved stores
-						dispatch(
-							setSavedStores(documentSnapshot.data().savedStores)
-						);
-						return dispatch(
-							setFavourites(documentSnapshot.data().favourites)
-						);
 					});
 			}
 		},

@@ -5,7 +5,7 @@ import { Skeleton } from "@rneui/themed";
 import BlastedImage from "react-native-blasted-image";
 
 import { STEAM_S_HEADER, DELIM_ID, BASE } from "../../constants/Urls";
-import { SECONDARY } from "../../constants/Colours";
+import { BACKGROUND_PRIMARY, SECONDARY } from "../../constants/Colours";
 import { EXCLUDE_KEYWORDS } from "../../constants/Defaults";
 
 function CapsuleImage({
@@ -13,7 +13,7 @@ function CapsuleImage({
 	title,
 	url = null,
 	hasLogo = "",
-	width = 340,
+	width,
 	height = 70,
 }) {
 	const [loading, setLoading] = useState(true);
@@ -36,23 +36,26 @@ function CapsuleImage({
 
 	return (
 		<View style={styles.container}>
-			<BlastedImage
-				onLoad={() => setLoading(false)}
-				source={{ uri: imageURL }}
-				height={height}
-				width={width}
-			/>
+			{width && (
+				<BlastedImage
+					onLoad={() => setLoading(false)}
+					source={{ uri: imageURL }}
+					height={height}
+					width={width}
+				/>
+			)}
+
 			{hasLogo && (
 				<Image
 					style={styles.logo}
 					source={{ uri: `${BASE}/${hasLogo}` }}
 				/>
 			)}
-			{loading && (
+			{loading || !width ? (
 				<View style={[styles.loading, { height }]}>
 					<Skeleton animation="pulse" style={styles.skeletonImage} />
 				</View>
-			)}
+			) : null}
 		</View>
 	);
 }
@@ -69,7 +72,8 @@ CapsuleImage.propTypes = {
 const styles = StyleSheet.create({
 	container: {
 		position: "relative",
-		backgroundColor: SECONDARY,
+		backgroundColor: BACKGROUND_PRIMARY,
+		height: 70,
 	},
 	skeletonImage: {
 		width: "100%",
