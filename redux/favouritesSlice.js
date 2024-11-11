@@ -106,7 +106,7 @@ export function fetchWatchList(ids, favourites, user) {
 					favourites
 				);
 				dispatch(setFavourites(updatedFavourites));
-				firestore().collection("watchLists").doc(user.uid).set({
+				firestore().collection("users").doc(user.uid).update({
 					favourites: updatedFavourites,
 				});
 				dispatch(setLoading(false));

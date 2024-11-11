@@ -12,7 +12,7 @@ import Toast from "react-native-toast-message";
 
 import errorMessage from "../utilities/firebaseErrorParsing";
 import { setDeals } from "../redux/dealsSlice";
-import { setSavedStores } from "../redux/storesSlice";
+import { setLoading, setSavedStores } from "../redux/storesSlice";
 import { setFavourites } from "../redux/favouritesSlice";
 import IconImage from "../components/shared/IconImage";
 import {
@@ -44,36 +44,37 @@ function Settings() {
 
 	// Sign out the user and reset the navigation stack
 	const onSignOutPressed = useCallback(() => {
-		navigation.reset({
-			index: 0,
-			routes: [{ name: "home" }],
-		});
-
 		setPending(true);
 		auth()
 			.signOut()
 			.then(() => {
-				setPending(false);
+				navigation.reset({
+					index: 0,
+					routes: [{ name: "home" }],
+				});
 			});
 	}, [navigation]);
 
 	// Handle the switch state change
 	const handleSwitch = (storeID, value) => {
-		if (!value) {
-			const clonedStores = clone(savedStores);
-			const newStores = clonedStores.filter(
-				(item) => item.storeID !== storeID
-			);
-			dispatch(setSavedStores(newStores));
+		let existingStores = savedStores ? clone(savedStores) : [];
+		const toggleStore = stores.find((item) => item.storeID === storeID);
+
+		if (value) {
+			dispatch(setSavedStores(existingStores.push(toggleStore)));
 		} else {
-			const newStore = stores.find((item) => item.storeID === storeID);
-			const newStores = clone(savedStores);
-			if (newStores) {
-				newStores.push(newStore);
-			}
-			dispatch(setSavedStores(newStores));
+			existingStores = existingStores.filter(
+				(s) => s.storeID !== toggleStore.storeID
+			);
 		}
+
+		dispatch(setSavedStores(existingStores));
 		dispatch(setDeals([]));
+		dispatch(setLoading(true));
+
+		firestore().collection("users").doc(user.uid).update({
+			savedStores: existingStores,
+		});
 	};
 
 	// Handle the notification switch
@@ -83,9 +84,8 @@ function Settings() {
 
 	const onResetFavouritesPressed = useCallback(() => {
 		dispatch(setFavourites([]));
-		firestore().collection("watchLists").doc(user.uid).set({
+		firestore().collection("users").doc(user.uid).update({
 			favourites: [],
-			alertState: false,
 		});
 		Toast.show({
 			type: "success",
@@ -96,11 +96,31 @@ function Settings() {
 	// Get the switch state
 	const getSwitchState = useCallback(
 		(storeID) => {
-			const store = savedStores.find((item) => item.storeID === storeID);
-			return !!store;
+			if (
+				savedStores &&
+				savedStores.length > 0 &&
+				savedStores.find((item) => item.storeID === storeID)
+			) {
+				return true;
+			}
+			return false;
 		},
 		[savedStores]
 	);
+
+	const onResetSettingsPressed = useCallback(() => {
+		dispatch(setSavedStores([]));
+		dispatch(setDeals([]));
+
+		firestore().collection("users").doc(user.uid).update({
+			savedStores: [],
+		});
+
+		Toast.show({
+			type: "success",
+			text1: "Favourite Stores have been reset",
+		});
+	}, [dispatch, user.uid]);
 
 	const removeUserData = useCallback((collection, id) => {
 		firestore().collection(collection).doc(id).delete();
@@ -111,13 +131,11 @@ function Settings() {
 		const u = auth().currentUser;
 		u.delete()
 			.then(() => {
-				removeUserData("watchLists", u.uid);
-				removeUserData("users", u.uid);
-
 				navigation.reset({
 					index: 0,
 					routes: [{ name: "home" }],
 				});
+				removeUserData("users", u.uid);
 			})
 			.catch((err) => {
 				Toast.show({
@@ -258,8 +276,8 @@ function Settings() {
 								titleStyle={styles.buttonTitle}
 								buttonStyle={styles.button}
 								disabled={pending}
-								title="Reset Settings"
-								onPress={onSignOutPressed}
+								title="Reset Stores"
+								onPress={onResetSettingsPressed}
 							/>
 						</View>
 					</View>

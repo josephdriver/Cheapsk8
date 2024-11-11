@@ -56,6 +56,7 @@ function WatchList({ navigation }) {
 
 	const sortedFavourites = useMemo(
 		() =>
+			favourites &&
 			favourites.slice().sort((a, b) => {
 				const nameA = a.title.toUpperCase();
 				const nameB = b.title.toUpperCase();

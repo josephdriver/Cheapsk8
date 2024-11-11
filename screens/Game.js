@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
+import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
@@ -32,8 +33,7 @@ import { getGameReferenceValues, getAlertTime } from "../utilities/dealAlerts";
 
 function Game({ route, navigation }) {
 	const { deal } = route.params;
-	console.log("Deal");
-	console.log(deal);
+
 	const { stores } = useSelector((state) => state.stores);
 	const { user } = useSelector((state) => state.user);
 	const { favourites } = useSelector((state) => state.favourites);
@@ -57,21 +57,6 @@ function Game({ route, navigation }) {
 		getParams("gameID"),
 		null
 	);
-
-	// const { data: game, loading: gameLoading } = useAxiosFetch(
-	// 	DEALS,
-	// 	0,
-	// 	false,
-	// 	true,
-	// 	getParams("dealID"),
-	// 	null
-	// );
-
-	// useEffect(() => {
-	// 	if (game) {
-	// 		setGameData(game);
-	// 	}
-	// }, [game, gameLoading]);
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -111,11 +96,10 @@ function Game({ route, navigation }) {
 	useEffect(() => {
 		if (data && data.deals.length > 0) {
 			setGameLoading(true);
-
 			const api = axios.create({
 				baseURL: DEALS,
 				withCredentials: false,
-				params: getParams("dealID"),
+				params: { id: data.deals[0].dealID },
 				paramsSerializer: (p) => qs.stringify(p, { encode: false }),
 				headers: HEADERS,
 			});
@@ -208,9 +192,13 @@ function Game({ route, navigation }) {
 			),
 		};
 
+		const favouritesList = favourites || [];
+
 		const newFavourites = favourite
-			? favourites.filter((f) => f.gameId !== gameData.gameInfo.gameID)
-			: [...favourites, newFavourite];
+			? favouritesList.filter(
+					(f) => f.gameId !== gameData.gameInfo.gameID
+			  )
+			: [...favouritesList, newFavourite];
 
 		analytics().logEvent(
 			favourite ? "remove_from_favourites" : "add_to_favourites",
@@ -223,7 +211,7 @@ function Game({ route, navigation }) {
 			}
 		);
 
-		firestore().collection("watchLists").doc(user.uid).set({
+		firestore().collection("users").doc(user.uid).update({
 			favourites: newFavourites,
 		});
 
@@ -258,7 +246,8 @@ function Game({ route, navigation }) {
 			return f;
 		});
 		dispatch(setFavourites(newFavourites));
-		firestore().collection("watchLists").doc(user.uid).set({
+
+		firestore().collection("users").doc(user.uid).update({
 			favourites: newFavourites,
 		});
 	}, [data, favourite, favourites, dispatch, user.uid]);
