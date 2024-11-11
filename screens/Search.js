@@ -20,7 +20,7 @@ function Search({ navigation }) {
 	const [params, setParams] = useState({
 		title: query,
 		storeID:
-			savedStores.length > 0
+			savedStores && savedStores.length > 0
 				? savedStores.map((s) => s.storeID)
 				: stores.map((s) => s.storeID),
 		pageSize: 60,
@@ -37,7 +37,7 @@ function Search({ navigation }) {
 	useEffect(() => {
 		const delayedInputTimeoutId = setTimeout(() => {
 			setDebouncedQuery(query);
-		}, 700);
+		}, 1000);
 		return () => clearTimeout(delayedInputTimeoutId);
 	}, [query]);
 

@@ -1,5 +1,4 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
-import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
@@ -211,11 +210,14 @@ function Game({ route, navigation }) {
 			}
 		);
 
-		firestore().collection("users").doc(user.uid).update({
-			favourites: newFavourites,
-		});
-
-		return dispatch(setFavourites(newFavourites));
+		firestore()
+			.collection("users")
+			.doc(user.uid)
+			.update({
+				favourites: newFavourites,
+			})
+			.then(() => dispatch(setFavourites(newFavourites)))
+			.catch(() => {});
 	}, [gameData, dispatch, favourites, favourite, data, user.uid]);
 
 	const updateFavourites = useCallback(() => {
