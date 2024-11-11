@@ -210,7 +210,7 @@ function Game({ route, navigation }) {
 			}
 		);
 
-		firestore()
+		return firestore()
 			.collection("users")
 			.doc(user.uid)
 			.update({
