@@ -30,6 +30,7 @@ export const PRIMARY_DISABLED = shadeColor(PRIMARY, -40);
 export const SECONDARY = "#003566";
 export const BACKGROUND_PRIMARY = "#000e1e";
 export const DANGER = "#1E441E";
+export const DANGER_DISABLED = "#2f3f2f";
 
 export const DISCOUNT = PRIMARY;
 export const FAVOURITE = "#F5E960";

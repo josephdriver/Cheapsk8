@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		width: "100%",
 		justifyContent: "space-between",
-		height: 130,
 	},
 });
 
