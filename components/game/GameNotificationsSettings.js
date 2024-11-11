@@ -44,9 +44,8 @@ function GameNotificationsSettings({ gameData, favourite }) {
 
 	useEffect(() => {
 		if (debouncedNotify) {
-			firestore().collection("watchLists").doc(user.uid).set({
+			firestore().collection("users").doc(user.uid).update({
 				favourites: debouncedNotify,
-				refetch: false,
 			});
 		}
 	}, [debouncedNotify, user.uid]);

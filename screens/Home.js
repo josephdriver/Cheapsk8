@@ -26,7 +26,7 @@ function Home({ navigation }) {
 	const getParams = useMemo(
 		() => ({
 			storeID:
-				savedStores.length > 0
+				savedStores && savedStores.length > 0
 					? savedStores.map((s) => s.storeID)
 					: stores.map((s) => s.storeID),
 			onSale: 1,

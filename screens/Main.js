@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchStores } from "../redux/storesSlice";
+import { fetchStores, setSavedStores } from "../redux/storesSlice";
 import { setUser } from "../redux/userSlice";
 import HomeWrapper from "./HomeWrapper";
 import Settings from "./Settings";
@@ -19,12 +19,13 @@ import { OPTIONS, NAVIGATOR_OPTIONS } from "../constants/NavigatorConfig";
 import Login from "./Login";
 import ResetPassword from "./PasswordReset";
 import RegisterAccount from "./RegisterAccount";
+import VerifyEmail from "./VerifyEmail";
+import { setFavourites } from "../redux/favouritesSlice";
 
 function Main() {
 	const Stack = createStackNavigator();
 	const [initializing, setInitializing] = useState(true);
 	const { isConnected } = useNetInfo();
-	const { favourites, alertState } = useSelector((state) => state.favourites);
 	const { stores } = useSelector((state) => state.stores);
 	const { user } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
@@ -54,22 +55,43 @@ function Main() {
 	const onAuthStateChanged = useCallback(
 		(u) => {
 			dispatch(setUser(u));
+
 			if (initializing) setInitializing(false);
 
+			// If the user is logged in, check if they have a document in the users collection
 			if (u) {
-				firestore().collection("users").doc(u.uid).set({
-					uid: u.uid,
-					email: u.email,
-					displayName: u.displayName,
-					emailVerified: u.emailVerified,
-				});
-				firestore().collection("watchLists").doc(u.uid).set({
-					favourites,
-					alertState,
-				});
+				if (!u.emailVerified) {
+					u.sendEmailVerification();
+				}
+				firestore()
+					.collection("users")
+					.doc(u.uid)
+					.onSnapshot((documentSnapshot) => {
+						// If the user does not have a document, create one
+						if (!documentSnapshot.data()) {
+							firestore().collection("users").doc(u.uid).set({
+								uid: u.uid,
+								email: u.email,
+								displayName: u.displayName,
+								emailVerified: u.emailVerified,
+								favourites: [],
+								savedStores: [],
+							});
+							dispatch(setFavourites([]));
+							return dispatch(setSavedStores([]));
+						}
+
+						// If the user has a document, set the favourites and saved stores
+						dispatch(
+							setSavedStores(documentSnapshot.data().savedStores)
+						);
+						return dispatch(
+							setFavourites(documentSnapshot.data().favourites)
+						);
+					});
 			}
 		},
-		[initializing, dispatch, favourites, alertState]
+		[initializing, dispatch]
 	);
 
 	useEffect(() => {
@@ -105,6 +127,22 @@ function Main() {
 
 	if (isConnected === false) {
 		return <Offline />;
+	}
+
+	if (user && !user.emailVerified) {
+		return (
+			<SafeAreaProvider>
+				<NavigationContainer>
+					<Stack.Navigator screenOptions={NAVIGATOR_OPTIONS}>
+						<Stack.Screen
+							name="VerifyEmail"
+							component={VerifyEmail}
+							options={OPTIONS}
+						/>
+					</Stack.Navigator>
+				</NavigationContainer>
+			</SafeAreaProvider>
+		);
 	}
 
 	return (

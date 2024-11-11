@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useState, useCallback } from "react";
+import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import PropTypes from "prop-types";
@@ -40,17 +41,20 @@ function Game({ route, navigation }) {
 	const dispatch = useDispatch();
 
 	const [width, setWidth] = useState(null);
-	const [gameData, setGameData] = useState(deal);
-	const [gameDataLoading, setGameDataLoading] = useState(false);
+	const [gameData, setGameData] = useState(null);
+	const [gameLoading, setGameLoading] = useState(false);
 	const [init, setInit] = useState(true);
 
-	const getParams = useMemo(() => ({ id: deal.gameID }), [deal]);
+	const getParams = useCallback(
+		(type) => ({ id: type === "gameID" ? deal.gameID : deal.dealID }),
+		[deal]
+	);
 	const { data, loading } = useAxiosFetch(
 		GAMES,
 		0,
 		false,
 		true,
-		getParams,
+		getParams("gameID"),
 		null
 	);
 
@@ -82,7 +86,7 @@ function Game({ route, navigation }) {
 				storeId: val.storeID,
 			});
 		},
-		[navigation, gameData.gameInfo, user]
+		[navigation, gameData, user]
 	);
 
 	/**
@@ -91,20 +95,11 @@ function Game({ route, navigation }) {
 	 */
 	useEffect(() => {
 		if (data && data.deals.length > 0) {
-			setGameDataLoading(true);
-			const steam = stores.find((s) => s.storeID);
-
-			const sDeal =
-				data.deals.find(
-					(s) => s.storeID === steam.storeID.toString()
-				) || data.deals[0];
-
-			const params = { id: sDeal.dealID };
-
+			setGameLoading(true);
 			const api = axios.create({
 				baseURL: DEALS,
 				withCredentials: false,
-				params,
+				params: { id: data.deals[0].dealID },
 				paramsSerializer: (p) => qs.stringify(p, { encode: false }),
 				headers: HEADERS,
 			});
@@ -112,13 +107,13 @@ function Game({ route, navigation }) {
 			api.get()
 				.then((response) => {
 					setGameData(response.data);
-					setGameDataLoading(false);
+					setGameLoading(false);
 				})
 				.catch(() => {
-					setGameDataLoading(false);
+					setGameLoading(false);
 				});
 		}
-	}, [data, stores]);
+	}, [data, getParams]);
 
 	// Animated values for the favourite icon
 	const animation = new Animated.Value(0);
@@ -197,9 +192,13 @@ function Game({ route, navigation }) {
 			),
 		};
 
+		const favouritesList = favourites || [];
+
 		const newFavourites = favourite
-			? favourites.filter((f) => f.gameId !== gameData.gameInfo.gameID)
-			: [...favourites, newFavourite];
+			? favouritesList.filter(
+					(f) => f.gameId !== gameData.gameInfo.gameID
+			  )
+			: [...favouritesList, newFavourite];
 
 		analytics().logEvent(
 			favourite ? "remove_from_favourites" : "add_to_favourites",
@@ -212,7 +211,7 @@ function Game({ route, navigation }) {
 			}
 		);
 
-		firestore().collection("watchLists").doc(user.uid).set({
+		firestore().collection("users").doc(user.uid).update({
 			favourites: newFavourites,
 		});
 
@@ -247,7 +246,8 @@ function Game({ route, navigation }) {
 			return f;
 		});
 		dispatch(setFavourites(newFavourites));
-		firestore().collection("watchLists").doc(user.uid).set({
+
+		firestore().collection("users").doc(user.uid).update({
 			favourites: newFavourites,
 		});
 	}, [data, favourite, favourites, dispatch, user.uid]);
@@ -264,8 +264,7 @@ function Game({ route, navigation }) {
 	 * If the data is loading, display the loading component
 	 * If the data is not loaded, return null
 	 */
-
-	if (loading || gameDataLoading) {
+	if (loading || gameLoading) {
 		return <Loading message="Getting the latest deals... Hold tight!" />;
 	}
 

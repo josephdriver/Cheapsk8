@@ -16,6 +16,10 @@ export default function RegisterAccount() {
 	const { loading, error } = useSelector((state) => state.user);
 	const [email, setEmail] = useState({ value: "", error: "" });
 	const [password, setPassword] = useState({ value: "", error: "" });
+	const [matchPassword, setMatchPassword] = useState({
+		value: "",
+		error: "",
+	});
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -28,11 +32,19 @@ export default function RegisterAccount() {
 		dispatch(setLoading(true));
 		const emailError = emailValidator(email.value);
 		const passwordError = passwordValidator(password.value);
-		if (emailError || passwordError) {
+		const mismatchError =
+			password.value !== matchPassword.value
+				? "Passwords do not match"
+				: "";
+
+		if (emailError || passwordError || mismatchError) {
 			setEmail({ ...email, error: emailError });
 			setPassword({ ...password, error: passwordError });
+			setMatchPassword({ ...matchPassword, error: mismatchError });
+			dispatch(setLoading(false));
 			return;
 		}
+
 		auth()
 			.createUserWithEmailAndPassword(email.value, password.value)
 			.then(async (user) => {
@@ -58,6 +70,7 @@ export default function RegisterAccount() {
 
 			<Text style={styles.header}>Create Account.</Text>
 			<Input
+				autoCapitalize="none"
 				errorStyle={styles.error}
 				errorMessage={email.error || ""}
 				placeholder="Email"
@@ -68,6 +81,7 @@ export default function RegisterAccount() {
 				onChangeText={(text) => setEmail({ value: text, error: "" })}
 			/>
 			<Input
+				autoCapitalize="none"
 				placeholder="Password"
 				secureTextEntry
 				errorStyle={styles.error}
@@ -77,6 +91,20 @@ export default function RegisterAccount() {
 				inputStyle={styles.input}
 				value={password.value}
 				onChangeText={(text) => setPassword({ value: text, error: "" })}
+			/>
+			<Input
+				autoCapitalize="none"
+				placeholder="Confirm Password"
+				secureTextEntry
+				errorStyle={styles.error}
+				errorMessage={matchPassword.error || errMessage || ""}
+				inputContainerStyle={styles.inputContainer}
+				containerStyle={styles.formContainer}
+				inputStyle={styles.input}
+				value={matchPassword.value}
+				onChangeText={(text) =>
+					setMatchPassword({ value: text, error: "" })
+				}
 			/>
 			<Button
 				title="Create Account"

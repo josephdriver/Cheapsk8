@@ -7,52 +7,53 @@ import { dealListType } from "../../propTypes/props";
 import SmallCard from "./SmallCard";
 
 function FeaturedDealsRow({
-  item = {
-    header: null,
-    row: [],
-  },
-  handleDealNavigate,
+	item = {
+		header: null,
+		row: [],
+	},
+	handleDealNavigate,
 }) {
-  return (
-    <View style={styles.container}>
-      <View>
-        {item.header ? (
-          <LargeCard
-            deal={item.header}
-            handleDealNavigate={handleDealNavigate}
-          />
-        ) : (
-          <View style={styles.smallCard}>
-            {item.row.map((i) => (
-              <SmallCard
-                key={`${i.dealID}${i.storeID}`}
-                deal={i}
-                handleDealNavigate={handleDealNavigate}
-              />
-            ))}
-          </View>
-        )}
-      </View>
-    </View>
-  );
+	return (
+		<View style={styles.container}>
+			<View>
+				{item.header ? (
+					<LargeCard
+						deal={item.header}
+						handleDealNavigate={handleDealNavigate}
+					/>
+				) : (
+					<View style={styles.smallCard}>
+						{item.row.map((i) => (
+							<SmallCard
+								key={`${i.dealID}${i.storeID}`}
+								deal={i}
+								handleDealNavigate={handleDealNavigate}
+							/>
+						))}
+					</View>
+				)}
+			</View>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 10,
-  },
-  smallCard: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-between",
-  },
+	container: {
+		marginHorizontal: 10,
+	},
+	smallCard: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-between",
+		height: 130,
+	},
 });
 
 FeaturedDealsRow.propTypes = {
-  item: PropTypes.shape({
-    header: dealListType,
-    row: PropTypes.arrayOf(dealListType),
-  }),
-  handleDealNavigate: PropTypes.func.isRequired,
+	item: PropTypes.shape({
+		header: dealListType,
+		row: PropTypes.arrayOf(dealListType),
+	}),
+	handleDealNavigate: PropTypes.func.isRequired,
 };
 export default FeaturedDealsRow;
